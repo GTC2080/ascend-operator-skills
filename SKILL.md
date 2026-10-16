@@ -1,6 +1,6 @@
 ---
 name: ascend-operator-engineering
-description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, mssanitizer, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
+description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for TileLang environment setup, kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, mssanitizer, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
 license: MIT
 metadata:
   version: "1.0.2"
@@ -23,6 +23,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | --- | --- |
 | End-to-end design, environment, implementation and handoff | [workflow](references/workflow.md) |
 | Choose TileLang or Ascend C by workload and development stage | [backend selection](references/workflow.md#backend-selection-by-workload-and-stage) |
+| TileLang missing, incompatible or not usable on a development server | [TileLang installation and verification](references/tilelang-installation.md) |
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |

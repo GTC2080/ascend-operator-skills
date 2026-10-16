@@ -24,6 +24,8 @@ Inspect generated API headers and installed SDK signatures. Resolve symlinks bef
 
 When a backend is new to the environment:
 
+For a missing or incompatible TileLang installation, use the [server setup guide](tilelang-installation.md) before attempting operator development.
+
 1. Confirm the wheel/source release, architecture/ABI tags and digest against its publisher.
 2. Reuse an existing suitable environment or isolate task dependencies.
 3. Verify import, compiler discovery and a minimal official device example separately.

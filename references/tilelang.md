@@ -8,6 +8,10 @@ The separately reviewed upstream snapshot was commit `1d5daf0385156cbe0c499a16c1
 
 An official vector-add smoke confirms installation and that simple call chain. It says nothing about dynamic shapes, tail copies, optional scalars, strict rounding, AOT integration or the performance of your operator.
 
+## Setup on a new server
+
+If TileLang is absent or incompatible, follow [installation and verification](tilelang-installation.md): inventory the target, reuse or isolate a compatible Python environment, select an official Ascend wheel or a pinned source build, then verify import/compiler/device behavior separately. Loading this skill does not install dependencies or authorize server access. The historical wheel above is a reproduction coordinate, not a default for new machines.
+
 ## 1. Keep frontend, generated code and execution separate
 
 At each revision retain:
