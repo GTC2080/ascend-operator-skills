@@ -1,0 +1,51 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.12']
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Distributed files and links
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+          import re
+          import subprocess
+
+          root = Path('.')
+          manifest = json.loads((root / 'MANIFEST.json').read_text())
+          tracked = set(subprocess.check_output(['git', 'ls-files', '-z']).decode().strip('\0').split('\0'))
+          assert tracked - {'MANIFEST.json'} == set(manifest['files']), 'manifest file set differs'
+          for name, record in manifest['files'].items():
+              data = (root / name).read_bytes()
+              assert len(data) == record['bytes'], name
+              assert hashlib.sha256(data).hexdigest() == record['sha256'], name
+          for path in root.rglob('*.md'):
+              if '.git' in path.parts:
+                  continue
+              for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+                  if '://' in target or target.startswith('#'):
+                      continue
+                  assert (path.parent / target.split('#')[0]).exists(), (path, target)
+          print('Distributed manifest and internal links verified')
+          PY

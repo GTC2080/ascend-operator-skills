@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "name": "ascend-operator-engineering",
+  "version": "1.0.0",
+  "license": "MIT",
+  "created_utc": "2026-10-16T13:02:27.226760+00:00",
+  "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
+  "files": {
+    ".github/workflows/validate.yml": {
+      "bytes": 1787,
+      "sha256": "3b49fedb164a6a018ca1fbb0e9e32fc11858ade47add1becae75e74baf5aa71f"
+    },
+    ".gitignore": {
+      "bytes": 52,
+      "sha256": "6ce30e67cba725942a5c2b34e0e3bfa7deb592af3599db568982a9543b862cc3"
+    },
+    "INSTALL.md": {
+      "bytes": 3710,
+      "sha256": "d10bb4fb3c76cf25ac57802aea6f47c68c2433544fd7d20790cc40e672662aa9"
+    },
+    "LICENSE": {
+      "bytes": 1097,
+      "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
+    },
+    "README.md": {
+      "bytes": 5519,
+      "sha256": "522f03d8b9dba72a7329e03b425a8630376dad3441fc21462c5a960dafb5fa91"
+    },
+    "SKILL.md": {
+      "bytes": 11042,
+      "sha256": "787c1c8581eba2949a9e20b110408dd3b3ccf6063be54abf25c69fb0157e8bc4"
+    },
+    "VALIDATION.md": {
+      "bytes": 3675,
+      "sha256": "17f0661dac264b8c8e6c526d1044781d95f5b293eaa39b7e94c80fb7e52e281b"
+    },
+    "references/ascendc-invariants.md": {
+      "bytes": 11610,
+      "sha256": "40fa808388a96bd8b07a9cae7f64e755cad697806fb7548b0e9e6cf9e0788288"
+    },
+    "references/build-identity.md": {
+      "bytes": 7095,
+      "sha256": "bd2ce1a5e228b0b8faddebcd61a7feecef641da80cfc4ca42d4011ebe15507f1"
+    },
+    "references/casebook.md": {
+      "bytes": 11811,
+      "sha256": "32b979bc7442205fcc5ece40d750d72a0ab7bc4f3ed421c4e3b6a608458f1485"
+    },
+    "references/correctness-sanitizers.md": {
+      "bytes": 9107,
+      "sha256": "b004036880c3103d93a7fe5059d998a81fc6fc29830ac37a40673dddbe2809cd"
+    },
+    "references/deepgemm-tilekernels.md": {
+      "bytes": 9252,
+      "sha256": "8e5581aa5d3dd696219abedd44f7dce574550d188ac56e2a081ca5e5644bb13a"
+    },
+    "references/evidence-templates.md": {
+      "bytes": 5156,
+      "sha256": "caf9ebab0056c2cdf43db882ab76c3362f5a9fe6083be1d803529b27076e4e19"
+    },
+    "references/performance.md": {
+      "bytes": 10490,
+      "sha256": "f324a9b68894431d97f313d029efc03bb3f5a5ab93ebff244d79de23b6c7d265"
+    },
+    "references/provenance.json": {
+      "bytes": 6533,
+      "sha256": "af6e182d34fcb8a0a77cbf49559c71fdcd01974be503f28a8e3a9eab76b2e4d0"
+    },
+    "references/sources.md": {
+      "bytes": 8733,
+      "sha256": "3599a342fd077b9cf360b2260dba088cd37514a3730c21af29c86efc5047d8a6"
+    },
+    "references/tilelang.md": {
+      "bytes": 13315,
+      "sha256": "76e79073b6e828eb930f9405dfdc95dd03f92e0acf4ca6e58605aee2f1420dfb"
+    },
+    "references/workflow.md": {
+      "bytes": 8694,
+      "sha256": "ef2e4969a6e32cc23c99fbc7a44e1238cc026790fb7b1ce5fea66b3bbae4d764"
+    },
+    "scripts/source_manifest.py": {
+      "bytes": 3937,
+      "sha256": "5159616d4cf8aa82379fff56a07dc1a8efb937058160266b0542033c4c8018f1"
+    },
+    "scripts/verify_embedded_kernel.py": {
+      "bytes": 7113,
+      "sha256": "567e5690d6fc099d1b12833df4a7f8b55ee96658af85a40aee5f51eb014832e0"
+    },
+    "tests/test_embedded_kernel.py": {
+      "bytes": 4948,
+      "sha256": "9b680931420cd8aafcb1859eda35efd32dd79d9b8fb9459a1c43ab9aadede8a7"
+    },
+    "tests/test_source_manifest.py": {
+      "bytes": 2705,
+      "sha256": "df876ae25a105bc1ad38d6d8feddfee7f4664403df95171dcb91d1dedf7119f6"
+    }
+  }
+}

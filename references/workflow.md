@@ -1,0 +1,108 @@
+# End-to-end operator development
+
+## 1. Intake: specify behavior before choosing an implementation
+
+Read the mathematical definition and the complete calling chain: framework wrapper → shape/dtype inference → API registration → workspace/executor preparation → host tiling → device entry → output reconstruction. Record differences between the documented interface and observed callers; investigate them rather than silently changing the contract.
+
+Create a concise contract containing:
+
+- Tensor names, logical/storage shapes, contiguous or strided layouts, dtype, optionality, alignment and aliasing rules.
+- Scalar attributes: representation, valid range, update frequency and whether they are compile-time or runtime values.
+- Compute dtype, operation order, permitted contraction, reduction order, exactness/tolerance and special-value handling.
+- Output dtype, shape and value domain; absent-input semantics; valid broadcasting.
+- Target workloads and the performance metric that matters to their caller.
+
+Enforce that contract at the public entry: support or reject actual strides, offsets, aliasing and broadcasts. A contiguous AoS kernel cannot accept arbitrary ND strides merely because shapes match. Test the specified rejection paths before device launch, including invalid dimensions/attributes and resource/tiling overflow.
+
+For the geometry case, storage coordinates may be FP16, but arithmetic is four separate FP32 operations followed by strict comparison. A tiny change at the decision boundary flips a full output bit. For a reduction/GEMM/decomposition, derive its own accuracy contract; do not impose this case's bit-exact rule on every operator.
+
+## 2. Inventory the target without assuming compatibility
+
+Record device model, architecture identifier, physical/logical device mapping, driver/runtime/toolkit/compiler versions, OS/CPU ABI, Python and framework packages, backend version/commit and build options. Query actual core counts and memory capacities; a machine label is not a resource contract.
+
+Inspect generated API headers and installed SDK signatures. Resolve symlinks before following includes. Match documentation to the installed release; the newest website and a same-named function are not proof of compatibility. Capture only relevant environment values, not a dump containing credentials.
+
+When a backend is new to the environment:
+
+1. Confirm the wheel/source release, architecture/ABI tags and digest against its publisher.
+2. Reuse an existing suitable environment or isolate task dependencies.
+3. Verify import, compiler discovery and a minimal official device example separately.
+4. Then compile and run the actual operator.
+
+Import success does not prove a required CLI is on PATH. In the case study, Cython was already installed but its launcher was missing from the task PATH; reinstalling did not address that fact. Avoid global changes or repeated installation without a diagnosed need.
+
+## 3. Freeze a useful baseline
+
+Read earlier candidate summaries. Preserve known-good source, configuration, build recipe, binary identities and its verification scope. Do not mutate the baseline during a comparison. Distinguish a historical best observation from the source currently selected for use.
+
+A practical source/results layout is:
+
+```text
+operator/
+  current/                 selected source only
+  experiments/<name>/      isolated candidate source and recipe
+  results/<name>/<run>/     reports, raw target CSVs and diagnostics
+  baseline/                verified rollback or content-addressed archive
+```
+
+Use the project's existing equivalent instead of reorganizing it unnecessarily. Stable helpers belong in shared tooling; experiment-specific scripts stay with their experiment. Identify scripts' callers before moving them.
+
+## 4. Design both algorithm and kernel
+
+Write the algorithm in the contract's numerical domain. Then write the kernel plan:
+
+- Core assignment, interval coverage, tail ownership and actual launch geometry.
+- Input layout, field extraction, padding and output layout.
+- UB regions, sizes, alignment gaps, scratch reservations and maximum live end address.
+- Producer/consumer dependencies by pipeline and stage.
+- Optional-input/dtype paths, host guards and workspace lifetime.
+- Which runtime values may change without recompilation.
+
+Choose vector, cube, mixed, SIMT or a DSL route because it matches the computation and current hardware. A matrix multiply abstraction is not automatically appropriate for a few elementwise operations with strict intermediate rounding. A compiled probe is useful for API compatibility; it is not an algorithm benchmark.
+
+## 5. Implement and review the complete mechanism
+
+Prefer the current template and existing dependencies. Keep framework-required CMake, registration and tiling-key files unchanged when the project requires it; hash them to prove this. The number and names of files are template-specific.
+
+For a performance experiment, record:
+
+```text
+Mechanism: what instructions/dataflow/launch assignment should change?
+Expected benefit: which workload regime, and why?
+Risk: what semantics, bounds or dependencies could fail?
+Refutation: what generated-code observation or experiment would reject it?
+```
+
+Review host, device entry, helper and caller together. With generated code, read the emitted arguments and callee implementations. Do not infer data movement from source tensor shapes alone. If a transformation rewrites generated code, reject unknown structures instead of trying to repair arbitrary syntax.
+
+## 6. Use explicit evidence gates
+
+| Stage | Evidence required before the next claim |
+| --- | --- |
+| Build | Full successful compile/link, target version/config and fresh artifact manifest |
+| Identity | Expected fresh/staged/embedded resources and host tiling; resolved runtime libraries/OPP |
+| Precision | Actual device calls, independent reference, metadata/boundary matrix and negative controls |
+| Freshness | Same-address value changes and runtime-attribute updates affect outputs correctly |
+| Diagnostic | Real requested tools executed on the bound instrumented kernel; exact outputs and raw logs |
+| Performance | Normal binary, correct pre/post outputs, isolated comparable capture and audited raw rows |
+| Adoption | Confirmed benefit in the intended workload, full new-combination validation and rollback |
+
+Stages can be investigated in parallel when they do not contaminate evidence; an unresolved memory or precision failure prevents an eligible performance/adoption claim. It need not prevent an authorized offline design review.
+
+Do not infer a stage from an author statement or a helper's variable name. Creation-time notes such as “not yet compiled” remain historical notes; later results must be bound to the exact source they tested.
+
+## 7. Make failures informative
+
+Classify the failure layer: import/parse, C++ generation, compilation, linkage, API registration, tiling, load, allocation/metadata, launch, sync, output comparison or instrumentation. Preserve the first substantive error and exact input/configuration.
+
+Change one explanatory factor when diagnosing causality. Identical failure counts can have different causes: this case had both a ratio literal error and an AIC/AIV scalar-ownership error producing 44 incorrect rows. Rerun the smallest affected case, then the affected matrix and full eligible path. Never weaken strict output assertions to hide a compiler error.
+
+Stop on unsupported assumptions and report the bounded missing capability. Repeatedly changing flags without inspecting generated commands or logs increases ambiguity.
+
+## 8. Freeze and close cleanly
+
+Keep selected source, source/config hashes, build instructions, required generated artifacts, independent oracle, fixtures, full failures, target CSVs and interpretation. Large caches/build trees are not default handoff artifacts. Prefer an incremental evidence transfer over repeated copies of already verified files.
+
+Write the report completely before replacing a final report; normalize numeric scalar types first. A serialization failure must not leave a truncated success-looking JSON. Verify archive members by name, size and SHA after reading them back. Before removing task-owned loose experiments, verify they still match the archived snapshot and are not in use.
+
+Restore archives into an independent location for reproduction. Source and script changes invalidate the affected evidence; do not overwrite running scripts or output directories. Record running task processes and incomplete stages when stopping. Follow the user's current stopping goal rather than an earlier open-ended optimization objective.
