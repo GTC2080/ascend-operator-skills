@@ -1,6 +1,6 @@
-# NPU-Skill
+# Ascend-Skill
 
-[![Validate](https://github.com/GTC2080/npu-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/GTC2080/npu-skill/actions/workflows/validate.yml)
+[![Validate](https://github.com/GTC2080/ascend-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/GTC2080/ascend-skill/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A portable [Agent Skills](https://agentskills.io/specification) package for designing, implementing, reviewing and tuning Huawei Ascend operators with **Ascend C and TileLang Ascend**.
@@ -16,7 +16,7 @@ It distills five rounds of real operator development into a concise skill entry,
 - [Casebook](references/casebook.md) — 56 successes, failures and unresolved questions.
 - [Validation](VALIDATION.md) — executed offline checks and their limits.
 - [Sources](references/sources.md) — version-pinned upstream references and evidence provenance.
-- [Releases](https://github.com/GTC2080/npu-skill/releases) — importable ZIP and SHA-256 checksum.
+- [Releases](https://github.com/GTC2080/ascend-skill/releases) — importable ZIP and SHA-256 checksum.
 
 ## Import
 
@@ -25,7 +25,7 @@ Download a release ZIP and preserve the `ascend-operator-engineering/` directory
 For a client that scans project `.agents/skills/`, one option is:
 
 ```bash
-git clone https://github.com/GTC2080/npu-skill.git .agents/skills/ascend-operator-engineering
+git clone https://github.com/GTC2080/ascend-skill.git .agents/skills/ascend-operator-engineering
 ```
 
 Reload the client's skill catalog as required, then ask it to use `ascend-operator-engineering`. Clients without native skill support can load the entry and relevant Markdown references as task instructions. Discovery and invocation syntax are client-specific; universal native harness compatibility has not been tested.
