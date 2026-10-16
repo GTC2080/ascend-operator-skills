@@ -22,6 +22,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Need | Read |
 | --- | --- |
 | End-to-end design, environment, implementation and handoff | [workflow](references/workflow.md) |
+| Choose TileLang or Ascend C by workload and development stage | [backend selection](references/workflow.md#backend-selection-by-workload-and-stage) |
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
@@ -47,6 +48,8 @@ Distinguish specified behavior, observed caller behavior, and additional compati
 Record actual device/architecture, toolkit and compiler versions, backend commit/wheel, framework/runtime, physical-to-logical device mapping, available vector/cube cores, UB limits, and the generated build template. Resolve SDK symlinks before interpreting headers.
 
 Keep one immutable known baseline. Read old experiment summaries before rediscovering a failed route. Use independent candidate directories and new build directories. Reuse the project build system and dependency set; a new compiler backend is a measured engineering choice, not an automatic upgrade.
+
+Before a new implementation or backend rewrite, apply the [backend selection policy](references/workflow.md#backend-selection-by-workload-and-stage). TileLang is a useful starting preference for rapid prototyping and block/pipeline exploration on a supported stack; established Ascend C is a useful preference for a mature integration or fine tuning of tiny latency-sensitive kernels. Treat these as workload- and stage-dependent heuristics. Record the choice, target support, baseline and evidence that would justify switching; retain an already validated TileLang implementation when it meets the deployment and performance goals.
 
 ### 3. Design the complete data path
 

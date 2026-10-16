@@ -60,6 +60,41 @@ Write the algorithm in the contract's numerical domain. Then write the kernel pl
 
 Choose vector, cube, mixed, SIMT or a DSL route because it matches the computation and current hardware. A matrix multiply abstraction is not automatically appropriate for a few elementwise operations with strict intermediate rounding. A compiled probe is useful for API compatibility; it is not an algorithm benchmark.
 
+### Backend selection by workload and stage
+
+Choose an implementation route after fixing the contract, target and development stage. The preferences below are engineering heuristics, not measured claims that one language is always faster or cheaper for an agent. Both routes require tiling decisions, numerical validation, memory/synchronization checks and comparable measurements.
+
+First check feasibility: the actual chip/toolchain/backend must support the required operations, numerical behavior and runtime updates. Confirm the deployment accepts the intended JIT, AOT or framework/API integration. An existing Ascend C template does not establish that a DSL is prohibited; exporting a compatible kernel is an option only after its full integration chain is verified. Respect the user's chosen route when feasible; report a concrete blocker before proposing a change.
+
+| Operator or project characteristic | Starting preference and reason |
+| --- | --- |
+| New block-structured GEMM/attention, fused vector or reduction work with many plausible tile/layout/pipeline choices | Consider TileLang for a correct prototype and parameter exploration when its supported primitives preserve the contract. Compact expressions and configurable tiles can help implementation; they do not establish device speed. |
+| Tiny inputs, very short device durations, few arithmetic steps or strict floating-point decision boundaries | Prefer an established Ascend C path for fine tuning when it exposes the needed launch, copy, mask and synchronization control. TileLang remains eligible if its generated code and device results meet the same requirements. |
+| Mature verified Ascend C kernel, fixed integration template or little time for a backend migration | Continue Ascend C and test targeted changes against the preserved baseline. Require a specific capability or performance hypothesis before a rewrite. |
+| Validated TileLang kernel with a reproducible compiler/cache path and acceptable deployment | Continue TileLang through tuning and delivery. A successful DSL implementation does not need a hand rewrite solely because delivery is approaching. |
+| Required low-level instruction, layout or scheduling control is available through the target SDK but unsupported by the installed DSL | Prefer the supported Ascend C route for that mechanism. Confirm the actual SDK capability; lower-level access does not repair an invalid algorithm or unsupported chip feature. |
+| Many dynamic shapes/attributes, frequent specialization or a cold-start/application-latency objective | Compare specialization/cache behavior, startup cost and caller integration as well as steady-state device duration. Choose the route that meets the actual caller's objective. |
+
+Apply the preference to the current stage:
+
+1. **Prototype:** use the feasible route most likely to produce a correct, testable implementation within the task budget. Reuse a valid existing kernel where possible. On a new supported stack with substantial block-level exploration, TileLang is a reasonable first choice; read its [version and code-generation guidance](tilelang.md). Check representative tails, dtype/optional paths and runtime attributes before expanding the search.
+2. **Explore:** vary justified algorithm, tile, core and pipeline choices within the selected route. Keep a known-good baseline and a bounded experiment plan. A second backend is an isolated candidate only when it tests a useful hypothesis; do not maintain two full implementations by default.
+3. **Fine tune:** inspect the actual generated/device behavior and measured bottleneck. If a tiny kernel has repeatable redundant work that the installed DSL cannot remove, compare an Ascend C alternative. If the TileLang candidate is already correct and competitive, tune it in place. More explicit source control does not guarantee a faster binary.
+4. **Integrate and deliver:** retain the route with verified semantics, safety, build/runtime identity and acceptable performance for the intended workload. A backend switch or JIT-to-AOT change is a new candidate requiring the affected validation again, not a packaging-only operation.
+
+Agent convenience includes the whole feedback loop: reproducible compilation, useful errors, inspectable generated code, a trustworthy oracle and automated measurements. Shorter source may reduce authoring work while codegen, cache or adapter failures increase debugging work. Ascend C also has abstraction layers and compiler transformations; do not assume every hand-written expression maps directly to one instruction.
+
+Reconsider a route when a diagnosed compatibility gap, unresolved compiler/integration failure or measured bottleneck justifies the migration cost. Preserve the baseline, define a bounded probe and an acceptance condition, and keep the same public contract. Compare compilation/setup cost separately from steady-state kernel and application time, using equivalent inputs, metadata, calling paths and measurement protocols. If neither route has been tested, report a provisional preference rather than a performance winner.
+
+Record a short decision for a new implementation or proposed switch:
+
+```text
+Stage and workload: size regimes, layout, precision and caller metric
+Selected route and reason: relevant characteristics and target support evidence
+Baseline and validation: preserved candidate and next decisive check
+Revisit condition: concrete blocker or measured opportunity; bounded probe
+```
+
 ## 5. Implement and review the complete mechanism
 
 Prefer the current template and existing dependencies. Keep framework-required CMake, registration and tiling-key files unchanged when the project requires it; hash them to prove this. The number and names of files are template-specific.
