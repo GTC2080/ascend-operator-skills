@@ -12,6 +12,10 @@ Prepared 2026-10-16. This package contains original engineering instructions and
 Reviewed source snapshot: `1d5daf0385156cbe0c499a16c10935c5190642a4`. This is distinct from the historical wheel used for device experiments.
 
 - [README and version requirements](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/README.md).
+- [Official release assets](https://github.com/tile-ai/tilelang-ascend/releases): select a wheel for the actual Python ABI, CPU architecture and CANN/backend; release tags and wheel versions can differ.
+- [Wheel build script](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/build_wheel_ascend.sh), [source build script](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/install_ascend.sh), and [source environment](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/set_env.sh): commands and side effects used in the installation guide; reread at the selected ref.
+- [Official vector-add smoke](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/examples/elementwise/elementwise_add.py) and [cache inspection API](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/tilelang/cache/__init__.py): small-device verification and private-cache checks.
+- [TorchNPU supported versions and installation](https://github.com/Ascend/pytorch): match framework, adapter and CANN instead of upgrading them independently.
 - [Programming guide](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/docs/TileLang-Ascend%20Programming%20Guide.md): source inspection and execution concepts.
 - [Compiler-managed vector masks](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/docs/ascend/compiler_managed_vector_mask.md).
 - [Ascend code generator](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/src/target/codegen_ascend.cc).
@@ -19,6 +23,8 @@ Reviewed source snapshot: `1d5daf0385156cbe0c499a16c10935c5190642a4`. This is di
 - [Elementwise pipeline example](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/examples/elementwise/elementwise_add_pipeline.py): stage organization, not proof for unrelated tails/rounding.
 
 The parser/cache/layout/scalar failures in this package were independently observed with the older0.1.1.10 wheel. They are not claims that the current upstream has those defects.
+
+Installation sources and release metadata were rechecked on 2026-10-17. The new guide was checked offline; it does not record a new server installation or NPU run.
 
 ## DeepGEMM-Ascend
 
