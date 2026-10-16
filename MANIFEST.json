@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "name": "ascend-operator-engineering",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
-  "created_utc": "2026-10-16T13:11:35.395219+00:00",
+  "created_utc": "2026-10-16T13:16:19.528353+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
   "files": {
     ".github/workflows/validate.yml": {
@@ -23,16 +23,16 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 5534,
-      "sha256": "e40be6a45f6fa8cfee426677f0f6b9d89445d39fa8005317868f062328f438f5"
+      "bytes": 5584,
+      "sha256": "72c13a3aadd71bcc9262c463ffebc1bb5b581b4afd7cb0cd169eda0b18a12834"
     },
     "SKILL.md": {
       "bytes": 11042,
-      "sha256": "30f55dca97f6d6a8183d39e50863ff84b31c548446b88357675661ee6a4b2368"
+      "sha256": "ba1bc2b3c0bc7d9eb9b059ff37410a16fcfd73eaa8193111acb33b669394ad02"
     },
     "VALIDATION.md": {
-      "bytes": 3918,
-      "sha256": "08b9e8da9dfee37d778c5b2d4237bb6f29257263aaac34339567d9e772de83d1"
+      "bytes": 3929,
+      "sha256": "a8ca0e43fa081f746d09855401ab0c087807e3f836473510ea3c470b3d3cb958"
     },
     "references/ascendc-invariants.md": {
       "bytes": 11610,

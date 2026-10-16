@@ -1,6 +1,6 @@
 # Validation of this skill package
 
-Initial version1.0.0 was validated on2026-10-16. This document describes those skill and offline-tool checks, not a new device validation of the historical kernels. Version1.0.1 updates repository branding/links and version metadata; the independent check identities below identify the original reviewed snapshot. Current distributed-file integrity is recorded in MANIFEST.json.
+Initial version 1.0.0 was validated on 2026-10-16. This document describes those skill and offline-tool checks, not a new device validation of the historical kernels. Versions 1.0.1–1.0.2 update repository branding/links and version metadata; the independent check identities below identify the original reviewed snapshot. Current distributed-file integrity is recorded in MANIFEST.json.
 
 ## Executed checks
 

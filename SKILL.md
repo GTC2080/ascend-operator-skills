@@ -3,7 +3,7 @@ name: ascend-operator-engineering
 description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, mssanitizer, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
 license: MIT
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   language: "en"
 ---
 
