@@ -25,6 +25,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Choose TileLang or Ascend C by workload and development stage | [backend selection](references/workflow.md#backend-selection-by-workload-and-stage) |
 | TileLang missing, incompatible or not usable on a development server | [TileLang installation and verification](references/tilelang-installation.md) |
 | Use server CPU, memory and NPU resources efficiently by phase | [resource utilization](references/workflow.md#resource-utilization-by-phase) |
+| Reuse Torch/NPU initialization across compatible candidates; isolate incompatible or unhealthy state | [resident NPU validation worker](references/workflow.md#reuse-a-resident-npu-worker-for-compatible-validation) |
 | Discover this machine's hardware, effective allocation and observed capacity before assigning work | [hardware discovery](references/workflow.md#hardware-discovery-before-resource-allocation) |
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
@@ -54,6 +55,10 @@ Record actual device/architecture, toolkit and compiler versions, backend commit
 Before allocating work, query the actual execution machine's CPU model/topology and effective affinity/quota, usable RAM, storage/I/O, NPU model/devices/resources and current load. Follow [hardware discovery](references/workflow.md#hardware-discovery-before-resource-allocation), record unknowns and derive phase-specific budgets from that profile plus representative observed throughput. Never use a fixed core count or copy a previous server's worker split; refresh the profile when the execution environment or allocation changes.
 
 Actively use the allocated server capacity for useful work: parallelize independent CPU builds, code generation and offline analysis instead of defaulting to one worker. Follow the [resource policy](references/workflow.md#resource-utilization-by-phase) to budget actual CPU affinity/quota, memory and nested threads, and verify the selected concurrency took effect. Maintain separate CPU and NPU-ready queues and refill both directions: dispatch a compatible, artifact-ready validation job when an NPU becomes available, even while CPU jobs continue; when CPU capacity is available during NPU validation, dispatch ready CPU-only build, preparation or analysis work without waiting for the device batch. Reserve the measured host resources needed to feed the NPU. Host CPU count is separate from NPU core count. Preserve exclusive device-performance capture; maximize experiment throughput without contaminating kernel measurements.
+
+For compatible candidates, prefer a [resident NPU validation worker](references/workflow.md#reuse-a-resident-npu-worker-for-compatible-validation): import/initialize Torch and the NPU runtime once, then validate ready candidates sequentially while CPU builds continue. Check artifact/registration/cache compatibility and per-job synchronization and outputs. Start a fresh process for incompatible loading, required isolation or uncertain runtime state; process reuse must not weaken build identity, correctness, diagnostics or benchmark calibration.
+
+Use one aggregate host resource budget and the same device ownership mechanism across CPU queues, resident workers and isolated/retry processes. Release a job's device slot only after confirmed completion; a resident worker may stay idle, but an uncertain failed worker must not hand the slot to a replacement. Follow the [capture handoff rules](references/workflow.md#overlap-cpu-and-npu-work-when-their-dependencies-permit) when switching from overlapped validation to exclusive measurement.
 
 Keep one immutable known baseline. Read old experiment summaries before rediscovering a failed route. Use independent candidate directories and new build directories. Reuse the project build system and dependency set; a new compiler backend is a measured engineering choice, not an automatic upgrade.
 
@@ -97,7 +102,7 @@ Separate compilation, initialization, host elapsed time, kernel duration, graph 
 
 Use ordered paired runs such as A-forward/B-forward/B-reverse/A-reverse, with independent confirmation for promising effects. Audit target row count, operation/core identity, task selection, block count, valid positive durations and CSV hashes. Fixed sample counts and TaskIDs in the casebook belong to that runner, not every profiler.
 
-Exclude build, diagnostic and compression work from performance sampling; hold the exclusion through child-process completion. CPU-only export may run in isolated workers after device capture ends. Record ambiguous isolation as a limitation instead of silently accepting its timing.
+Exclude build, diagnostic and compression work from performance sampling; hold exclusion through the capture job's finalization, required checks and capture-specific child completion. Pause/drain ordinary work and acknowledge idle resident workers; retire them when the frozen protocol requires it. CPU-only export may run in isolated workers after this capture job completes. Record ambiguous isolation as a limitation instead of silently accepting its timing.
 
 ### 9. Interpret and combine improvements
 

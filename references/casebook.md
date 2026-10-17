@@ -34,7 +34,7 @@ All device observations below belong to the910B2/CANN9.0.0 development case unle
 | C21 aggregate GM copy | Device compiler rejected copying a GM struct to local aggregate | Host C++ validity does not establish device address-space support |
 | C22 fixture overwrite | Same case name/different threshold collided in serialized keys | Use unique keys and round-trip bytes/metadata checks |
 | C23 timing protocol drift | Same G changed about+45.84% with process boundaries; PMU also affected it | Same-code controls before changing runner/profiler; no universal noise constant |
-| C24 compression overlap | Could not establish isolation from archive compression | Invalidate affected gain claims; one exclusion through all child lifetimes |
+| C24 compression overlap | Could not establish isolation from archive compression | Invalidate affected gain claims; one exclusion through the capture job and its capture-specific child lifetimes |
 | C25 misleading code/counters | Smaller text or lower Scalar did not establish total speed/causality | Keep machine-code evidence, counters and measured duration as distinct facts |
 
 ## R5: TileLang frontend, compiler, cache and AOT

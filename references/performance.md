@@ -48,6 +48,8 @@ Record actual executor and workspace reuse. A runner that prepares a new executo
 
 Changing process lifetime or combining cases may reduce device initialization costs, but requires new calibration. Do not compare that report directly with the old process protocol.
 
+The [resident validation-worker policy](workflow.md#reuse-a-resident-npu-worker-for-compatible-validation) permits compatible candidates to reuse Torch/NPU initialization while CPU builds continue. Record process reuse, startup/restart counts and validation throughput separately from device duration. When measuring in that process, calibrate the new protocol with A/A controls and preserve equivalent initialization, warmup, cache and reuse conditions for both arms. Cold-start objectives still need cold-start measurements; validation in a resident process does not replace required fresh-process checks or exclusive performance capture.
+
 ## Pair and reverse the experiments
 
 One useful design is:
@@ -93,11 +95,11 @@ If capture times out, save partial diagnostics and mark finalization unconfirmed
 
 Compilation, instrumentation, NPU testing and compression can contend with latency capture. The case study invalidated a timing group because compression isolation could not be established.
 
-Use a single task-scoped resource exclusion mechanism covering all relevant entrypoints and **all their child lifetimes**, including warmup, active capture, collector finalization and cleanup. On a suitable local system a native file lock is sufficient; another harness can serialize explicitly. Do not invent a second lock per round and bypass an already running job.
+Use a single task-scoped resource exclusion mechanism covering all relevant entrypoints and the **full capture-job lifetime**, including warmup, active capture, collector finalization, required checks and completion of capture-specific children. On a suitable local system a native file lock is sufficient; another harness can serialize explicitly. Do not invent a second lock per round and bypass an already running job. Follow the [queue handoff rules](workflow.md#overlap-cpu-and-npu-work-when-their-dependencies-permit): pause competing admissions and drain active work before capture. A resident process may remain alive only after an acknowledged idle state and when its retained context/memory is permitted by, and matched across, the calibrated protocol; a frozen independent-process protocol can require retiring it first. Process liveness alone neither extends nor completes a capture job.
 
 Your lock coordinates your jobs, not unknown tenants or system services. Record external-load/clock/thermal observations where available, and their blind spots. Without measurements, frequency, cache and instruction-cache explanations remain hypotheses.
 
-CPU-only offline export can be bounded-parallel **after** every device capture child exits. Use process isolation if a legacy auditor temporarily changes module globals for each arm's expected geometry. A thread pool sharing that state can cross-contaminate A/B validation. Export throughput improvement is not kernel speedup.
+CPU-only offline export can be bounded-parallel **after** the capture job is complete and all capture-specific children exit; an allowed idle resident worker need not exit solely to release this window. Use process isolation if a legacy auditor temporarily changes module globals for each arm's expected geometry. A thread pool sharing that state can cross-contaminate A/B validation. Export throughput improvement is not kernel speedup.
 
 Use the [phase resource policy](workflow.md#resource-utilization-by-phase) to fill available CPU capacity during build and offline-analysis phases. Exclusive latency capture is a deliberate measurement phase, not a reason to serialize the entire development workflow. End-to-end throughput/concurrency benchmarks may intentionally include competing requests; name that objective and calibrate its protocol separately instead of mixing its samples with isolated kernel latency.
 

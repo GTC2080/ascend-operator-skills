@@ -51,6 +51,8 @@ An unsupported ELF/layout is a limitation or failure, never a passed check. This
 
 Run A and B in controlled independent processes when same-named registration or dynamic libraries could collide. Set each arm's intended OPP/library environment. Inspect resolved paths and hashes, including dynamic-loader search behavior and RPATH/RUNPATH. Setting `LD_LIBRARY_PATH` does not prove that it wins.
 
+Otherwise, compatible candidates may follow the [resident-worker policy](workflow.md#reuse-a-resident-npu-worker-for-compatible-validation). Independent processes still share the task's host budget and device ownership rules; do not launch a replacement while a previous job or failed runtime remains active. Process separation does not protect a shared mutable package/OPP directory, and an idle resident context can still affect a new measurement's resource state.
+
 If a frozen runner cannot rebind because of its linkage, link another runner from exactly the same frozen source and flags against B, then verify again. Do not change runner behavior while fixing linkage.
 
 Report the evidence level precisely:

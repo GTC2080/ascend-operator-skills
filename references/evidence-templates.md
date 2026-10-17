@@ -24,6 +24,9 @@ This is a semantic example, not a complete public API or validation schema; fill
 ```text
 Target chip/architecture, physical/logical device, core counts and UB limits
 Driver, runtime, toolkit, compiler, framework, Python/CPU ABI
+Discovery timestamp/sources, CPU model/topology, effective affinity/quota
+Usable host/device memory, storage, current load and unknown allocation limits
+Aggregate host budget across queues/workers/threads; per-device budget and owner
 Backend wheel/commit and publisher digest where applicable
 Source-only manifest and configuration/required-template hashes
 Actual compile/link commands, target and normal/diagnostic mode
@@ -61,6 +64,8 @@ shape, storage and compute dtype, threshold presence/storage bytes, output dtype
 attribute representation/bits, seed and actual input SHA/bytes
 oracle version + reference SHA/bytes
 actual invocation/allocation/executor policy and completion markers
+job ID, worker/run ID, compatibility group, actual artifact binding and device owner
+device synchronization/error state, helper completion and confirmed slot handoff
 output SHA/bytes/shape/dtype/value-domain and comparison result
 requested tool, observed target start, observed matching completion
 diagnostics: substantive errors / inactive-or-ignored / operational advisories
@@ -73,8 +78,10 @@ state: passed / failed / not-run / incomplete; raw log paths
 metric + unit + execution boundary + predeclared aggregation/weights
 environment, device mapping, workload metadata and fixed fixture hashes
 process/stream/executor policy; warmup/active; profiler/PMU settings
+resident-worker pause/retirement, retained context/memory and calibration controls
 arm-specific actual host geometry and resolved library identity
 phase schedule, start/end, resource exclusion and external-load blind spots
+capture-job finalization and capture-child completion; process restart/blocked-slot reasons
 precheck/postcheck output and unchanged input digests
 collector completion; target CSV SHA and exact raw-row audit
 raw active duration arrays per arm/direction/case, spread and descriptive ratios
