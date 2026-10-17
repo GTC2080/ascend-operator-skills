@@ -58,6 +58,8 @@ Actively use the allocated server capacity for useful work: parallelize independ
 
 For compatible candidates, prefer a [resident NPU validation worker](references/workflow.md#reuse-a-resident-npu-worker-for-compatible-validation): import/initialize Torch and the NPU runtime once, then validate ready candidates sequentially while CPU builds continue. Check artifact/registration/cache compatibility and per-job synchronization and outputs. Start a fresh process for incompatible loading, required isolation or uncertain runtime state; process reuse must not weaken build identity, correctness, diagnostics or benchmark calibration.
 
+Use one aggregate host resource budget and the same device ownership mechanism across CPU queues, resident workers and isolated/retry processes. Release a job's device slot only after confirmed completion; a resident worker may stay idle, but an uncertain failed worker must not hand the slot to a replacement. Follow the [capture handoff rules](references/workflow.md#overlap-cpu-and-npu-work-when-their-dependencies-permit) when switching from overlapped validation to exclusive measurement.
+
 Keep one immutable known baseline. Read old experiment summaries before rediscovering a failed route. Use independent candidate directories and new build directories. Reuse the project build system and dependency set; a new compiler backend is a measured engineering choice, not an automatic upgrade.
 
 Before a new implementation or backend rewrite, apply the [backend selection policy](references/workflow.md#backend-selection-by-workload-and-stage). TileLang is a useful starting preference for rapid prototyping and block/pipeline exploration on a supported stack; established Ascend C is a useful preference for a mature integration or fine tuning of tiny latency-sensitive kernels. Treat these as workload- and stage-dependent heuristics. Record the choice, target support, baseline and evidence that would justify switching; retain an already validated TileLang implementation when it meets the deployment and performance goals.
@@ -100,7 +102,7 @@ Separate compilation, initialization, host elapsed time, kernel duration, graph 
 
 Use ordered paired runs such as A-forward/B-forward/B-reverse/A-reverse, with independent confirmation for promising effects. Audit target row count, operation/core identity, task selection, block count, valid positive durations and CSV hashes. Fixed sample counts and TaskIDs in the casebook belong to that runner, not every profiler.
 
-Exclude build, diagnostic and compression work from performance sampling; hold the exclusion through child-process completion. CPU-only export may run in isolated workers after device capture ends. Record ambiguous isolation as a limitation instead of silently accepting its timing.
+Exclude build, diagnostic and compression work from performance sampling; hold exclusion through the capture job's finalization, required checks and capture-specific child completion. Pause/drain ordinary work and acknowledge idle resident workers; retire them when the frozen protocol requires it. CPU-only export may run in isolated workers after this capture job completes. Record ambiguous isolation as a limitation instead of silently accepting its timing.
 
 ### 9. Interpret and combine improvements
 
