@@ -46,7 +46,7 @@ When 21 logical CPUs are actually available, memory is sufficient and at least 2
 | Native compilation | Use the project's supported parallel build slots. If one target exposes little parallel work, build independent candidates in separate build directories within one total CPU/memory budget. |
 | CPU-only TileLang generation/export or parameter preparation | Use isolated worker processes, unique cache/output directories and explicit configuration keys. Confirm the work is actually CPU-only; a JIT wrapper may also launch device jobs. |
 | Independent CPU references, source audits, raw CSV export and analysis | Shard independent cases/files and process them in parallel. Preserve deterministic seeds, per-job evidence and failure status; isolate mutable module globals. |
-| Device correctness or sanitizer work | Parallelize independent devices only when supported and attributable. On one shared NPU, serialize by default unless deliberately testing a supported concurrency scenario with bounded device memory and distinct results. |
+| Device correctness or sanitizer work | Dispatch an artifact-ready job to an available NPU while compatible CPU work continues. Parallelize independent devices only when supported and attributable. On one shared NPU, serialize device jobs by default unless deliberately testing a supported concurrency scenario with bounded device memory and distinct results. |
 | Formal kernel-latency capture | Give the target NPU one measurement owner and keep competing build/export/compression/device work out through all capture-child lifetimes. Other-device work is eligible only with demonstrated host/I/O isolation. |
 
 For CMake 3.12+ builds, a supported explicit setting is:
@@ -59,7 +59,27 @@ cmake --build "$TASK_BUILD_DIR" --parallel "$TASK_BUILD_JOBS"
 
 Budget both per-job peak memory and nested thread counts. Increase concurrency toward the useful allocation when capacity permits; reduce it for observed OOM risk, swap/throttling, I/O saturation or lower completed-jobs throughput. Do not reserve half the server arbitrarily, but preserve enough headroom for observed stability. Do not rewrite a dependency-limited compilation or an already efficient kernel solely to make every core busy.
 
-Organize work into batches: parallel preparation/build, isolated device validation/capture, then parallel offline export/analysis. Keep a queue of distinct useful candidates so the next CPU phase can resume promptly after device children finish. Multiple allocated devices may have independent queues where the runtime and isolation permit. This phase scheduling preserves the [measurement exclusion rules](performance.md#isolate-measurement-from-experiment-machinery) rather than using idle CPU capacity to invalidate a benchmark.
+Use overlapping CPU and NPU work queues for compatible tasks, with dedicated isolated windows for formal latency capture. A phase label is a resource requirement, not a global barrier that forces all CPU work to finish before any device validation can start. Multiple allocated devices may have independent queues where the runtime and isolation permit. Follow the scheduling rules below and the [measurement exclusion rules](performance.md#isolate-measurement-from-experiment-machinery).
+
+#### Overlap CPU and NPU work when their dependencies permit
+
+Track ready work by resource class: CPU-only preparation/build/analysis, NPU validation/diagnostics, or exclusive latency capture. Each job needs a stable candidate/artifact identity, prerequisites, host CPU/RAM demand, device/memory demand and distinct output paths. Use the existing task runner or a bounded queue; this policy does not require a new scheduler service or another agent conversation.
+
+When a CPU job completes, publish a candidate as NPU-ready only after its required build, artifact binding and test inputs are complete. When an NPU job finishes, finalize its outputs and release the device slot, then dispatch the next compatible ready validation job without waiting for unrelated CPU jobs. A useful overlapping schedule is:
+
+| Interval | CPU work | NPU work |
+| --- | --- | --- |
+| A | Build candidate B; prepare C | Validate the already-built candidate A |
+| B | Build candidate C; analyze A's saved outputs | Validate the now-ready candidate B |
+| Capture window | Quiesce competing heavy jobs | Measure the selected candidate against its baseline in isolation |
+
+An idle NPU plus saturated CPUs is a reason to reconsider the host allocation, not to wait passively for the whole CPU batch. Reserve or prioritize the small measured CPU/RAM share needed for device orchestration, data preparation and result handling. For example, 20 CPU build slots plus one host orchestration slot may be more useful than 21 build slots that starve NPU dispatch; choose actual counts from observed demand rather than fixing this split for every server. Keep the remaining CPU budget busy with distinct useful work.
+
+Before overlap, confirm the jobs do not mutate shared state used by the device worker. Freeze source, executable scripts, generated code, libraries, inputs and runtime settings for each running job. Use private build/cache/staging paths where supported; serialize conflicting OPP registration, library replacement, package installation or toolchain changes. A completed compile alone does not prove another process can safely stage or load that candidate concurrently. Bound queued artifacts, host memory, device memory and I/O as well as worker count.
+
+For a formal latency window, stop admitting competing heavy jobs, let task-owned children reach completion, acquire the existing exclusion mechanism and capture through finalization. Schedule such windows so an unlimited CPU queue cannot starve benchmark work. Resume compatible CPU/NPU dispatch afterward. Do not terminate unrelated jobs or bypass a lock to make room. Timings from validation while CPU jobs are active describe that loaded scenario; they are not eligible isolated kernel-latency samples. A real output or sanitizer failure still requires diagnosis and cannot be dismissed as load.
+
+Dispatch only useful work within the current authorized operator-development scope. If no compatible artifact-ready job exists, record the missing prerequisite or other idle reason and advance the CPU work that can unblock it; do not start another operator, repeat completed work or add synthetic load merely to keep the NPU busy. Record CPU/NPU overlap, device idle time, ready-queue wait and completed-work throughput separately from formal kernel timing. This documents resource use; it does not claim measured gains from an unexecuted scheduling plan.
 
 For the kernel itself, choose NPU launch geometry from the workload, actual vector/cube resources, per-core work and measured performance. Large workloads may benefit from all suitable device cores; tiny workloads may finish sooner with fewer. Never translate 21 host CPUs into 21 NPU blocks or force maximum BlockDim without coverage, ownership and comparable latency checks.
 

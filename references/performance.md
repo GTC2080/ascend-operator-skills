@@ -101,6 +101,8 @@ CPU-only offline export can be bounded-parallel **after** every device capture c
 
 Use the [phase resource policy](workflow.md#resource-utilization-by-phase) to fill available CPU capacity during build and offline-analysis phases. Exclusive latency capture is a deliberate measurement phase, not a reason to serialize the entire development workflow. End-to-end throughput/concurrency benchmarks may intentionally include competing requests; name that objective and calibrate its protocol separately instead of mixing its samples with isolated kernel latency.
 
+Outside formal latency capture, independent NPU validation can overlap compatible CPU preparation/build/analysis under the [CPU/NPU queue rules](workflow.md#overlap-cpu-and-npu-work-when-their-dependencies-permit). Keep device feeding responsive and running artifacts immutable. Label timings from that overlap as loaded-workflow observations; collect a fresh isolated comparison for a kernel-speed claim. The capture exclusion is not a global ban on using CPU and NPU simultaneously.
+
 Do not overwrite executing scripts or generated sources. Freeze a revision, result directory and helper hash. After asynchronous transfers or builds, confirm completion before launching dependent work.
 
 ## Interpret hardware counters carefully
