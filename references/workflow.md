@@ -43,6 +43,8 @@ A quota/load change requires a new dispatch budget, not an automatic runtime res
 
 Inspect generated API headers and installed SDK signatures. Resolve symlinks before following includes. Match documentation to the installed release; the newest website and a same-named function are not proof of compatibility. Capture only relevant environment values, not a dump containing credentials.
 
+For API selection, operator-source evidence or a new failure signal, the [optional CANNBot knowledge workflow](cannbot-knowledge.md) can locate relevant official cards. Keep target-platform filtering separate from SDK-version verification and check actual coverage before assuming a DSL has usable cards. Run lookup in the CPU-side tooling environment; preserve the active device worker's fixed environment and the same validation gates.
+
 When a backend is new to the environment:
 
 For a missing or incompatible TileLang installation, use the [server setup guide](tilelang-installation.md) before attempting operator development.

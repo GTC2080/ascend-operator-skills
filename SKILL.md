@@ -32,6 +32,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
 | TileLang syntax, generated code, JIT caches, AIC/AIV scope and AOT | [TileLang Ascend](references/tilelang.md) |
+| Find CANN knowledge cards, API contracts, operator evidence and diagnostic sources | [optional CANNBot knowledge integration](references/cannbot-knowledge.md) |
 | DeepGEMM MAD, lightweight abstractions, TileKernels and cross-chip reuse | [library ideas and portability](references/deepgemm-tilekernels.md) |
 | Adapt DeepGEMM or TileKernels mechanisms from a newer stack to 910B | [910B adaptation procedure](references/910b-porting.md) |
 | Previously failed or promising experiments and their exact scope | [casebook](references/casebook.md) |
@@ -47,6 +48,8 @@ Read the applicable reference before changing fragile code. Do not load every fi
 Read the operator definition, host registration, kernel, generated API signature, and runner. Record input/output shapes, strides, storage dtype, compute dtype, optional-input presence, scalar attributes, rounding, broadcasting, comparison boundaries, and supported metadata.
 
 Distinguish specified behavior, observed caller behavior, and additional compatibility. FP16 coordinates do not establish FP16 threshold or output. A successful default output path cannot validate an unexecuted compatibility branch. Build the independent oracle before optimizing.
+
+When an API, implementation route or diagnostic decision needs external evidence, use the [optional CANNBot knowledge consumer](references/cannbot-knowledge.md) if a prepared provider is available. Confirm the actual target, query the appropriate API/operator route, read selected cards in full and verify their source/version limits. Knowledge retrieval does not replace SDK checks or device validation, and an unavailable provider does not install dependencies or change the active NPU worker.
 
 ### 2. Establish the target and preserve the baseline
 
