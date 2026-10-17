@@ -53,6 +53,10 @@ Reviewed snapshot: `c1cf914a82e6901c679445f872051ce44ac2cc63`.
 
 These implementations were source-reviewed, not installed or executed in the case project. Their source organization informed hypotheses rather than supplying measured speedups for our operator.
 
+### 910B adaptation procedure
+
+The [910B guide](910b-porting.md) is an engineering procedure derived from the pinned library sources and the case's limited probes. On 2026-10-17, their READMEs, the DeepGEMM copy/MAD wrapper, TileKernels cast dispatch/kernel/configuration and [per-token cast tests](https://github.com/deepseek-ai/TileKernels/blob/c1cf914a82e6901c679445f872051ce44ac2cc63/tests/quant/test_per_token_cast.py) were rechecked. In particular, transitive imports and import-time low-bit symbols are part of the compatibility surface, even when the requested kernel uses another path. The procedure was reviewed offline; no new package installation, initialized MAD execution, TileKernels device run or performance result is claimed.
+
 ## Ascend API and diagnostics
 
 - [CANN9.0 HF32 mode](https://www.hiascend.com/doc_center/source/en/CANNCommunityEdition/900/API/ascendcopapi/atlasascendc_api_07_0258.html): numerical mode distinction; use installed-version signature.

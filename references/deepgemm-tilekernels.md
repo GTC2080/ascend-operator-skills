@@ -1,5 +1,7 @@
 # DeepGEMM, TileKernels and reusable kernel ideas
 
+For an operational sequence from dependency checks to initialized device validation, use the [910B adaptation procedure](910b-porting.md). This reference records the inspected mechanisms and historical evidence boundaries.
+
 ## Separate architecture, API and algorithm compatibility
 
 Before reusing a kernel library, check its pinned source, supported device, compiler/SDK, Python/framework/backend versions, numerical modes, build system and runtime entry. A library can be a valuable design reference without being installable on the target.

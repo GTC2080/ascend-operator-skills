@@ -31,6 +31,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
 | TileLang syntax, generated code, JIT caches, AIC/AIV scope and AOT | [TileLang Ascend](references/tilelang.md) |
 | DeepGEMM MAD, lightweight abstractions, TileKernels and cross-chip reuse | [library ideas and portability](references/deepgemm-tilekernels.md) |
+| Adapt DeepGEMM or TileKernels mechanisms from a newer stack to 910B | [910B adaptation procedure](references/910b-porting.md) |
 | Previously failed or promising experiments and their exact scope | [casebook](references/casebook.md) |
 | Contract, layout, experiment and result record formats | [evidence templates](references/evidence-templates.md) |
 | Version-pinned upstream references and local evidence provenance | [sources](references/sources.md) |
