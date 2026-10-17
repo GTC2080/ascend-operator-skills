@@ -111,7 +111,11 @@ git -C "$TL_SOURCE_DIR" submodule status --recursive
 
 Pin the parent before initializing submodules. Inspect the selected [build script](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/build_wheel_ascend.sh), `requirements-build.txt`, `requirements.txt` and `setup.py`. At the reviewed snapshot, the wheel script installs requirements, updates/patches TVM and removes `dist`, `build` and `tilelang.egg-info` inside its checkout. Use a dedicated checkout where these side effects are safe; do not run it in an unrelated or shared source tree.
 
-Confirm `python`, `python3` and `pip` resolve to the selected environment: upstream scripts call these names directly. Bound build parallelism using options/environment actually supported by that revision. Do not overlap a build with device performance capture. For the reviewed wheel-building route:
+Confirm `python`, `python3` and `pip` resolve to the selected environment: upstream scripts call these names directly. Bound build parallelism using options/environment actually supported by that revision. Do not overlap a build with device performance capture.
+
+Apply the [server resource policy](workflow.md#resource-utilization-by-phase) instead of automatically accepting reduced parallelism. At the reviewed snapshot, `install_ascend.sh` and a `setup.py` build path calculate half the visible CPU count; another path uses three quarters. Check the actual path in use and the reason for its memory guard. Prefer a supported job override. If none exists and the allocation/memory budget permits more jobs, a minimal reviewed patch to job selection in the task-owned build checkout is an option; record the patch and actual commands. An explicit `make -jN` or CMake `-jN` will not be replaced merely by setting `CMAKE_BUILD_PARALLEL_LEVEL`. Preserve all configuration, TVM patches and build/error checks.
+
+For the reviewed wheel-building route:
 
 ```bash
 cd "$TL_SOURCE_DIR" || exit 1

@@ -24,6 +24,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | End-to-end design, environment, implementation and handoff | [workflow](references/workflow.md) |
 | Choose TileLang or Ascend C by workload and development stage | [backend selection](references/workflow.md#backend-selection-by-workload-and-stage) |
 | TileLang missing, incompatible or not usable on a development server | [TileLang installation and verification](references/tilelang-installation.md) |
+| Use server CPU, memory and NPU resources efficiently by phase | [resource utilization](references/workflow.md#resource-utilization-by-phase) |
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
@@ -47,6 +48,8 @@ Distinguish specified behavior, observed caller behavior, and additional compati
 ### 2. Establish the target and preserve the baseline
 
 Record actual device/architecture, toolkit and compiler versions, backend commit/wheel, framework/runtime, physical-to-logical device mapping, available vector/cube cores, UB limits, and the generated build template. Resolve SDK symlinks before interpreting headers.
+
+Actively use the allocated server capacity for useful work: parallelize independent CPU builds, code generation and offline analysis instead of defaulting to one worker. Follow the [resource policy](references/workflow.md#resource-utilization-by-phase) to budget actual CPU affinity/quota, memory and nested threads, and verify the selected concurrency took effect. Host CPU count is separate from NPU core count. Preserve exclusive device-performance capture; maximize experiment throughput without contaminating kernel measurements.
 
 Keep one immutable known baseline. Read old experiment summaries before rediscovering a failed route. Use independent candidate directories and new build directories. Reuse the project build system and dependency set; a new compiler backend is a measured engineering choice, not an automatic upgrade.
 

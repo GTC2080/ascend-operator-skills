@@ -61,6 +61,12 @@ These implementations were source-reviewed, not installed or executed in the cas
 - [Ascend profiler data guide](https://github.com/Ascend/msopprof/blob/master/docs/en/user_guide/msopprof_performance_data.md): field meaning; exported fields remain collector/version-specific.
 - [Official UB bank-conflict example](https://gitcode.com/cann/asc-devkit/blob/master/examples/01_simd_cpp_api/05_best_practices/04_memory_access/bank_conflict_ub/README.md): layout hypothesis source, not measured evidence of this operator's dominant bottleneck.
 
+## Server resource planning
+
+- [CMake build parallelism](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-build-parallel): explicit job limits and the default-only role of `CMAKE_BUILD_PARALLEL_LEVEL`; use the installed version's supported options.
+- [Python CPU affinity](https://docs.python.org/3/library/os.html#os.sched_getaffinity) and [Linux cgroup v2 CPU limits](https://docs.kernel.org/admin-guide/cgroup-v2.html#cpu-interface-files): allowed logical CPUs and quota are distinct inputs to a task budget.
+- [Reviewed TileLang setup build paths](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/setup.py) and [source build launcher](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/install_ascend.sh): version-scoped fractional CPU job limits, not a recommendation to keep every server half idle.
+
 ## Local case evidence map
 
 Raw project artifacts are not bundled: they may contain machine-specific logs, large binaries or unrelated operational information. The skill works without them. Case observations were checked against the following original relative records; their selected content hashes are recorded in [provenance.json](provenance.json). The hashes identify the inspected snapshot, not a signature or independently reproduced experiment.

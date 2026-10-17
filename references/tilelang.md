@@ -96,6 +96,7 @@ In that wheel `TILELANG_CACHE_DIR` became a module constant at import and Kernel
 
 For bounded parallel export:
 
+- Choose worker count from the [actual server resource budget](workflow.md#resource-utilization-by-phase) and independent export jobs; do not inherit the historical four-worker example as a limit.
 - Use an appropriate fresh-process model; do not fork a parent with initialized device state without backend support.
 - Set each worker's unique cache before the first backend import and keep it fixed for that worker.
 - Read back module/instance cache directories and assert agreement with the manifest.
