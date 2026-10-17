@@ -59,6 +59,20 @@ The [910B guide](910b-porting.md) is an engineering procedure derived from the p
 
 ## Ascend API and diagnostics
 
+### CANNBot knowledge provider
+
+Reviewed on 2026-10-18 at `ef37bed1bbec2782cb07d2b086e80361fc0ea3c0`, obtained through the public Git transport of [CANN's repository](https://gitcode.com/cann/cannbot-knowledge). The [integration guide](cannbot-knowledge.md) is an optional consumer adapter, not a bundled copy or an installation claim.
+
+- [README](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/README.md) and [LICENSE](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/LICENSE): repository roles and CANN Open Software License Agreement 2.0; upstream material is not relicensed under this package's MIT terms.
+- [Knowledge Query](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/.agents/skills/knowledge-query/SKILL.md), [CLI](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/.agents/skills/knowledge-query/references/cli.md) and [parser](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/.agents/skills/knowledge-query/scripts/knowledge_query.py): index readiness, filters, matching and result/error semantics.
+- [Ascend C API consumer](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/.agents/skills/ascendc-api-knowledge-query/SKILL.md), [resource evidence](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/.agents/skills/ascendc-api-knowledge-query/references/evidence-check.md) and [platform identification](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/.agents/skills/knowledge-query/references/platform-identification.md): full-card reading, source/SDK component roots and target mapping.
+- [TileLang index](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/knowledge/ops/tilelang/index.md), the pinned Git tree and [DataCopyPad card](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/knowledge/ops/ascendc/apis/simd_api/basic_api/memory_vector_compute/data_move/data_copy_pad_gm_to_ub.md): observed coverage and an example of platform-specific overload restrictions. Only the card's metadata and relevant declaration/mode sections were reviewed here; no new SDK or device support is inferred.
+- [Installation and usage](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/docs/installation_and_usage.md) and [operator-development recipe](https://gitcode.com/cann/cannbot-knowledge/blob/ef37bed1bbec2782cb07d2b086e80361fc0ea3c0/recipes/operator_development.md): provider setup effects and its relationship to actual engineering validation.
+
+The query interface and selected source material were inspected; no upstream installer, index build, native lookup, SDK compilation or NPU experiment was run for this integration. External knowledge/tool execution remains separate from this package's offline checks.
+
+### API and diagnostic references
+
 - [CANN9.0 HF32 mode](https://www.hiascend.com/doc_center/source/en/CANNCommunityEdition/900/API/ascendcopapi/atlasascendc_api_07_0258.html): numerical mode distinction; use installed-version signature.
 - [CANN9.0 Select](https://www.hiascend.com/doc_center/source/en/CANNCommunityEdition/900/API/ascendcopapi/atlasascendc_api_07_0070.html): public dtype/mask/scratch contract, independently check installed helper.
 - [Ascend mssanitizer guide](https://github.com/Ascend/mssanitizer/blob/master/docs/zh/user_guide/mssanitizer_user_guide.md): tool execution and limitations. Master is evolving; pin the actual tool/release used in a new project.
