@@ -48,6 +48,8 @@ Record actual executor and workspace reuse. A runner that prepares a new executo
 
 Changing process lifetime or combining cases may reduce device initialization costs, but requires new calibration. Do not compare that report directly with the old process protocol.
 
+The [resident validation-worker policy](workflow.md#reuse-a-resident-npu-worker-for-compatible-validation) permits compatible candidates to reuse Torch/NPU initialization while CPU builds continue. Record process reuse, startup/restart counts and validation throughput separately from device duration. When measuring in that process, calibrate the new protocol with A/A controls and preserve equivalent initialization, warmup, cache and reuse conditions for both arms. Cold-start objectives still need cold-start measurements; validation in a resident process does not replace required fresh-process checks or exclusive performance capture.
+
 ## Pair and reverse the experiments
 
 One useful design is:

@@ -3,7 +3,7 @@
   "name": "ascend-operator-engineering",
   "version": "1.0.2",
   "license": "MIT",
-  "created_utc": "2026-10-17T09:17:05.731750+00:00",
+  "created_utc": "2026-10-17T09:27:44.977150+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
   "files": {
     ".github/workflows/validate.yml": {
@@ -23,12 +23,12 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 6142,
-      "sha256": "fbd4fb18529920201fe92bcd99e09b37cbaadb24e2a7514144a00612cd5dc933"
+      "bytes": 6262,
+      "sha256": "3097aa32e3d7b5b34363ae863fc73255edf1f7d54c447a33f93ed0fb638986d2"
     },
     "SKILL.md": {
-      "bytes": 13948,
-      "sha256": "f5e9b3930b9ce803b93e6cd1eeaf0a5d8b722ff6f89bddd73f051c7189c479b4"
+      "bytes": 14717,
+      "sha256": "16b846142fdc22674da4ffaf5b91ae921cb328b62f9881ada28db5a669e571e1"
     },
     "VALIDATION.md": {
       "bytes": 3929,
@@ -63,16 +63,16 @@
       "sha256": "caf9ebab0056c2cdf43db882ab76c3362f5a9fe6083be1d803529b27076e4e19"
     },
     "references/performance.md": {
-      "bytes": 11454,
-      "sha256": "b4040a56b8757ba4bdec08d852f2ba52216bf3e56a74609f27e658bfed628a54"
+      "bytes": 12096,
+      "sha256": "a90fa50b829a553b57e406f354c65d055f920c54abeecbc73964ee9f27e23df1"
     },
     "references/provenance.json": {
       "bytes": 6533,
       "sha256": "af6e182d34fcb8a0a77cbf49559c71fdcd01974be503f28a8e3a9eab76b2e4d0"
     },
     "references/sources.md": {
-      "bytes": 12274,
-      "sha256": "9b1ed3b6cc79e362ca2e6aa354f93fe0f8d4066f212e950173e026d8c0fc33e0"
+      "bytes": 12762,
+      "sha256": "d338366c6bd1e39d5b2383fd6c6ab1005c165c55c102a98c283129eeb43cbca3"
     },
     "references/tilelang-installation.md": {
       "bytes": 15531,
@@ -83,8 +83,8 @@
       "sha256": "47127dabddae5e47c7d725b4de369273f4fbe37f036d78f3674c9e530b68268b"
     },
     "references/workflow.md": {
-      "bytes": 26967,
-      "sha256": "9165c211f7f6a2bab196333edfa4ae4dba2467550992408cff18fb203ce32990"
+      "bytes": 31183,
+      "sha256": "df1fb59ce8421b4923c991b1cc329825975d3a175db2747b49b030716c919fb5"
     },
     "scripts/source_manifest.py": {
       "bytes": 3937,

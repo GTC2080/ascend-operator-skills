@@ -104,6 +104,27 @@ For the kernel itself, choose NPU launch geometry from the workload, actual vect
 
 Record the phase, actual resource envelope, workers/build slots and nested-thread limits, observed CPU/memory/I/O usage, completed-work throughput and reason for any lower utilization. Verify concurrency in running children or build logs. Tooling throughput and total experiment time are separate from kernel speed; a utilization percentage alone proves neither improvement.
 
+#### Reuse a resident NPU worker for compatible validation
+
+Prefer a bounded resident validation process for compatible candidates on each allocated NPU. Independent CPU workers compile configurations in parallel and publish immutable artifacts to the ready queue. The NPU worker imports Torch/torch_npu, selects its assigned device and initializes the runtime once, then validates ready compatible candidates sequentially without waiting for the entire build batch. This amortizes repeated interpreter/framework/device startup; it is an experiment-throughput mechanism, not evidence of faster kernel instructions. Use the existing runner where possible; this policy does not require a new daemon or scheduler.
+
+Before worker startup, fix its device mapping, framework/runtime/backend versions, ABI, process-level environment, loading/registration strategy and cache configuration. Start a fresh interpreter or a backend-supported clean process; do not fork an already initialized accelerator runtime. For TileLang, apply [cache-before-import rules](tilelang.md#9-set-worker-cache-before-the-first-import). Changing an environment variable between jobs does not prove an imported singleton or loader changed with it.
+
+Admit a candidate only if its identity is bound to a complete immutable artifact and its entry can be selected unambiguously without replacing a live library, package or OPP registration. Different tile/shape/dtype configurations may share a worker when the dispatch and cache keys distinguish them correctly; identical public operator names alone do not establish compatibility. Follow the [runtime-binding checks](build-identity.md#resolved-runtime-binding).
+
+For every admitted job, bind its candidate/input/output identities, initialize required buffers and metadata, run the independent correctness checks and changed-value cases, and synchronize/check asynchronous errors using the installed backend's supported APIs before declaring completion. Save a separate result or failure with the worker/run identity. Reusing the process does not authorize reusing an executor, output contents or workspace state whose contract requires recreation. Release job-owned references after completion, monitor memory/cache growth and keep remaining CPU capacity advancing the build/reference/analysis queue.
+
+Use a fresh process when isolation is needed:
+
+- Candidate loading would collide with a same-named registration, unresolved dynamic-library binding, incompatible ABI or required framework/runtime/backend/package change.
+- Required device/environment/cache settings cannot safely change in the resident process, or a sanitizer/profiler requires a separate instrumented runtime.
+- A device fault, timeout, memory diagnostic or uncertain runtime state makes subsequent results unreliable. Stop admitting jobs to that worker, preserve completed and partial evidence, and mark unfinished jobs explicitly before any bounded retry in a fresh process. Do not treat process restart as a repair for the failing candidate.
+- The test specifically requires a cold start, fresh-process cache reload, independent process state or another isolated protocol. A resident-process pass does not cover those cases.
+
+A fresh process does not isolate mutable on-disk packages or OPP staging: retain private/frozen paths and serialize conflicting changes. Never replace another task's runtime or reset a shared device to recycle this worker. Bound worker lifetime by task duration/job count or observed memory growth and shut down task-owned workers when their work ends. Record startup/restart counts and reasons, process reuse, supported compatibility group and completed-work throughput. This procedure has not itself established a measured startup saving on a new stack.
+
+Keep [formal performance capture](performance.md#calibrate-the-measuring-instrument) separate: calibrate any new process model with same-code controls, use equivalent initialization/warmup/cache conditions for both arms, and retain exclusive capture windows. Report cold-start/application time separately from warmed device duration; do not replace a frozen independent-process benchmark with resident-process samples without new calibration.
+
 ## 3. Freeze a useful baseline
 
 Read earlier candidate summaries. Preserve known-good source, configuration, build recipe, binary identities and its verification scope. Do not mutate the baseline during a comparison. Distinguish a historical best observation from the source currently selected for use.
