@@ -33,6 +33,38 @@ For a missing or incompatible TileLang installation, use the [server setup guide
 
 Import success does not prove a required CLI is on PATH. In the case study, Cython was already installed but its launcher was missing from the task PATH; reinstalling did not address that fact. Avoid global changes or repeated installation without a diagnosed need.
 
+### Resource utilization by phase
+
+Default to high **useful task throughput** on the allocated server. Do not leave independent ready work serialized on one CPU, or accept a fixed half-core worker limit without checking why it exists. Use as much of the allocation as the task dependencies, memory budget and measurement phase support. Do not create redundant work or busy loops merely to raise utilization.
+
+Distinguish host logical CPUs from NPU vector/cube cores. Inspect the process CPU affinity, container/cgroup CPU quota, usable memory and actual devices; an advertised 21-core server does not by itself establish the process's allocation. On Linux, `os.sched_getaffinity(0)` reports allowed CPUs, while cgroup quota is a separate limit. Check the current cgroup and applicable ancestor limits rather than assuming the cgroup mount root describes this process. Keep these checks read-only; do not change quota or affinity to evade the allocation.
+
+When 21 logical CPUs are actually available, memory is sufficient and at least 21 independent single-threaded jobs are ready, plan to use roughly 21 workers or build slots. This is an example, not a fixed default. Count compiler subprocesses and native thread pools too: 21 workers each starting 21 threads would oversubscribe the same allocation. Set supported thread limits per task process, not in global shell configuration. CPU-bound Python may need processes or native code that releases the GIL; adding ordinary Python threads alone does not establish multicore execution.
+
+| Phase | Resource plan |
+| --- | --- |
+| Native compilation | Use the project's supported parallel build slots. If one target exposes little parallel work, build independent candidates in separate build directories within one total CPU/memory budget. |
+| CPU-only TileLang generation/export or parameter preparation | Use isolated worker processes, unique cache/output directories and explicit configuration keys. Confirm the work is actually CPU-only; a JIT wrapper may also launch device jobs. |
+| Independent CPU references, source audits, raw CSV export and analysis | Shard independent cases/files and process them in parallel. Preserve deterministic seeds, per-job evidence and failure status; isolate mutable module globals. |
+| Device correctness or sanitizer work | Parallelize independent devices only when supported and attributable. On one shared NPU, serialize by default unless deliberately testing a supported concurrency scenario with bounded device memory and distinct results. |
+| Formal kernel-latency capture | Give the target NPU one measurement owner and keep competing build/export/compression/device work out through all capture-child lifetimes. Other-device work is eligible only with demonstrated host/I/O isolation. |
+
+For CMake 3.12+ builds, a supported explicit setting is:
+
+```bash
+cmake --build "$TASK_BUILD_DIR" --parallel "$TASK_BUILD_JOBS"
+```
+
+`TASK_BUILD_JOBS` is a positive integer chosen from the measured allocation, ready work and memory envelope. `CMAKE_BUILD_PARALLEL_LEVEL` supplies a default only when no explicit parallel option overrides it. Read the real launcher and compiler commands; setting an environment variable does not prove a wrapper honored it. For Make/Ninja or another backend, use its supported bounded job control rather than inventing flags or starting unlimited jobs.
+
+Budget both per-job peak memory and nested thread counts. Increase concurrency toward the useful allocation when capacity permits; reduce it for observed OOM risk, swap/throttling, I/O saturation or lower completed-jobs throughput. Do not reserve half the server arbitrarily, but preserve enough headroom for observed stability. Do not rewrite a dependency-limited compilation or an already efficient kernel solely to make every core busy.
+
+Organize work into batches: parallel preparation/build, isolated device validation/capture, then parallel offline export/analysis. Keep a queue of distinct useful candidates so the next CPU phase can resume promptly after device children finish. Multiple allocated devices may have independent queues where the runtime and isolation permit. This phase scheduling preserves the [measurement exclusion rules](performance.md#isolate-measurement-from-experiment-machinery) rather than using idle CPU capacity to invalidate a benchmark.
+
+For the kernel itself, choose NPU launch geometry from the workload, actual vector/cube resources, per-core work and measured performance. Large workloads may benefit from all suitable device cores; tiny workloads may finish sooner with fewer. Never translate 21 host CPUs into 21 NPU blocks or force maximum BlockDim without coverage, ownership and comparable latency checks.
+
+Record the phase, actual resource envelope, workers/build slots and nested-thread limits, observed CPU/memory/I/O usage, completed-work throughput and reason for any lower utilization. Verify concurrency in running children or build logs. Tooling throughput and total experiment time are separate from kernel speed; a utilization percentage alone proves neither improvement.
+
 ## 3. Freeze a useful baseline
 
 Read earlier candidate summaries. Preserve known-good source, configuration, build recipe, binary identities and its verification scope. Do not mutate the baseline during a comparison. Distinguish a historical best observation from the source currently selected for use.

@@ -3,7 +3,7 @@
   "name": "ascend-operator-engineering",
   "version": "1.0.2",
   "license": "MIT",
-  "created_utc": "2026-10-16T18:03:53.138566+00:00",
+  "created_utc": "2026-10-17T04:09:23.681280+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
   "files": {
     ".github/workflows/validate.yml": {
@@ -23,12 +23,12 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 5795,
-      "sha256": "e57055b80e2752461ed0fe7c003fe157ec5b6b833642681c46f1510730793b4b"
+      "bytes": 5932,
+      "sha256": "c238d93dbea1a603698eddf827131c2c7569b5092b4e454116fdde2789e4e2b3"
     },
     "SKILL.md": {
-      "bytes": 12009,
-      "sha256": "035c90a48b7c59e73fcdec1b7962812f475ad1e531857a1eaae7102cdee0f0e6"
+      "bytes": 12690,
+      "sha256": "be586bfb2312e1f17e43e84c33428d05d060c6dfeee50c438e0c63faf5e4c7ec"
     },
     "VALIDATION.md": {
       "bytes": 3929,
@@ -59,28 +59,28 @@
       "sha256": "caf9ebab0056c2cdf43db882ab76c3362f5a9fe6083be1d803529b27076e4e19"
     },
     "references/performance.md": {
-      "bytes": 10490,
-      "sha256": "f324a9b68894431d97f313d029efc03bb3f5a5ab93ebff244d79de23b6c7d265"
+      "bytes": 10968,
+      "sha256": "943b4351d688a1c8acc5475a707559ae83e6b60ae4974e5e0f366aa0814f17f7"
     },
     "references/provenance.json": {
       "bytes": 6533,
       "sha256": "af6e182d34fcb8a0a77cbf49559c71fdcd01974be503f28a8e3a9eab76b2e4d0"
     },
     "references/sources.md": {
-      "bytes": 10098,
-      "sha256": "d07509d6efad6ba1b01ea1b6180a3e26ed7b2d4b8f13c862130a496537e3380c"
+      "bytes": 11005,
+      "sha256": "7efe41323f9d5a47e407e78d5cb5367fe670a642f30b41ae562bece225238231"
     },
     "references/tilelang-installation.md": {
-      "bytes": 14785,
-      "sha256": "9a988749e22fee68153b9a2c31585a8605b17b038c871e7a51b7eb370339a6ac"
+      "bytes": 15531,
+      "sha256": "99ceba3d9f217bbf7c20e8b2c3eeb3bdfd6419c3f4f3040ffa822214f131efc1"
     },
     "references/tilelang.md": {
-      "bytes": 13799,
-      "sha256": "04e5dd85db36d27babe7de5f3e77129cbf60d52d5f2458b13baa9233776f24f7"
+      "bytes": 13996,
+      "sha256": "47127dabddae5e47c7d725b4de369273f4fbe37f036d78f3674c9e530b68268b"
     },
     "references/workflow.md": {
-      "bytes": 14326,
-      "sha256": "2a212c9caadcce239a329e915c6a0b6ee225f3e4d073f84aec87bedfe235f494"
+      "bytes": 19424,
+      "sha256": "1e18700a2950bc56e894aa4efca5f171845c49037922c0c2236c4784fe4d175e"
     },
     "scripts/source_manifest.py": {
       "bytes": 3937,

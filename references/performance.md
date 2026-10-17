@@ -99,6 +99,8 @@ Your lock coordinates your jobs, not unknown tenants or system services. Record 
 
 CPU-only offline export can be bounded-parallel **after** every device capture child exits. Use process isolation if a legacy auditor temporarily changes module globals for each arm's expected geometry. A thread pool sharing that state can cross-contaminate A/B validation. Export throughput improvement is not kernel speedup.
 
+Use the [phase resource policy](workflow.md#resource-utilization-by-phase) to fill available CPU capacity during build and offline-analysis phases. Exclusive latency capture is a deliberate measurement phase, not a reason to serialize the entire development workflow. End-to-end throughput/concurrency benchmarks may intentionally include competing requests; name that objective and calibrate its protocol separately instead of mixing its samples with isolated kernel latency.
+
 Do not overwrite executing scripts or generated sources. Freeze a revision, result directory and helper hash. After asynchronous transfers or builds, confirm completion before launching dependent work.
 
 ## Interpret hardware counters carefully
