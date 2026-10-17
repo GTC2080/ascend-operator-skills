@@ -40,7 +40,7 @@ Example request:
 | --- | --- |
 | Contract and architecture | Storage/compute dtype, exact rounding, shape/layout/alias validation, tiling and checked bounds |
 | Backend selection | Stage- and workload-based TileLang/Ascend C preferences, deployment feasibility and evidence for switching |
-| Server utilization | Actual CPU/quota/memory budgets, parallel builds/export/analysis, nested-thread control and isolated NPU timing |
+| Server utilization | Actual CPU/quota/memory budgets, overlapping CPU/NPU-ready queues, host orchestration headroom, nested-thread control and isolated latency windows |
 | Ascend C | UB capacity and scratch, DMA units, masks, producer/consumer dependencies and final writeback |
 | Build and integration | Fresh/staged/embedded identities, host tiling, loaded libraries, ACLNN and executor policy |
 | Correctness and diagnostics | Independent oracle, boundary/negative cases, same-address updates, actual mssanitizer activation |

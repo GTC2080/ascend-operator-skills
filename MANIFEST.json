@@ -3,7 +3,7 @@
   "name": "ascend-operator-engineering",
   "version": "1.0.2",
   "license": "MIT",
-  "created_utc": "2026-10-17T04:09:23.681280+00:00",
+  "created_utc": "2026-10-17T04:34:57.961109+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
   "files": {
     ".github/workflows/validate.yml": {
@@ -23,12 +23,12 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 5932,
-      "sha256": "c238d93dbea1a603698eddf827131c2c7569b5092b4e454116fdde2789e4e2b3"
+      "bytes": 5967,
+      "sha256": "f3d61cef5de8a027a1aaf8e5e4067f148c5aaf06df7940af6b98eb7237fa8003"
     },
     "SKILL.md": {
-      "bytes": 12690,
-      "sha256": "be586bfb2312e1f17e43e84c33428d05d060c6dfeee50c438e0c63faf5e4c7ec"
+      "bytes": 13087,
+      "sha256": "994dd5e0d828a532af5a15afdce5d3d304d1e7e244ad0d2235fcd4a88db15404"
     },
     "VALIDATION.md": {
       "bytes": 3929,
@@ -59,8 +59,8 @@
       "sha256": "caf9ebab0056c2cdf43db882ab76c3362f5a9fe6083be1d803529b27076e4e19"
     },
     "references/performance.md": {
-      "bytes": 10968,
-      "sha256": "943b4351d688a1c8acc5475a707559ae83e6b60ae4974e5e0f366aa0814f17f7"
+      "bytes": 11454,
+      "sha256": "b4040a56b8757ba4bdec08d852f2ba52216bf3e56a74609f27e658bfed628a54"
     },
     "references/provenance.json": {
       "bytes": 6533,
@@ -79,8 +79,8 @@
       "sha256": "47127dabddae5e47c7d725b4de369273f4fbe37f036d78f3674c9e530b68268b"
     },
     "references/workflow.md": {
-      "bytes": 19424,
-      "sha256": "1e18700a2950bc56e894aa4efca5f171845c49037922c0c2236c4784fe4d175e"
+      "bytes": 23515,
+      "sha256": "a8debbcf3e0a7e4958da3b9669ddf94eb8a79fa4cf624fcc27c177f4cf56decd"
     },
     "scripts/source_manifest.py": {
       "bytes": 3937,
