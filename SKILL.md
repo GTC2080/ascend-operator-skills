@@ -25,6 +25,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Choose TileLang or Ascend C by workload and development stage | [backend selection](references/workflow.md#backend-selection-by-workload-and-stage) |
 | TileLang missing, incompatible or not usable on a development server | [TileLang installation and verification](references/tilelang-installation.md) |
 | Use server CPU, memory and NPU resources efficiently by phase | [resource utilization](references/workflow.md#resource-utilization-by-phase) |
+| Discover this machine's hardware, effective allocation and observed capacity before assigning work | [hardware discovery](references/workflow.md#hardware-discovery-before-resource-allocation) |
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
@@ -49,6 +50,8 @@ Distinguish specified behavior, observed caller behavior, and additional compati
 ### 2. Establish the target and preserve the baseline
 
 Record actual device/architecture, toolkit and compiler versions, backend commit/wheel, framework/runtime, physical-to-logical device mapping, available vector/cube cores, UB limits, and the generated build template. Resolve SDK symlinks before interpreting headers.
+
+Before allocating work, query the actual execution machine's CPU model/topology and effective affinity/quota, usable RAM, storage/I/O, NPU model/devices/resources and current load. Follow [hardware discovery](references/workflow.md#hardware-discovery-before-resource-allocation), record unknowns and derive phase-specific budgets from that profile plus representative observed throughput. Never use a fixed core count or copy a previous server's worker split; refresh the profile when the execution environment or allocation changes.
 
 Actively use the allocated server capacity for useful work: parallelize independent CPU builds, code generation and offline analysis instead of defaulting to one worker. Follow the [resource policy](references/workflow.md#resource-utilization-by-phase) to budget actual CPU affinity/quota, memory and nested threads, and verify the selected concurrency took effect. Maintain separate CPU and NPU-ready queues and refill both directions: dispatch a compatible, artifact-ready validation job when an NPU becomes available, even while CPU jobs continue; when CPU capacity is available during NPU validation, dispatch ready CPU-only build, preparation or analysis work without waiting for the device batch. Reserve the measured host resources needed to feed the NPU. Host CPU count is separate from NPU core count. Preserve exclusive device-performance capture; maximize experiment throughput without contaminating kernel measurements.
 

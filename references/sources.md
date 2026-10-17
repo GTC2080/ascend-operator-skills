@@ -69,6 +69,7 @@ The [910B guide](910b-porting.md) is an engineering procedure derived from the p
 
 - [CMake build parallelism](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-build-parallel): explicit job limits and the default-only role of `CMAKE_BUILD_PARALLEL_LEVEL`; use the installed version's supported options.
 - [Python CPU affinity](https://docs.python.org/3/library/os.html#os.sched_getaffinity) and [Linux cgroup v2 CPU limits](https://docs.kernel.org/admin-guide/cgroup-v2.html#cpu-interface-files): allowed logical CPUs and quota are distinct inputs to a task budget.
+- [Linux CPU topology discovery](https://man7.org/linux/man-pages/man1/lscpu.1.html) and [cgroup v2 memory limits](https://docs.kernel.org/admin-guide/cgroup-v2.html#memory-interface-files): visible topology and host memory are distinct from effective container allocations. Query the actual execution environment; unavailable fields remain unknown. These sources were rechecked for the hardware-discovery procedure on 2026-10-17; the documentation update does not represent a new server inventory or throughput experiment.
 - [Reviewed TileLang setup build paths](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/setup.py) and [source build launcher](https://github.com/tile-ai/tilelang-ascend/blob/1d5daf0385156cbe0c499a16c10935c5190642a4/install_ascend.sh): version-scoped fractional CPU job limits, not a recommendation to keep every server half idle.
 
 ## Local case evidence map
