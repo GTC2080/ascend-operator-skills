@@ -65,12 +65,12 @@ Use overlapping CPU and NPU work queues for compatible tasks, with dedicated iso
 
 Track ready work by resource class: CPU-only preparation/build/analysis, NPU validation/diagnostics, or exclusive latency capture. Each job needs a stable candidate/artifact identity, prerequisites, host CPU/RAM demand, device/memory demand and distinct output paths. Use the existing task runner or a bounded queue; this policy does not require a new scheduler service or another agent conversation.
 
-When a CPU job completes, publish a candidate as NPU-ready only after its required build, artifact binding and test inputs are complete. When an NPU job finishes, finalize its outputs and release the device slot, then dispatch the next compatible ready validation job without waiting for unrelated CPU jobs. A useful overlapping schedule is:
+Refill both queues on completion and resource-availability events. When a CPU job completes, publish a candidate as NPU-ready only after its required build, artifact binding and test inputs are complete. If CPU capacity becomes available while the NPU is busy with validation or diagnostics, immediately dispatch compatible ready CPU-only work: compile another candidate, generate inputs/reference results or analyze already completed outputs. Do not wait for the NPU job or the entire device batch to finish. When an NPU job finishes, finalize its outputs and release the device slot, then dispatch the next compatible ready validation job without waiting for unrelated CPU jobs. The same resource and shared-state checks apply in both directions:
 
-| Interval | CPU work | NPU work |
+| Trigger | CPU work | NPU work |
 | --- | --- | --- |
-| A | Build candidate B; prepare C | Validate the already-built candidate A |
-| B | Build candidate C; analyze A's saved outputs | Validate the now-ready candidate B |
+| NPU busy; CPU capacity available | Fill available slots with ready builds, input/reference preparation or analysis of completed results | Continue the current validation; do not make CPU dispatch wait for it |
+| CPUs busy; NPU available | Keep compatible CPU jobs running and enough host capacity to feed the device | Dispatch the next artifact-ready validation job |
 | Capture window | Quiesce competing heavy jobs | Measure the selected candidate against its baseline in isolation |
 
 An idle NPU plus saturated CPUs is a reason to reconsider the host allocation, not to wait passively for the whole CPU batch. Reserve or prioritize the small measured CPU/RAM share needed for device orchestration, data preparation and result handling. For example, 20 CPU build slots plus one host orchestration slot may be more useful than 21 build slots that starve NPU dispatch; choose actual counts from observed demand rather than fixing this split for every server. Keep the remaining CPU budget busy with distinct useful work.
@@ -79,7 +79,7 @@ Before overlap, confirm the jobs do not mutate shared state used by the device w
 
 For a formal latency window, stop admitting competing heavy jobs, let task-owned children reach completion, acquire the existing exclusion mechanism and capture through finalization. Schedule such windows so an unlimited CPU queue cannot starve benchmark work. Resume compatible CPU/NPU dispatch afterward. Do not terminate unrelated jobs or bypass a lock to make room. Timings from validation while CPU jobs are active describe that loaded scenario; they are not eligible isolated kernel-latency samples. A real output or sanitizer failure still requires diagnosis and cannot be dismissed as load.
 
-Dispatch only useful work within the current authorized operator-development scope. If no compatible artifact-ready job exists, record the missing prerequisite or other idle reason and advance the CPU work that can unblock it; do not start another operator, repeat completed work or add synthetic load merely to keep the NPU busy. Record CPU/NPU overlap, device idle time, ready-queue wait and completed-work throughput separately from formal kernel timing. This documents resource use; it does not claim measured gains from an unexecuted scheduling plan.
+Dispatch only useful work within the current authorized operator-development scope. If either resource has no compatible ready job, record the missing prerequisite or other idle reason and advance work that can unblock it on the other resource; do not start another operator, repeat completed work or add synthetic load merely to keep CPU or NPU busy. Record CPU/NPU overlap, idle time for each resource, ready-queue wait and completed-work throughput separately from formal kernel timing. This documents resource use; it does not claim measured gains from an unexecuted scheduling plan.
 
 For the kernel itself, choose NPU launch geometry from the workload, actual vector/cube resources, per-core work and measured performance. Large workloads may benefit from all suitable device cores; tiny workloads may finish sooner with fewer. Never translate 21 host CPUs into 21 NPU blocks or force maximum BlockDim without coverage, ownership and comparable latency checks.
 

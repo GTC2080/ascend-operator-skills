@@ -3,7 +3,7 @@
   "name": "ascend-operator-engineering",
   "version": "1.0.2",
   "license": "MIT",
-  "created_utc": "2026-10-17T04:30:34.350895+00:00",
+  "created_utc": "2026-10-17T04:34:57.961109+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
   "files": {
     ".github/workflows/validate.yml": {
@@ -27,8 +27,8 @@
       "sha256": "f3d61cef5de8a027a1aaf8e5e4067f148c5aaf06df7940af6b98eb7237fa8003"
     },
     "SKILL.md": {
-      "bytes": 12903,
-      "sha256": "3f4d37fa4b4d58d3639b0726f1c0f37d6409b206a36c72356b178e34b5882ed7"
+      "bytes": 13087,
+      "sha256": "994dd5e0d828a532af5a15afdce5d3d304d1e7e244ad0d2235fcd4a88db15404"
     },
     "VALIDATION.md": {
       "bytes": 3929,
@@ -79,8 +79,8 @@
       "sha256": "47127dabddae5e47c7d725b4de369273f4fbe37f036d78f3674c9e530b68268b"
     },
     "references/workflow.md": {
-      "bytes": 22875,
-      "sha256": "dff34e0846c279ecc66247c512220d3284525fd609309e7c93a4f3ab46aeb778"
+      "bytes": 23515,
+      "sha256": "a8debbcf3e0a7e4958da3b9669ddf94eb8a79fa4cf624fcc27c177f4cf56decd"
     },
     "scripts/source_manifest.py": {
       "bytes": 3937,
