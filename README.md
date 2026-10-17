@@ -5,7 +5,7 @@
 
 A portable [Agent Skills](https://agentskills.io/specification) package for designing, implementing, reviewing and tuning Huawei Ascend operators with **Ascend C and TileLang Ascend**.
 
-It distills five rounds of real operator development into a concise skill entry, eleven detailed reference manuals, 56 version-scoped case studies, and two dependency-free Python audit tools. It includes practical lessons from **DeepGEMM-Ascend** and **TileKernels**, with explicit boundaries between inspected source, compiled probes, device validation and measured performance.
+It distills five rounds of real operator development into a concise skill entry, twelve detailed reference manuals, 56 version-scoped case studies, and two dependency-free Python audit tools. It includes practical lessons from **DeepGEMM-Ascend** and **TileKernels**, with explicit boundaries between inspected source, compiled probes, device validation and measured performance.
 
 **中文：** 面向全球开发者的昇腾算子开发技能，整理真实开发中关于数值语义、UB/DMA、mask、同步、TileLang生成代码、JIT/AOT、内存检测与性能实验的经验。只有算子开发内容，附[中文导入说明](INSTALL.md#中文使用说明)。
 
@@ -46,7 +46,7 @@ Example request:
 | Correctness and diagnostics | Independent oracle, boundary/negative cases, same-address updates, actual mssanitizer activation |
 | Performance | Same-code controls, raw-row audits, paired/reversed experiments, noise, contention and scoped gains |
 | TileLang Ascend | [Server installation and verification](references/tilelang-installation.md), frontend/codegen failures, scalar bits, AIC/AIV scope, caches, export workers and AOT adaptation |
-| Library reuse | DeepGEMM MAD/descriptors/pipelines and TileKernels specialization, with chip/version constraints |
+| Library reuse | DeepGEMM MAD/descriptors/pipelines and TileKernels specialization, with a [step-by-step 910B adaptation procedure](references/910b-porting.md), chip/version constraints and acceptance gates |
 
 Historical device observations concern **910B2 / CANN 9.0.0** and an older TileLang Ascend wheel. They are debugging evidence, not permanent API contracts, current-version bug claims or performance guarantees. Recheck the target SDK and pinned sources before applying them.
 
