@@ -10,6 +10,8 @@ Read the relevant path: [common preparation](#1-common-preparation), [DeepGEMM M
 
 Record the actual 910B variant, compiler target, driver/runtime, resolved CANN SDK, Python ABI/CPU architecture, framework pair, TileLang distribution/backend and source commits. Collect these from the execution environment and installed-version documentation. Host CPU count does not establish NPU core count. Preserve the working environment and baseline; test a different stack in an isolated task environment before changing the project runtime.
 
+Complete [hardware discovery](workflow.md#hardware-discovery-before-resource-allocation) on this execution machine before choosing worker/thread counts, tile resource budgets or device queues. Recompute them from its effective allocation and observed workload behavior rather than importing the case server's configuration.
+
 Select one operator or mechanism and its numerical contract. Choose the smallest appropriate reuse level:
 
 | Reuse level | When to choose it | Required outcome |

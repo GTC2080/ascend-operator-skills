@@ -20,6 +20,25 @@ For the geometry case, storage coordinates may be FP16, but arithmetic is four s
 
 Record device model, architecture identifier, physical/logical device mapping, driver/runtime/toolkit/compiler versions, OS/CPU ABI, Python and framework packages, backend version/commit and build options. Query actual core counts and memory capacities; a machine label is not a resource contract.
 
+### Hardware discovery before resource allocation
+
+Before assigning build workers, CPU threads, device jobs or kernel launch geometry, the agent must discover the **current execution machine and its effective allocation**. Run read-only queries in the actual server/container and task environment, not on the local client. Do not inherit a CPU count, device model, memory capacity or worker split from the case study or a previous server. Record a timestamp, query source and units; distinguish advertised capacity, currently accessible capacity and observed performance.
+
+| Inventory | Required facts and suitable query sources |
+| --- | --- |
+| Host hardware | CPU model, architecture, sockets, physical cores, logical CPUs/SMT and NUMA topology where exposed; on Linux use `uname -m` and `lscpu`. Container/VM output may describe only the visible topology. |
+| Effective CPU allocation | Process affinity, online/allowed CPUs and applicable scheduler/cgroup quotas, including ancestor limits. Linux `os.sched_getaffinity(0)` and the process's cgroup membership help locate these; `os.cpu_count()` alone is insufficient. |
+| Host memory | Available RAM, effective container memory ceiling/current usage, swap pressure and per-job peak demand; use OS and cgroup observations together. Host total RAM alone is not the task's memory budget. |
+| Storage and I/O | Free space in the actual build/cache/output filesystems and relevant I/O contention; distinguish reported capacity from observed build/export throughput. |
+| Accelerator hardware | Actual NPU model/variant and architecture, visible physical/logical mapping, allocated devices, device memory and usable Cube/Vector resources. Use `npu-smi info`, supported runtime/platform queries and installed-version documentation; do not infer these from the CPU model or a cloud product label. |
+| Software and current state | Driver/runtime/CANN/compiler/backend/framework versions, existing relevant load, device health and available utilization/thermal/throttling counters. Record unavailable fields explicitly rather than treating them as zero or unlimited. |
+
+If a query/tool is unavailable, use another supported read-only source and state the remaining uncertainty. Do not install a monitoring stack, start a long stress test or change quotas just to fill this table. For non-Linux targets use the host's supported equivalents; do not invent universal command flags or SDK property names.
+
+Use verified CPU/quota and host/device memory limits to bound any initial pilot. Reuse an existing representative baseline/build or run a bounded task-relevant pilot to check actual completed-work throughput, CPU/device utilization, memory pressure and I/O behavior; model specifications and peak FLOPS are not measured capacity for this workload. Then choose a phase-specific plan from those observations, ready jobs and each job's nested threads/peak memory, reserving the observed host demand for device orchestration. Increase useful concurrency toward the available allocation and revise it if contention, throttling or lower throughput appears. CPU and NPU assignments have separate budgets.
+
+Save the detected profile, chosen worker/thread/device budgets, evidence and reasons for limits with the experiment record. Refresh discovery after changing server, container, scheduler allocation, visible devices or toolchain, and refresh available-capacity observations as load changes. When a limit is unknown, keep it unresolved and use a bounded provisional plan based on verified capacity; do not assume all host resources are available. Apply the scheduling policy below only after this discovery.
+
 Inspect generated API headers and installed SDK signatures. Resolve symlinks before following includes. Match documentation to the installed release; the newest website and a same-named function are not proof of compatibility. Capture only relevant environment values, not a dump containing credentials.
 
 When a backend is new to the environment:
@@ -37,9 +56,9 @@ Import success does not prove a required CLI is on PATH. In the case study, Cyth
 
 Default to high **useful task throughput** on the allocated server. Do not leave independent ready work serialized on one CPU, or accept a fixed half-core worker limit without checking why it exists. Use as much of the allocation as the task dependencies, memory budget and measurement phase support. Do not create redundant work or busy loops merely to raise utilization.
 
-Distinguish host logical CPUs from NPU vector/cube cores. Inspect the process CPU affinity, container/cgroup CPU quota, usable memory and actual devices; an advertised 21-core server does not by itself establish the process's allocation. On Linux, `os.sched_getaffinity(0)` reports allowed CPUs, while cgroup quota is a separate limit. Check the current cgroup and applicable ancestor limits rather than assuming the cgroup mount root describes this process. Keep these checks read-only; do not change quota or affinity to evade the allocation.
+Use the [detected hardware profile](#hardware-discovery-before-resource-allocation), not a fixed core count. Distinguish host logical CPUs from NPU vector/cube cores. CPU affinity and cgroup quota are separate limits; check the current cgroup and applicable ancestor limits rather than assuming the cgroup mount root describes this process. Keep these checks read-only; do not change quota or affinity to evade the allocation.
 
-When 21 logical CPUs are actually available, memory is sufficient and at least 21 independent single-threaded jobs are ready, plan to use roughly 21 workers or build slots. This is an example, not a fixed default. Count compiler subprocesses and native thread pools too: 21 workers each starting 21 threads would oversubscribe the same allocation. Set supported thread limits per task process, not in global shell configuration. CPU-bound Python may need processes or native code that releases the GIL; adding ordinary Python threads alone does not establish multicore execution.
+Choose workers/build slots from the measured allocation, ready work and memory envelope. With independent single-threaded jobs and sufficient memory, use the available CPU budget; with multithreaded jobs, count compiler subprocesses and native thread pools across all workers to avoid oversubscription. Set supported thread limits per task process, not in global shell configuration. CPU-bound Python may need processes or native code that releases the GIL; adding ordinary Python threads alone does not establish multicore execution.
 
 | Phase | Resource plan |
 | --- | --- |
@@ -73,7 +92,7 @@ Refill both queues on completion and resource-availability events. When a CPU jo
 | CPUs busy; NPU available | Keep compatible CPU jobs running and enough host capacity to feed the device | Dispatch the next artifact-ready validation job |
 | Capture window | Quiesce competing heavy jobs | Measure the selected candidate against its baseline in isolation |
 
-An idle NPU plus saturated CPUs is a reason to reconsider the host allocation, not to wait passively for the whole CPU batch. Reserve or prioritize the small measured CPU/RAM share needed for device orchestration, data preparation and result handling. For example, 20 CPU build slots plus one host orchestration slot may be more useful than 21 build slots that starve NPU dispatch; choose actual counts from observed demand rather than fixing this split for every server. Keep the remaining CPU budget busy with distinct useful work.
+An idle NPU plus saturated CPUs is a reason to reconsider the host allocation, not to wait passively for the whole CPU batch. Reserve or prioritize the measured CPU/RAM share needed for device orchestration, data preparation and result handling, then use the remaining budget for builds and analysis. Determine the split from the detected allocation and observed demand; there is no fixed build-to-orchestration ratio. Keep the remaining CPU budget busy with distinct useful work.
 
 Before overlap, confirm the jobs do not mutate shared state used by the device worker. Freeze source, executable scripts, generated code, libraries, inputs and runtime settings for each running job. Use private build/cache/staging paths where supported; serialize conflicting OPP registration, library replacement, package installation or toolchain changes. A completed compile alone does not prove another process can safely stage or load that candidate concurrently. Bound queued artifacts, host memory, device memory and I/O as well as worker count.
 
@@ -81,7 +100,7 @@ For a formal latency window, stop admitting competing heavy jobs, let task-owned
 
 Dispatch only useful work within the current authorized operator-development scope. If either resource has no compatible ready job, record the missing prerequisite or other idle reason and advance work that can unblock it on the other resource; do not start another operator, repeat completed work or add synthetic load merely to keep CPU or NPU busy. Record CPU/NPU overlap, idle time for each resource, ready-queue wait and completed-work throughput separately from formal kernel timing. This documents resource use; it does not claim measured gains from an unexecuted scheduling plan.
 
-For the kernel itself, choose NPU launch geometry from the workload, actual vector/cube resources, per-core work and measured performance. Large workloads may benefit from all suitable device cores; tiny workloads may finish sooner with fewer. Never translate 21 host CPUs into 21 NPU blocks or force maximum BlockDim without coverage, ownership and comparable latency checks.
+For the kernel itself, choose NPU launch geometry from the workload, actual vector/cube resources, per-core work and measured performance. Large workloads may benefit from all suitable device cores; tiny workloads may finish sooner with fewer. Never translate the host CPU count into an equal NPU block count or force maximum BlockDim without coverage, ownership and comparable latency checks.
 
 Record the phase, actual resource envelope, workers/build slots and nested-thread limits, observed CPU/memory/I/O usage, completed-work throughput and reason for any lower utilization. Verify concurrency in running children or build logs. Tooling throughput and total experiment time are separate from kernel speed; a utilization percentage alone proves neither improvement.
 
