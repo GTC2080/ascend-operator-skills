@@ -109,6 +109,8 @@ Do not overwrite executing scripts or generated sources. Freeze a revision, resu
 
 ## Interpret hardware counters carefully
 
+For msOpProf collection, follow the [MindStudio profiling workflow](mindstudio-tools.md#collect-focused-operator-evidence-then-confirm-latency). Verify the actual kernel/launch selection, supported metrics and replay behavior before analyzing fields. Model/simulator estimates and detailed replayed metrics are separate evidence from the paired native-latency dataset; changing collectors requires calibration rather than inheriting this case's task IDs or sample counts.
+
 Read actual CSV fields and values before saying a counter was uncollected. In the early geometry profile, Vector was roughly0.157–0.286µs while Scalar was0.546–1.517µs. One FP16 small case had stable Vector time while total duration varied by over2µs.
 
 This supports investigating fixed control/data-movement paths. It does not prove a particular scalar instruction caused the variation. Scalar, Vector, MTE2 and MTE3 overlap and must not be summed into total latency. `Duration−AIV` is not automatically CPU launch time. Source-level API counts are not machine instruction counts or time shares.

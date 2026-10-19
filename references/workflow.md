@@ -45,6 +45,8 @@ Inspect generated API headers and installed SDK signatures. Resolve symlinks bef
 
 For API selection, operator-source evidence or a new failure signal, the [optional CANNBot knowledge workflow](cannbot-knowledge.md) can locate relevant official cards. Keep target-platform filtering separate from SDK-version verification and check actual coverage before assuming a DSL has usable cards. Run lookup in the CPU-side tooling environment; preserve the active device worker's fixed environment and the same validation gates.
 
+When modeling, generating a new project, debugging or collecting diagnostic metrics, select the relevant [MindStudio tool workflow](mindstudio-tools.md). Inventory existing components before installing, match the feature to the actual target and caller, and keep model/simulator/diagnostic results separate from normal-artifact latency evidence. All tools share the resource, worker-isolation and capture-handoff rules below.
+
 When a backend is new to the environment:
 
 For a missing or incompatible TileLang installation, use the [server setup guide](tilelang-installation.md) before attempting operator development.
