@@ -23,16 +23,16 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 6687,
-      "sha256": "342f3df3b3a949741dc935e84da381b62d95039d13857b15edcd9064363b870c"
+      "bytes": 7009,
+      "sha256": "42f1b1ebd68a0d0476856e6cb1a7ce3906aa68839383543729de9694ad439c9c"
     },
     "SKILL.md": {
-      "bytes": 16877,
-      "sha256": "2ce7989f03cf4013dca57b62856fe3f6a8ce1b74e3755d091574071a43576e57"
+      "bytes": 17641,
+      "sha256": "3676acc462120a7b51f460ec7cfce29534ef28e9f8d69c0be7fc3843016869e0"
     },
     "VALIDATION.md": {
-      "bytes": 3929,
-      "sha256": "a8ca0e43fa081f746d09855401ab0c087807e3f836473510ea3c470b3d3cb958"
+      "bytes": 5427,
+      "sha256": "e49023608e934715bb9870f8d51b548537b31371d106e44fee0a0c4279310b3f"
     },
     "references/910b-porting.md": {
       "bytes": 16674,
@@ -43,24 +43,36 @@
       "sha256": "40fa808388a96bd8b07a9cae7f64e755cad697806fb7548b0e9e6cf9e0788288"
     },
     "references/build-identity.md": {
-      "bytes": 7563,
-      "sha256": "a72a7dcf9fc5c314f84087ccd06737f56484890d0140479aac8487813952910f"
+      "bytes": 7988,
+      "sha256": "36fb2eab711d852cf00ce06027fed265916315a29c3c7be9e0b0a9cc42fbb65c"
     },
     "references/cannbot-knowledge.md": {
       "bytes": 11007,
       "sha256": "6569d487eafe1046dd8dd1da2f860b1a6d0996e872318651e27c946a760a67c5"
     },
     "references/casebook.md": {
-      "bytes": 11848,
-      "sha256": "095cb7c151780a67441b851c1413d722ec77a0e1640beddab1aa5db280b58d13"
+      "bytes": 12621,
+      "sha256": "2d73d7e6a392515a9c36343f62b8922fc9ba7b34e2fbaf4b1a6e5a84780ed445"
     },
     "references/correctness-sanitizers.md": {
-      "bytes": 9740,
-      "sha256": "ea9ce95214c8505f95c460d9d53c7d6c2d9b0702d2888d5ab960f01cee19ee68"
+      "bytes": 10398,
+      "sha256": "3e8a53af7481c7c9a729ac287d419c1cf0267529f4f489dd2c1b21abf2622da3"
     },
     "references/deepgemm-tilekernels.md": {
       "bytes": 9476,
       "sha256": "737bcd8b0233a50e373483d502a6174895f4ccebc4ebbdf3a309aa66c5e5e650"
+    },
+    "references/eigh-correctness.md": {
+      "bytes": 18321,
+      "sha256": "27499221a635294d2ac73064727d5023f1209a4c91a12d9aade3a59867e3a943"
+    },
+    "references/eigh-numerics-and-memory.md": {
+      "bytes": 15370,
+      "sha256": "03d469d6c48e3a0b241fd7ec1f259558d49fcd132a4bde3066675d168a9cc01d"
+    },
+    "references/eigh-provenance.json": {
+      "bytes": 14125,
+      "sha256": "e955587d673276a603072a71892de5c393325319c60bbcf5e9fd59338c6e1d62"
     },
     "references/evidence-templates.md": {
       "bytes": 5731,
@@ -79,8 +91,8 @@
       "sha256": "af6e182d34fcb8a0a77cbf49559c71fdcd01974be503f28a8e3a9eab76b2e4d0"
     },
     "references/sources.md": {
-      "bytes": 20696,
-      "sha256": "4b51a7ff6c0ae4afa3ed44061d34ef6b6e7c77dd9dc3671825a71017e5f58252"
+      "bytes": 22200,
+      "sha256": "d03634d987e4b9d2b6288083c65d94afe55220db1b8defd2c189812c76345964"
     },
     "references/tilelang-installation.md": {
       "bytes": 15531,
@@ -110,5 +122,6 @@
       "bytes": 2705,
       "sha256": "df876ae25a105bc1ad38d6d8feddfee7f4664403df95171dcb91d1dedf7119f6"
     }
-  }
+  },
+  "updated_utc": "2026-10-19T20:44:37.588454+00:00"
 }

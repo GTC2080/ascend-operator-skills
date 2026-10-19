@@ -74,7 +74,7 @@ Smaller text is a useful observation, not proof of instruction-cache causality. 
 
 ## Framework and runner integration
 
-Verify generated API parameter order, optional pointers, workspace/executor ownership and return status before launch. A C++ syntax-only check does not prove final linkage: the HALF-aware runner needed the SDK's `libnnopbase` dependency before it could execute.
+Verify generated API parameter order, optional pointers, workspace/executor ownership and return status before launch. Framework registration and inference metadata form a separate caller contract: prove the prototype/input/attribute mappings before changing getters, and do not apply runtime positive-dimension rules to a framework's unknown or shape-range lower-bound descriptors. Keep actual launch validation strict; the [eigh GE example](eigh-numerics-and-memory.md#6-ge-shape-inference-is-a-distinct-caller-contract) records both layers. A C++ syntax-only check does not prove final linkage: the HALF-aware runner needed the SDK's `libnnopbase` dependency before it could execute.
 
 Separate actual input storage bytes from coordinate type assumptions. For a real HALF threshold check, verify2-byte allocation/H2D, `ACL_FLOAT16` metadata, quantized independent reference and a runner completion marker. Keep default FLOAT checks separately identified.
 

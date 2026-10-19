@@ -8,6 +8,8 @@ The geometry example used separate NumPy FP32 ufuncs for Sub/Mul/Add/Add after s
 
 For approximate operators, define justified absolute/relative/residual/orthogonality criteria from their mathematical contract. Do not silently tighten or loosen them to fit a backend. Special values, empty dimensions, unsupported layouts and invalid input behavior follow the operator's own contract.
 
+Nonunique outputs need separate checks for mathematical equivalence and any required reference representation. A valid eigenvector can disagree in sign with an elementwise reference; neither a sign-aligned diagnostic nor a generic comparator establishes an unavailable checker. For reproducible eigensolver examples and first-divergence isolation, read the [eigh case](eigh-correctness.md).
+
 ## A test matrix derived from failure mechanisms
 
 Cover the cross-product that can change the execution path, using representative and adversarial cases rather than an arbitrary universal case count:
@@ -32,6 +34,7 @@ FP32 near-one constants and separate-multiply-add counterexamples are particular
 ## Validate the validator
 
 - Cross-check a new runner/adapter against an already verified baseline and another trusted caller where feasible.
+- Preserve frozen analytic/high-precision or interval oracles for ill-conditioned families when changing a runner. Run the validated baseline and meaningful corrupt-output controls first; a general float64 library call is not automatically a sufficient replacement.
 - Deliberately corrupt an output and ensure the checker rejects it; check shape and dtype failures too.
 - Check serialized fixtures round-trip to the intended dtype, bytes and values.
 - Use unique case keys including metadata or a digest. A repeated name used as a dict/NPZ key can overwrite a different threshold case.

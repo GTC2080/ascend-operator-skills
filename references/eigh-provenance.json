@@ -1,0 +1,215 @@
+{
+  "schema": 1,
+  "prepared_date": "2026-10-20",
+  "case": "eigh",
+  "scope": "Selected inspected case evidence; raw private project files are not distributed. Hashes identify a dated snapshot, not independent reproduction or external acceptance.",
+  "snapshot_status": {
+    "qualified_complete_candidate_NPU_calls": 136,
+    "qualified_matrix_records": 984,
+    "independent_builds": 2,
+    "third_host_runtime": "carried verified binary",
+    "external_acceptance": "pending at recorded snapshot; identity of external reference and checker unknown",
+    "sanitizer": "ownership warnings and race timeout unresolved"
+  },
+  "records": {
+    "docs/problem-contract-review.md": {
+      "bytes": 12238,
+      "sha256": "6cb651481b4dfe5c0a4c5b027d0161bae3616e774964f3feb68b21ca94578102"
+    },
+    "results/round12/experiments/caller-checker089-001/README.md": {
+      "bytes": 6669,
+      "sha256": "9d9e98a2e6b8e62e3513644c43a85a6697f597f8e280ab0ee3ee53f5e3f97d0a"
+    },
+    "results/round12/experiments/two-phase091-001/README.md": {
+      "bytes": 4125,
+      "sha256": "dc3cc0735dcdfff877c8df68038af079ab73203137fdb366ed821796e762d5f4"
+    },
+    "results/round12/phase-progress091-099.md": {
+      "bytes": 3035,
+      "sha256": "f4b5f58169cb93c5d713b035e2fb96c7d2526d8bee436467f3503aa4e70c060a"
+    },
+    "results/round12/phase-progress100-110.md": {
+      "bytes": 6344,
+      "sha256": "6b7596b6951eb7a03a3138cb0544b91f941163eca8ccbafe8e9c3db3959e6fe2"
+    },
+    "results/round12/phase-progress111-115.md": {
+      "bytes": 4223,
+      "sha256": "a4b4d2e54baca50d8029dae4a7a77316895782dc9c5bed0c85cfaddf10fd4416"
+    },
+    "results/round12/phase-progress116-123.md": {
+      "bytes": 5636,
+      "sha256": "0fc5aa0e041bf227d44f7d86d89180e4803e784adde21d9d681fa7831be23713"
+    },
+    "results/round12/phase-progress126-133.md": {
+      "bytes": 4612,
+      "sha256": "336bf34b72d3887de8f41a61f47c66138a912414ed19a34019381739619e2a23"
+    },
+    "results/round12/phase-progress146-152.md": {
+      "bytes": 8655,
+      "sha256": "5c54fb419054c7b5d8cc070c5811b5551428c98222033c8c924c0133cf73a3b1"
+    },
+    "results/round12/phase-progress153-159.md": {
+      "bytes": 13258,
+      "sha256": "2c002e7f22d787dc619f9ba10556fe398ea0e2f9bd01025eb6ac32e93411620c"
+    },
+    "results/round12/experiments/phase-guide153-001/PLAN.md": {
+      "bytes": 2489,
+      "sha256": "f397202e49b988d94ed92d75583c3998d443bd143a04af26158dea2a377d7aa2"
+    },
+    "results/round12/experiments/phase-guide155-001/PLAN.md": {
+      "bytes": 320,
+      "sha256": "566be48450d8f66b71352dd064ff8f45a85596e505418c5abc5dc8e145dc3629"
+    },
+    "results/round12/phase-progress173-179.md": {
+      "bytes": 7262,
+      "sha256": "1e4ab6849560f711c08db643223fbe650a41a00b5733f13fe3c3136546ee1e05"
+    },
+    "results/round12/experiments/phase-guide155-001/qualification-audit168-001.json": {
+      "bytes": 886534,
+      "sha256": "1f72c612f03423a258933e6975057c77d2f5dfcf67584103e744866d0054cde2"
+    },
+    "results/round12/experiments/full-batch178-001/audit178-001.json": {
+      "bytes": 6917,
+      "sha256": "db178cdf63a7f416518c6dfc32e610405d68583b3fba759f7d819da211923701"
+    },
+    "results/round12/experiments/full-batch178-001/local-math179-001.json": {
+      "bytes": 8136,
+      "sha256": "7e1521102506176c32577998899f71192349f2a59d9e7e56c5f7d44337a6e41b"
+    }
+  },
+  "historical_archive_members": {
+    "results/round11/archive.tar.gz::codex-tests/host-tiling037-001/README.md": {
+      "bytes": 3099,
+      "sha256": "cf7aa03a308da3c3e10cd623f019ae4f935533269d1111778b40c23409c080f4",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "GE prototype registration and shape-range lower-bound isolation; local path, not official failure attribution"
+    },
+    "results/round11/archive.tar.gz::codex-tests/infer-range038-001/README.md": {
+      "bytes": 3100,
+      "sha256": "1012ebb8256c638feacc98d889e177d5560bd414efb8b0f1dc0a46c235ea4ec5",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Inference lower bound zero versus positive execution dimensions; complete GE/ACLNN checks did not improve official acceptance"
+    },
+    "results/round11/archive.tar.gz::codex-tests/leaf-primitives056-001/README.md": {
+      "bytes": 4151,
+      "sha256": "6621c609f4ac8ec6046c26616f98320efb6e0a67587f4660d31185d0b714e617",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Real device arithmetic probes; wrapper FMA, Sqrt and vector Div semantics; stage evidence, not full eigensolver acceptance"
+    },
+    "results/round11/archive.tar.gz::codex-tests/ieee-leaf-fma057-001/README.md": {
+      "bytes": 3542,
+      "sha256": "d3eaeb4168ef661c1348eb28bddd8d3fa6cd7d99eabcdfe91c824f411c670ef7",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Device integer IEEE FMA replacement; full local regression passed while official result remained zero of twelve"
+    },
+    "results/round11/archive.tar.gz::codex-tests/rayleigh-rebuild030-001/README.md": {
+      "bytes": 3594,
+      "sha256": "46c35c38e4fa197dabfdb138271f56819efa08dc32c79a4d13470d62ba88a8c7",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Shared lane scale, compensated Rayleigh and intermediate overflow; actual mathematical fix did not improve official result"
+    },
+    "results/round11/archive.tar.gz::codex-tests/rayleigh-certificate032-001/README.md": {
+      "bytes": 890,
+      "sha256": "5601d353696d36ff3d2f43a25e59ba289c84864daaf2f4e0a7a064b2ee410104",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "CPU exact residual-certificate feasibility only; device rounding radius and root-slot association unresolved"
+    },
+    "results/round11/archive.tar.gz::codex-tests/contract-multibatch-failure-002/node3-root-cause-001.md": {
+      "bytes": 5336,
+      "sha256": "66df27906f8a5dfefe80c4f2a5255bcf3b92c057f17ee58fb1179cae6c28a0c8",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Real failing input and saved child outputs; CPU reconstructed node ABI exposes inconsistent midpoint coordinates; not direct transient node capture"
+    },
+    "results/round11/archive.tar.gz::codex-tests/sturm-twisted-runtime068-001/README.md": {
+      "bytes": 4749,
+      "sha256": "11caa5123b6ecb5484ac6a898634ee56f530d3c31367c1c3bbc38454fe834022",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Runtime-n inactive worker tail initialization; static domain proof is not sanitizer and full local checks are not official acceptance"
+    },
+    "results/round11/archive.tar.gz::codex-tests/leaf015-n3-meta128-001/README.md": {
+      "bytes": 3240,
+      "sha256": "79345ca2524869f59976fdea1e79973b3d73bfb2f4f49c190341595990774f0d",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Physical Meta128 arena expansion across host and kernel; source interval model does not prove runtime synchronization"
+    },
+    "results/round11/archive.tar.gz::codex-tests/raw037-native-polar-001/attempt002/layout-independent-review-002.md": {
+      "bytes": 2813,
+      "sha256": "f11c0a04aaee4f887039530d54a0f807abebfbd3304f3600afb46cdb771dbfb6",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "LocalTensor byte addresses versus element indices; static layout correction requires actual device validation"
+    },
+    "results/round11/archive.tar.gz::codex-tests/native-jacobi-tail-review-001/failure-n33-LU-001/poison-four-word-finding-001.md": {
+      "bytes": 4761,
+      "sha256": "089b24a77394a2de93e7cf22f9b0161d38d60bba3d8d09e98461cc7246e1e9d2",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Saved device workspace poison and actual application-arena offset; proposed synchronization isolation is not an established compiler root cause or completed repair"
+    },
+    "results/round11/archive.tar.gz::codex-tests/block-jacobi-code-review-001/review.md": {
+      "bytes": 8810,
+      "sha256": "0beaa6be744952f8fbbdd32acbe836448a2f3985432684e1e5b1f13a4581f2af",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Source and generated-code review; dropped tangent sign branch, Q stride and host metric defects; no new device call by reviewer"
+    },
+    "results/round11/archive.tar.gz::codex-tests/interior-k-highscale-36-device-001/ERRATUM-F64-RESCORE-001.md": {
+      "bytes": 2222,
+      "sha256": "4d1fb84af12680829ecebcea49fc834ad754af4e109b451ad27adc6e72c7b109",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Immutable failed F32 runner retained; saved actual outputs rescored after promotion before all products and norms"
+    },
+    "results/round11/archive.tar.gz::codex-tests/raw037-neargap-orth-failure-001/README-001.md": {
+      "bytes": 2372,
+      "sha256": "ed767fc73eb74c4c308fbf38227178d74fb383b91c890f28537e11f10ee0088b",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Real legal near-gap device output fails full-Q orthogonality while W and reconstruction pass; incomplete ABBA has no speedup conclusion"
+    },
+    "results/round11/archive.tar.gz::codex-tests/nearzero-minabs040-001/README.md": {
+      "bytes": 2821,
+      "sha256": "4c8ba7a9acdc22a144a6bd13c6b032f3a18f4ba1ef3977714adc0829861b54bd",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "CPU/source minimum-slot sentinel counterexample only; this report did not run the new case on NPU"
+    },
+    "results/round11/archive.tar.gz::codex-tests/structured-direct-sum-001/minsubnormal-output-format-boundary-001.md": {
+      "bytes": 1704,
+      "sha256": "76ab0b45f9cf84ac432415968b32c7cce25df4fe27788e60f0e5b6d3bc172974",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "CPU analytic FP32 output-format impossibility boundary; not a device failure attribution or permission to loosen other tests"
+    },
+    "results/round11/archive.tar.gz::codex-tests/precision-policy-audit-001/report-001.md": {
+      "bytes": 13762,
+      "sha256": "6db0ed8b947580b06501f41b6b9ee7218f918b21a5fe5aab758668c75ee724ef",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Read-only actual call-path and active numerical-policy audit; distinguishes unused constants, outdated comments, exact-null eligibility and unresolved static risks"
+    },
+    "results/round11/archive.tar.gz::codex-tests/full-eigh-dc-candidate-001/HANDOFF.md": {
+      "bytes": 4612,
+      "sha256": "7e2a759fe8e2ee68bff948c25536d034a4ad84c227bdc66005a979ec1a281b46",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Build-only original handoff; observed SDK system-workspace prefix and failure-code map are stack-specific, not universal constants or NPU qualification"
+    },
+    "results/round11/archive.tar.gz::codex-tests/large-cluster031-001/README.md": {
+      "bytes": 1400,
+      "sha256": "08570aecb4bc33b763d271712f2f16301e7f0cec8bec53952b8fc0bd053b371f",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Actual large/high-scale local regression with integer-Hadamard exact stored-input spectral certificates; no official acceptance claim"
+    },
+    "results/round11/archive.tar.gz::codex-tests/sturm-twisted-full067-001/README.md": {
+      "bytes": 5257,
+      "sha256": "01cba2952a6848c5d4f401fd626f7472de217863ef40adbae1dcc8197277e045",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Stage-to-complete-operator translation and independent qualification; local changes did not change official result and were not a performance win"
+    },
+    "results/round11/archive.tar.gz::codex-tests/highscale-actual009-independent-review-001/README.md": {
+      "bytes": 2670,
+      "sha256": "c27fdbecb1fde44fe25aa4e7bca62c0cb31f773ee98be52d5d4b7321584052ba",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "Independent CPU rescore of seventeen saved actual device outputs: fourteen pass and three exact-null high-scale W failures; orthogonality and reconstruction all pass. Disk API hash is not independently captured runtime mapping."
+    },
+    "results/round11/archive.tar.gz::codex-tests/pro012-nonzero-negative-controls-001/README.md": {
+      "bytes": 6391,
+      "sha256": "f0b93ca49e88c08583c1265adf3af10338a65b148993065a45a0e8c87ec0f20d",
+      "verification": "selected archive-member content hash checked against manifest; no extraction or execution",
+      "scope": "CPU-only exact stored-FP32 polynomial/gap and nonzero-near-root certificate controls; fixtures and proposed device gate were prepared, not run on NPU by this report. Nearby-root certificate does not establish output index association."
+    }
+  },
+  "archive_verification_scope": "22 selected member contents checked; whole archive hash not recomputed for this skill edit; no NPU rerun, server connection or official-status query."
+}
