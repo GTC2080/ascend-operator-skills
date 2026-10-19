@@ -58,6 +58,8 @@ Use input digests before and after a batch to detect accidental mutation. Hash f
 
 ## Build real instrumentation
 
+For current tool selection and build-route examples, use the [version-scoped MindStudio guide](mindstudio-tools.md#run-diagnostics-with-explicit-coverage). Its reviewed 26.0.0 manual distinguishes limited GM-access checks without instrumentation from instrumented checking, with further target, instruction and caller restrictions. Record the effective coverage; the terms full detection and memcheck do not establish that masked vector instructions, local memory or every requested check were covered. These documentation observations do not resolve the historical warnings below or establish support on another installed release.
+
 Use the installed build route's supported sanitizer mechanism. Capture real compiler/link commands and inspect actual device artifacts. A flag accepted by the shell may be ignored by target filtering, applied after package creation, or fail to link its runtime.
 
 Version-scoped case: the CANN9 ASC/asc_opc project needed kernel options `-sanitizer;-g` before package generation. Late/nonmatching SoC filters produced no active device instrumentation. Injecting only lower-level `--cce-enable-sanitizer` generated calls but failed linkage on missing `__sanitizer_report_*` runtime. The working route had nonempty `.init_array_sanitizer_file_mapping`, `.debug_info` and `.debug_line` sections in its device ELFs. Use this as a diagnostic recipe for that route, not mandatory section names for every backend.

@@ -3,7 +3,7 @@
   "name": "ascend-operator-engineering",
   "version": "1.0.2",
   "license": "MIT",
-  "created_utc": "2026-10-17T15:30:03.736501+00:00",
+  "created_utc": "2026-10-19T09:45:11.917119+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
   "files": {
     ".github/workflows/validate.yml": {
@@ -23,12 +23,12 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 6466,
-      "sha256": "85fa86db6a00f9b47eeba0d30134f51a5444bc603c72499cdee5ecf6464d6810"
+      "bytes": 6687,
+      "sha256": "342f3df3b3a949741dc935e84da381b62d95039d13857b15edcd9064363b870c"
     },
     "SKILL.md": {
-      "bytes": 16051,
-      "sha256": "82720e2820277d5d216cec8a6a875816b73f9a715fe4dab6db273adf6eaab116"
+      "bytes": 16877,
+      "sha256": "2ce7989f03cf4013dca57b62856fe3f6a8ce1b74e3755d091574071a43576e57"
     },
     "VALIDATION.md": {
       "bytes": 3929,
@@ -55,8 +55,8 @@
       "sha256": "095cb7c151780a67441b851c1413d722ec77a0e1640beddab1aa5db280b58d13"
     },
     "references/correctness-sanitizers.md": {
-      "bytes": 9107,
-      "sha256": "b004036880c3103d93a7fe5059d998a81fc6fc29830ac37a40673dddbe2809cd"
+      "bytes": 9740,
+      "sha256": "ea9ce95214c8505f95c460d9d53c7d6c2d9b0702d2888d5ab960f01cee19ee68"
     },
     "references/deepgemm-tilekernels.md": {
       "bytes": 9476,
@@ -66,17 +66,21 @@
       "bytes": 5731,
       "sha256": "1bdac766486ad7b153937ed5e517074b301e8f5f8711d0673e3954149e1c6f5d"
     },
+    "references/mindstudio-tools.md": {
+      "bytes": 19947,
+      "sha256": "2a75d0cae5604b98b5b6cc81587c18dbc20b46ed958d35d1b5159635edd7f18c"
+    },
     "references/performance.md": {
-      "bytes": 12738,
-      "sha256": "b3459a5274fa70104b3e79f1351baaffa1a78b1d928b4127aeb46d8e1d3428e9"
+      "bytes": 13211,
+      "sha256": "e12456b9b253d71efa26f0343e2ccc6664d7569110e350743b7fe88c62bb5488"
     },
     "references/provenance.json": {
       "bytes": 6533,
       "sha256": "af6e182d34fcb8a0a77cbf49559c71fdcd01974be503f28a8e3a9eab76b2e4d0"
     },
     "references/sources.md": {
-      "bytes": 16292,
-      "sha256": "98d66c77d5edb040cfdd5012bedae117a0c776c40fc05eeaa113ce3169c96575"
+      "bytes": 20696,
+      "sha256": "4b51a7ff6c0ae4afa3ed44061d34ef6b6e7c77dd9dc3671825a71017e5f58252"
     },
     "references/tilelang-installation.md": {
       "bytes": 15531,
@@ -87,8 +91,8 @@
       "sha256": "47127dabddae5e47c7d725b4de369273f4fbe37f036d78f3674c9e530b68268b"
     },
     "references/workflow.md": {
-      "bytes": 34825,
-      "sha256": "58b5597d48a37f28a0937182fd27fef10d3e2e4dde9e059cc06b50736fcdfd43"
+      "bytes": 35252,
+      "sha256": "23b0484126ecaaeddee4858161455238b31cf2117c622ba997a3ac260841cf0b"
     },
     "scripts/source_manifest.py": {
       "bytes": 3937,

@@ -1,6 +1,6 @@
 ---
 name: ascend-operator-engineering
-description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for TileLang environment setup, kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, mssanitizer, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
+description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for TileLang environment setup, kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, MindStudio diagnostics, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
 license: MIT
 metadata:
   version: "1.0.2"
@@ -31,6 +31,7 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
+| Choose MindStudio modeling, project generation, debugging, sanitizer or operator-profiling tools | [MindStudio tool workflow](references/mindstudio-tools.md) |
 | TileLang syntax, generated code, JIT caches, AIC/AIV scope and AOT | [TileLang Ascend](references/tilelang.md) |
 | Find CANN knowledge cards, API contracts, operator evidence and diagnostic sources | [optional CANNBot knowledge integration](references/cannbot-knowledge.md) |
 | DeepGEMM MAD, lightweight abstractions, TileKernels and cross-chip reuse | [library ideas and portability](references/deepgemm-tilekernels.md) |
@@ -95,11 +96,15 @@ Reuse tensor addresses and metadata while changing values so expected outputs ch
 
 ### 7. Validate memory and synchronization separately
 
+Choose the current target's supported diagnostic mode using the [MindStudio workflow](references/mindstudio-tools.md#run-diagnostics-with-explicit-coverage). Distinguish limited checking from instrumented coverage and record chip/instruction/caller restrictions, including uncovered generated-DSL paths.
+
 Build an independent diagnostic artifact using this build route's actual instrumentation options. Inspect instrumentation sections and linkage. For each requested sanitizer, require its real target start and matching completion, a completed runner, exact output and absence of substantive diagnostics. `exit=0`, a `passed` label, or memcheck alone is insufficient.
 
 Record coverage by source/library hash, tool, shape, dtype, threshold and output metadata. Do not call a diagnostic a false positive merely because a documentation limitation might apply. Preserve unresolved failures and continue permitted offline analysis. Do not benchmark a candidate with unresolved correctness or safety issues as an eligible winner.
 
 ### 8. Measure comparable execution
+
+For detailed bottleneck investigation, use [focused operator profiling](references/mindstudio-tools.md#collect-focused-operator-evidence-then-confirm-latency) with verified kernel selection, replay state and metric support. Keep modeled/simulated results and replayed diagnostic metrics distinct from the independently calibrated latency dataset.
 
 Separate compilation, initialization, host elapsed time, kernel duration, graph execution and application latency. Keep the same runner, cases, output metadata, warmup/active protocol and profiler filters on both arms. Check outputs before and after measurement. Preserve every raw active sample, case identity and failure.
 
