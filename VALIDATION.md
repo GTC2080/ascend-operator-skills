@@ -31,3 +31,11 @@ No NPU, remote server, compiler build, SDK installation, account or deployment o
 No matrix of proprietary harness clients was installed or tested. Standard-format import and a Markdown fallback are documented; discovery, automatic activation and model behavior remain client-specific. Passing these checks cannot guarantee future agent decisions, universal compatibility or performance improvements.
 
 `MANIFEST.json` lists all other distributed files with bytes/SHA. ZIP members are read back and checked against that manifest during packaging; the external `.zip.sha256` identifies the whole ZIP. Hashes provide integrity/provenance when compared to a trusted copy, not authentication by themselves.
+
+## Eigh case update, 2026-10-20
+
+The new conditional references distinguish mathematical checks, reference phase, complete NPU execution and pending external acceptance. They record numerical, workspace, generated-code, oracle and GE failure mechanisms without distributing private kernels or raw account/machine logs. Sixteen current evidence snapshots and 22 selected archive members have recorded digests; selected archived member contents were checked against their manifest without extraction or execution.
+
+For this documentation update, the existing 18 offline audit-tool tests passed. The source and staged skill entries passed frontmatter validation; local resource files and anchors were checked. Eight independent read-only scenario exercises covered phase overgeneralization, damaged oracles, carried binaries, monitoring cancellation, GE ranges, physical tails, validator overflow and interrupted archives. The review prompted a direct archive-entry route and a clarification that current user scope takes precedence over old carryover plans. This is observed guidance validation, not a guarantee of future model behavior.
+
+Existing first-operator diagnostic-tool guidance was preserved. Audit/runtime scripts were unchanged. No new compiler build, NPU experiment, external-evaluation query/submission or performance measurement was run for this skill update. Historical complete-call successes, unfinished sanitizer coverage and pending external results retain their original scope.

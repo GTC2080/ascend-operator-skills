@@ -15,7 +15,7 @@ This skill is harness-neutral. Resolve bundled paths relative to this file. Use 
 
 Optional offline scripts require Python 3.9+ standard library. Device validation additionally requires the target SDK/compiler/runtime and Ascend hardware. Keep these runtime requirements separate from the ability to load and use the Markdown instructions.
 
-The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older TileLang Ascend wheel. They are counterexamples and debugging clues, not universal API contracts or performance promises. Recheck installed headers and pinned upstream sources on a new stack.
+The geometry case observations concern Ascend 910B2, CANN 9.0.0, and an older TileLang Ascend wheel; the separate eigh case includes recorded 910B2/B3 checks. They are counterexamples and debugging clues, not universal API contracts or performance promises. Recheck installed headers and pinned upstream sources on a new stack.
 
 ## Choose the relevant references
 
@@ -30,6 +30,8 @@ The detailed case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
+| Eigh sign/basis differences, local-reference disagreement and cancellation-sensitive oracles | [eigensolver correctness case](references/eigh-correctness.md) |
+| Eigh high-scale roots, secular brackets, workspace/codegen and GE-only failures | [eigensolver numerics and memory](references/eigh-numerics-and-memory.md) |
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
 | Choose MindStudio modeling, project generation, debugging, sanitizer or operator-profiling tools | [MindStudio tool workflow](references/mindstudio-tools.md) |
 | TileLang syntax, generated code, JIT caches, AIC/AIV scope and AOT | [TileLang Ascend](references/tilelang.md) |
@@ -91,6 +93,8 @@ Compare device artifacts when changing wrappers. A changed source or API-library
 ### 6. Validate precision and input freshness
 
 Run the same independent oracle against real framework/API calls. Include each dtype/presence branch, tiny inputs, alignment/tile/core boundaries, tails, mixed output values and floating-point decision boundaries. Check output dtype/shape, value range, exact bytes or the contract's justified tolerance, and input immutability.
+
+For eigensolvers with nonunique vector signs or basis choices, separate mathematical validity, reference-representation agreement and required external acceptance. When these disagree, read the [eigh case](references/eigh-correctness.md) before changing layout, phase rules or a cancellation-sensitive oracle. Models and stage journals must be followed by normal complete NPU calls.
 
 Reuse tensor addresses and metadata while changing values so expected outputs change. Exercise coordinates, thresholds and runtime attributes separately. Test both one-executor and recreated-executor paths if supported; document which actually ran. Validate a new test adapter on a known baseline and with a negative control.
 

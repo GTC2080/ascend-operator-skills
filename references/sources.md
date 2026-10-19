@@ -123,3 +123,11 @@ Raw project artifacts are not bundled: they may contain machine-specific logs, l
 | Final precision/freshness/diagnostics/latency | `results/round5/final/precision.json`, `same-address.json`, `coordinate-updates.json`, `sanitizer-summary.json`, `native-all12.json`, `candidate-summary.json` in that final directory |
 
 The casebook excludes account, remote submission, instance operation and application-session history. Performance numbers are descriptive local observations, with uncertainty retained. Reproduce relevant checks against the new project's own implementation and target before adopting an optimization.
+
+## Eigh numerical-debugging case
+
+The [eigh guide](eigh-correctness.md) and its [numerics/memory companion](eigh-numerics-and-memory.md) are an original synthesis of separately inspected local evidence, not copied reference-solver code. Its [selected provenance hashes](eigh-provenance.json) are relative to that case project. They bind the dated contract/caller audit, local sign and rounding counterexamples, controlled device failure, phase-guide workspace proof, restored strict oracle, complete-output qualification and pending-acceptance snapshot. Raw machine logs, binaries, private diagnostic selectors, account identifiers and credentials are not distributed.
+
+As of 2026-10-20, the candidate's local complete-NPU qualification was established; the new external result was pending and the external backend/checker identity remained unknown. No new NPU experiment, native compiler build or performance measurement is performed by loading this reference or by its offline package validation. The older geometry case and its provenance remain separate.
+
+The earlier case conversation was read through the chat interface and checked against its preserved local records. Twenty-two selected round11 archive text members were read without extraction and hashed against the archive manifest. The companion guide records numerical, workspace, code-generation, validator and GE counterexamples with their individual evidence limits; it does not transfer historical run permissions or unverified claims.

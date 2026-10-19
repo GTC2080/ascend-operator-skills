@@ -78,6 +78,10 @@ All device observations below belong to the910B2/CANN9.0.0 development case unle
 | L13 directory permission advisory | Final requested tools ran, only0755 result-directory advisory | Preserve/classify advisory; not “no warnings” and not illegal-access proof |
 | L14 offline export speed | Six isolated CPU processes sped export after NPU capture | Tool throughput only; avoid thread-shared auditor globals |
 
+## Eigensolver case: valid mathematics and reference phase are separate
+
+The [eigh correctness case](eigh-correctness.md) adds a separate, mechanism-based study: a 150-record mathematical/direct-comparison discrepancy; an n2-only sign rule; leaf, deflation and root-pole differences; a device-stage success followed by a complete-call runtime failure; a cancellation-damaged host oracle; and a narrowly tested NPU phase guide. At the 2026-10-20 snapshot, 136 complete candidate NPU calls / 984 matrix records passed, with two independent builds and a third carried runtime. External acceptance, a locally untested target chip and full sanitizer clearance remained open. These observations do not establish the external reference's identity or a universal sign convention.
+
 ## Open questions deliberately not converted to rules
 
 - Exact root cause of the old scalar GM corruption.
