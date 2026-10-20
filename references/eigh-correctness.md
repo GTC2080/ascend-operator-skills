@@ -1,8 +1,8 @@
 # Eigh: mathematical correctness, reference phase and real NPU execution
 
-Read this when an eigensolver passes local mathematics but fails a reference comparison, when eigenvector signs change across sizes/backends, or when a numerical helper passes in isolation but fails in the complete Ascend operator. It also covers cancellation-sensitive test oracles and multi-device evidence. For earlier small-root, secular-bracket, scratch-layout, generated-code and GE failures, read the [numerics and memory companion](eigh-numerics-and-memory.md). Apply the relevant mechanisms, not every experiment below.
+Read this when an eigensolver passes local mathematics but fails a reference comparison, when eigenvector signs change across sizes/backends, or when a numerical helper passes in isolation but fails in the complete Ascend operator. It also covers cancellation-sensitive test oracles and multi-device evidence. For component errors that remain after sign alignment, read [residual refinement](eigh-residual-refinement.md). For earlier small-root, secular-bracket, scratch-layout, generated-code and GE failures, read the [numerics and memory companion](eigh-numerics-and-memory.md). Apply the relevant mechanisms, not every experiment below.
 
-This is an evidence-scoped case, not a generally approved eigensolver. At the 2026-10-20 snapshot, the new normal candidate passed 136 complete NPU calls / 984 matrix records; its external evaluation was pending. An earlier candidate passed 11 of 12 external points. The external reference/checker identity was unknown. No performance improvement or complete sanitizer clearance is claimed. Selected local evidence hashes are in [eigh-provenance.json](eigh-provenance.json); raw code, device binaries and account history are not bundled.
+This is an evidence-scoped case, not a generally approved eigensolver. The phase-guide snapshot discussed below passed 136 complete NPU calls / 984 matrix records; its external evaluation was pending. Later residual-refinement evidence has a separate scope in the companion. An earlier candidate passed 11 of 12 external points. The external reference/checker identity was unknown. No performance improvement or complete sanitizer clearance is claimed. Selected local evidence hashes are in [eigh-provenance.json](eigh-provenance.json); raw code, device binaries and account history are not bundled.
 
 ## 1. Freeze the contract and inspect the real caller
 
@@ -72,6 +72,8 @@ A stage experiment should hold binary, batch geometry, selected-triangle bytes a
 Hundreds of successful stage calls had preceded that complete-call failure. Therefore run the normal entry with the original failing input after any isolated fix, including batches with inactive groups and batches without them. A stage's Q used as a journal is not an eigensolver output. Prefix kernels, encoded input selectors and journal-output projects must remain diagnostic-only and outside release source and submission archives.
 
 ## 5. Make a narrowly supported numerical repair
+
+This section describes a phase-only repair. The later [residual update](eigh-residual-refinement.md) intentionally changes Q magnitudes; its comparator preserves original mathematics, W, small-path/skip bits and parent directions rather than requiring unchanged absolute Q everywhere.
 
 The investigated normal candidate computed a binary64 Householder/Sturm **phase guide on the NPU**, using existing integer Soft64 arithmetic, and replaced only the root left-count ordering. It retained the FP32 value solver, deflation, non-root phase, small n<=25 path, W and Q magnitudes. This was not a complete FP64 eigensolver or a generic remedy for every sign mismatch. A native-double compile probe on the studied stack had failed; general dtype documentation did not establish that this target supported the desired arithmetic.
 

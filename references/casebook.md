@@ -82,6 +82,18 @@ All device observations below belong to the910B2/CANN9.0.0 development case unle
 
 The [eigh correctness case](eigh-correctness.md) adds a separate, mechanism-based study: a 150-record mathematical/direct-comparison discrepancy; an n2-only sign rule; leaf, deflation and root-pole differences; a device-stage success followed by a complete-call runtime failure; a cancellation-damaged host oracle; and a narrowly tested NPU phase guide. At the 2026-10-20 snapshot, 136 complete candidate NPU calls / 984 matrix records passed, with two independent builds and a third carried runtime. External acceptance, a locally untested target chip and full sanitizer clearance remained open. These observations do not establish the external reference's identity or a universal sign convention.
 
+### Later Round12 observations: preserve the layer of evidence
+
+| Observation | Reusable decision |
+| --- | --- |
+| A legal n512/U example passed mathematical checks but had a sign-aligned component error about 1.514e-4; actual H×Z already contained it, while the final Cube product added only about 2.992e-7 | Localize the concrete difference before changing layout; a later normal-NPU residual correction fixed this local example, not a confirmed external input/checker |
+| A normal template's host tiling was an OBJECT linked into its API, with no separate host `.so` | Derive package completeness from actual targets/linkage; do not copy another template's library requirement |
+| The 910B3 all-distinct batch5 deadline probe returned 507046 after execute; separately authorized fresh health later passed | Preserve both results. This did not establish the 910B4 official failure cause or cancel the deadline failure |
+| Default collection had checked application calls plus internal replay; complete `0`…`4` CSV exports were audited separately | Count real application receipts and collected tasks separately; missing reports do not identify a numerical or timeout cause |
+| Retiring historical hardlinks changed retained aliases' ctime; frozen-content rehashing resolved the guard, and old sample sets were intentionally removed | Keep the repair process and retention ledger, but stop claiming old runners can replay absent data |
+
+The later local candidate completed full (420 calls), all-size (1024 calls), targeted (34 cases), native (8 calls) and Default (15 application calls) suites across 910B2/910B3. These overlapping suites are not a unique-matrix count. At the last saved 2026-10-20 15:00 UTC official observation, the new submission was still Running; local qualification was not external PASS, and NumPy/backend identity remained unconfirmed.
+
 ## Open questions deliberately not converted to rules
 
 - Exact root cause of the old scalar GM corruption.

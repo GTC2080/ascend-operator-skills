@@ -3,7 +3,7 @@ name: ascend-operator-engineering
 description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for TileLang environment setup, kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, MindStudio diagnostics, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
 license: MIT
 metadata:
-  version: "1.0.2"
+  version: "1.0.3"
   language: "en"
 ---
 
@@ -32,6 +32,7 @@ The geometry case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
 | Eigh sign/basis differences, local-reference disagreement and cancellation-sensitive oracles | [eigensolver correctness case](references/eigh-correctness.md) |
 | Eigh high-scale roots, secular brackets, workspace/codegen and GE-only failures | [eigensolver numerics and memory](references/eigh-numerics-and-memory.md) |
+| Residual component errors after sign alignment, orthogonality-preserving corrections and failed-call evidence | [eigh residual refinement](references/eigh-residual-refinement.md) |
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
 | Choose MindStudio modeling, project generation, debugging, sanitizer or operator-profiling tools | [MindStudio tool workflow](references/mindstudio-tools.md) |
 | TileLang syntax, generated code, JIT caches, AIC/AIV scope and AOT | [TileLang Ascend](references/tilelang.md) |
@@ -84,7 +85,7 @@ For a DSL, inspect generated Ascend C and actual compilation settings. A library
 
 ### 5. Prove build and runtime identity
 
-Bind source/configuration hashes to the fresh build, staged kernel resources, generated API library, host tiling library, device artifacts, runner and runtime environment. Check every packaging route expected by this template; absence is a failure, not an omitted comparison. Determine the loaded path as far as the available diagnostics allow.
+Bind source/configuration hashes to the fresh build, staged kernel resources, generated API library, the host tiling object or library required by this template, device artifacts, runner and runtime environment. Check every required packaging route; a missing required route is a failure. An OBJECT target legitimately linked into the API need not produce a separate host tiling library. Determine the loaded path as far as the available diagnostics allow.
 
 `scripts/verify_embedded_kernel.py` checks a particular ELF64 little-endian Ascend C template's fresh/staged/direct/registry resources. It is optional, has explicit layout limits, and proves packaging consistency only. It does not prove which runtime route executed. Use project-native equivalents for other templates.
 

@@ -128,7 +128,7 @@ Use a fresh process when isolation is needed:
 
 - Candidate loading would collide with a same-named registration, unresolved dynamic-library binding, incompatible ABI or required framework/runtime/backend/package change.
 - Required device/environment/cache settings cannot safely change in the resident process, or a sanitizer/profiler requires a separate instrumented runtime.
-- A device fault, timeout, memory diagnostic or uncertain runtime state makes subsequent results unreliable. Stop admitting jobs to that worker, preserve completed and partial evidence, and mark unfinished jobs explicitly. Keep the device slot unavailable until a bounded drain or task-owned process retirement confirms the worker, its helpers and device work have stopped; verify process exit and backend cleanup rather than assuming a timed join or terminate request completed. If device availability remains uncertain, leave that slot blocked and report it; do not dispatch a replacement to it or reset a shared device. Only then attempt an authorized bounded retry in a fresh process. Do not treat process restart as a repair for the failing candidate.
+- A device fault, timeout, memory diagnostic or uncertain runtime state makes subsequent results unreliable. Stop admitting jobs to that worker, preserve completed and partial evidence, and mark unfinished jobs explicitly. Follow the [failure stop](#7-make-failures-informative) rather than issuing another drain synchronization after a failed launch/wait. Keep the device slot unavailable until task-owned process retirement confirms the worker, its helpers and device work have stopped; verify exit rather than assuming a timed join or terminate request completed. If device availability remains uncertain, leave that slot blocked and report it; do not dispatch a replacement to it or reset a shared device. Only then attempt an authorized bounded check in a fresh process. A passing health check does not erase the original failure or repair the candidate.
 - The test specifically requires a cold start, fresh-process cache reload, independent process state or another isolated protocol. A resident-process pass does not cover those cases.
 
 A fresh process does not isolate mutable on-disk packages or OPP staging: retain private/frozen paths and serialize conflicting changes. Never replace another task's runtime or reset a shared device to recycle this worker. Bound worker lifetime by task duration/job count or observed memory growth and shut down task-owned workers when their work ends. Record startup/restart counts and reasons, process reuse, supported compatibility group and completed-work throughput. This procedure has not itself established a measured startup saving on a new stack.
@@ -232,11 +232,19 @@ Stages can be investigated in parallel when they do not contaminate evidence; an
 
 Do not infer a stage from an author statement or a helper's variable name. Creation-time notes such as “not yet compiled” remain historical notes; later results must be bound to the exact source they tested.
 
+The same applies to historical `qualification_complete=false` or a capture's `pending_original_assessment`: preserve the original field and link the later source-bound terminal/array assessment. Neither changing the old boolean nor requiring every historical creation flag to become true establishes the final result.
+
 ## 7. Make failures informative
 
 Classify the failure layer: import/parse, C++ generation, compilation, linkage, API registration, tiling, load, allocation/metadata, launch, sync, output comparison or instrumentation. Preserve the first substantive error and exact input/configuration.
 
 Change one explanatory factor when diagnosing causality. Identical failure counts can have different causes: this case had both a ratio literal error and an AIC/AIV scalar-ownership error producing 44 incorrect rows. Rerun the smallest affected case, then the affected matrix and full eligible path. Never weaken strict output assertions to hide a compiler error.
+
+For a numerical failure, first preserve one actual synchronized input/output that reproduces the difference. Then compare the relevant stages before editing layout or arithmetic: the eigh case's large component error already existed in H×Z before the final Cube product. A workspace-stage capture needs offsets derived from the real host/SDK wrapper and an output-bit anchor before reading additional planes; do not guess offsets by scanning unrelated workspace or encode a selector into selected input data to manufacture the same-case evidence.
+
+After a failed execute or timed synchronization, preserve the original error, input identity and available process maps, but do not read uncompleted outputs, drain again, reset the device or automatically run a successor/health call. In a worker whose driver teardown can hang, use its audited non-unwinding fatal exit after best-effort evidence persistence; a Python `raise` or C++ exception can still release driver objects. This fault path is distinct from ordinary CPU parsing/validation errors.
+
+A subprocess supervisor must contain its owned child on every exceptional path, not just `TimeoutExpired`, before releasing device/capture ownership. Record PID plus birth/start ticks and verify process-group ownership before signaling; use one bounded shutdown allowance inside the total wall budget, not repeated allowances in both `except` and `finally`. Preserve partial stdout, return codes and unreaped-state uncertainty, and stop rather than automatically restarting the failed job.
 
 Stop on unsupported assumptions and report the bounded missing capability. Repeatedly changing flags without inspecting generated commands or logs increases ambiguity.
 
@@ -245,5 +253,9 @@ Stop on unsupported assumptions and report the bounded missing capability. Repea
 Keep selected source, source/config hashes, build instructions, required generated artifacts, independent oracle, fixtures, full failures, target CSVs and interpretation. Large caches/build trees are not default handoff artifacts. Prefer an incremental evidence transfer over repeated copies of already verified files.
 
 Write the report completely before replacing a final report; normalize numeric scalar types first. A serialization failure must not leave a truncated success-looking JSON. Verify archive members by name, size and SHA after reading them back. Before removing task-owned loose experiments, verify they still match the archived snapshot and are not in use.
+
+Hardlink creation or unlinking another alias can change a retained file's ctime without changing its bytes. If a cleanup guard detects that change, rehash against the frozen content ledger before proceeding; do not waive integrity checks or interpret ctime alone as a source change. Confirm the retained/archive closure by complete SHA checks before deleting loose data.
+
+If the user explicitly retires historical samples or binaries, retain the repair source, key reports and a deletion/retention ledger, and state which old runners are no longer replayable. Rebind cross-round absolute paths by the retained whole-file hashes with an explicit locator/adapter; a historical pass, copied summary or compressed archive does not prove every old fixture path still exists. Keep an accepted baseline distinct from an unaccepted candidate's retained actual outputs.
 
 Restore archives into an independent location for reproduction. Source and script changes invalidate the affected evidence; do not overwrite running scripts or output directories. Record running task processes and incomplete stages when stopping. Follow the user's current stopping goal rather than an earlier open-ended optimization objective.

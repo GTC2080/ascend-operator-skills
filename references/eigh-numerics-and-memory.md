@@ -51,6 +51,8 @@ An old TileLang source branch `if tau < 0: tangent = -tangent` disappeared from 
 
 Column normalization is not global Q orthogonality. A legal n512/U input with gap around 1.20 times the required minimum passed W and reconstruction but had absolute Frobenius orthogonality about 1.06316e-4, exceeding 1e-4. Wider-gap passing cases did not close that failure. If a polar/orthogonalization stage is proposed, recheck reconstruction and W/Q pairing on the real device; CPU postprocessing is only diagnostic evidence.
 
+For a later component-error repair, [residual refinement](eigh-residual-refinement.md) records why ordinary FP32 K also failed global orthogonality, how pair-skew rounding and separate Qwork/Qorig were qualified, and when exact common scaling requires whole-Q fallback. That complete-device evidence does not transfer to an arbitrary refinement or relax the checks above.
+
 Test the original-A complete entry after backtransform and refinement. The historical root-only, tridiagonal-vector and translated full-solver prototypes were different artifacts with different scopes. Their source, compiler route, actual API and complete-call output needed fresh binding; a stage pass did not transfer automatically.
 
 ## 5. Validation arithmetic and representability

@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "path": "experiments/phase-spectral-offdiag376-001/design376-002.md",
+      "bytes": 6906,
+      "sha256": "5ef4e78170a876015a434f6e2a5dd51804fc1a1645d6a9115fe77939b086d5e0"
+    },
+    {
+      "path": "experiments/phase-spectral-offdiag376-001/source/op_kernel/linalg_eigh.cpp",
+      "bytes": 476623,
+      "sha256": "47803d6f3dc28212207d51ebb4d4ad4f8568606a8bbb185502214549e7613dd1"
+    },
+    {
+      "path": "experiments/phase-spectral-offdiag376-001/preflight376_002.py",
+      "bytes": 11724,
+      "sha256": "ba14101d27b177350398d343a53e5d676b5a1e61c235e7aa3aaff8f3c288400d"
+    },
+    {
+      "path": "experiments/phase-spectral-offdiag376-001/revision001-rejection376-001.json",
+      "bytes": 793,
+      "sha256": "08ff9bc8586b95939f168ee875ef1385cfbec94e55a69a32cfcca93127431cfb"
+    },
+    {
+      "path": "phase-progress366-372.md",
+      "bytes": 13383,
+      "sha256": "cc3b34721a6bd3ee91ef011998b59b2e7048bb3017dd63b37f69220a084fd408"
+    },
+    {
+      "path": "phase-progress387-394.md",
+      "bytes": 5916,
+      "sha256": "1fe4df417ae9aae7793a96bd24c9df534030be964dab529b9f93324baa0ec53e"
+    },
+    {
+      "path": "phase-progress395.md",
+      "bytes": 4586,
+      "sha256": "7e3c16776fb759f456e5e68ad004bbb9f438f9da08d209e8120c42d2a391d303"
+    },
+    {
+      "path": "phase-progress396-403.md",
+      "bytes": 5439,
+      "sha256": "f5d47a12e6f4756982a05cebb664c8925723397a5b68f9a31976515ce616a07e"
+    },
+    {
+      "path": "phase-progress404-414.md",
+      "bytes": 6378,
+      "sha256": "b516d1be8bfb0d980d1e390f60c03cdebe4169f32552f3b17672b1dfe9de7f58"
+    },
+    {
+      "path": "phase-progress415-420.md",
+      "bytes": 3797,
+      "sha256": "0e691c96c8dcf6638f3b095f00c3b29e90cf3ca21b88be8dc4caba9a1fa61488"
+    },
+    {
+      "path": "phase-progress421-424.md",
+      "bytes": 3873,
+      "sha256": "9dc2f549c00f67b3e66ba74e5f9a1e08e5327dfde6c2b2123bb99e158fbeedcc"
+    },
+    {
+      "path": "second-owner312-001/spectral-correction372-001/diagnose372.py",
+      "bytes": 6277,
+      "sha256": "095b4b661da34626ec0d974052be94f69f6581e8cb48bf3da18ada02fb0df514"
+    },
+    {
+      "path": "second-owner312-001/skew-spectral-qualification378-001/skew-qualification378-001.json",
+      "bytes": 342376,
+      "sha256": "2e33c27568ffef4fa1c8ec2aec68407842d17a10802428ef4501d549020fd4c3"
+    },
+    {
+      "path": "second-owner312-001/ftz-spectral-qualification379-001/ftz-qualification379-001.json",
+      "bytes": 191447,
+      "sha256": "37a2b9c5032d8f7de34b5fd1e4172b2dc6490b5db77a46bfd2b31e1137f13469"
+    },
+    {
+      "path": "experiments/phase-float-only305-001/third-owner312-001/normal294-stages374-001/root-actual-normal294-stage-audit383-001.json",
+      "bytes": 1720,
+      "sha256": "119b1e13ac59caf0000d45fb3c5b29ab88ddb091dc7f78e96af3fbc1f0af0ffd"
+    },
+    {
+      "path": "experiments/phase-float-only305-001/third-owner312-001/normal294-stages374-001/root-controlled-Z-replacement384-001.json",
+      "bytes": 697,
+      "sha256": "24b85850e5ebb95dd68c41aab0c1d24602990daad5c327fdf461cb8222110ef5"
+    },
+    {
+      "path": "experiments/phase-float-only305-001/third-owner312-001/qualification376-subset388-001/root-full-evidence-audit395-001.json",
+      "bytes": 81261,
+      "sha256": "a3ea5b5382791437d08fa5f925e450991590ba1bee7f8df67c2cc3d98103a16d"
+    },
+    {
+      "path": "experiments/phase-float-only305-001/third-owner312-001/remaining22-capture395-001/root-final-assessment410-001.json",
+      "bytes": 685163,
+      "sha256": "f48398a1b0f9e0a96b3e9e52990861dddc98688168a760e11b5cfb23661f0a5d"
+    },
+    {
+      "path": "experiments/first-owner312-001/full376-first-adapter396-001/root-full-byte-audit418-001.json",
+      "bytes": 1593,
+      "sha256": "d83085232ce902ae2d13d15540a50e3490f27fd5d6247305f84819eb1ef31986"
+    },
+    {
+      "path": "second-owner312-001/allsize376-second409-001/root-full-array-audit423-001.json",
+      "bytes": 1447,
+      "sha256": "d715726e7351e5b3d2d117fa4869b549d2bb8922163cf0139d232bce13f6e4f9"
+    },
+    {
+      "path": "experiments/first-owner312-001/native376-first408-001/root-native-byte-math-audit421-001.json",
+      "bytes": 7912,
+      "sha256": "da1ab1250945105da7a4c54566179267c5db12b348e1287699b380ee32a7ab94"
+    },
+    {
+      "path": "experiments/phase-float-only305-001/third-owner312-001/default376-protocol404-001/root-Default-byte-math-audit419-001.json",
+      "bytes": 21244,
+      "sha256": "9724e3d645b8e84f02eafa514a3ecde8c5efd6aa85e67eae0550cfe3423a0aab"
+    }
+  ],
+  "schema": 1,
+  "recorded_utc": "2026-10-20T15:49:24.819040+00:00",
+  "scope": "Selected inspected later eigh repair evidence. Paths are relative to the original round12 directory. Raw code, arrays, account and machine logs are not distributed. Hashes identify historical snapshots, not reproduction or external acceptance.",
+  "verification": "Source snapshot records compared with the round archive member inventory after every archive member content was SHA-verified; all 22 match.",
+  "evidence_boundary": {
+    "external_acceptance": "pending at last observed state; no all-pass result established",
+    "external_reference": "unconfirmed; NumPy comparison is diagnostic",
+    "local_suites": "420 full calls/3283 records; 1024 size calls; 34 targeted cases; 8 native calls/24 records; 15 Default application calls/45 records; overlapping coverage",
+    "retirement": "User-retired historical failed arrays and binaries are not present in the archive; current retained outputs/fixtures remain scoped evidence"
+  }
+}
