@@ -7,7 +7,7 @@ Track this complete chain for each candidate and build mode:
 ```text
 source + configuration + compiler/SDK/target
   → generated code + compile/link commands
-  → fresh host tiling library + device objects/config
+  → fresh host tiling object/library + device objects/config
   → staged vendor host/kernel resources
   → API library embedded resources
   → runner's resolved libraries + runtime OPP route
@@ -22,10 +22,12 @@ A same-named folder, successful exit or modified `libcust_opapi.so` is not enoug
 2. Select a new, initially nonexistent/empty build directory. Do not empty someone else's build to make it “fresh.” Record normal versus diagnostic mode, architecture, compiler options, environment and build command.
 3. Run the project build and inspect complete compilation/linkage, not just syntax checks. Store actual generated commands and artifact hashes.
 4. Enumerate expected resources and packaging branches from this generated template. Compare files, sizes and hashes across fresh, staged and embedded forms.
-5. Compare fresh host tiling with its staged vendor library as well. A kernel OPP tree without its tiling function can fail before device execution.
+5. Verify the template's actual host-tiling registration route. For a separately deployed library, compare fresh and staged copies as well. A kernel OPP tree without its required tiling function can fail before device execution.
 6. Bind the runner/helper identities and intended runtime environment. Then validate actual calls.
 
 In one AOT integration failure, `GetWorkspaceSize` returned561002 and the runtime said `Do not find tiling func`. Fresh kernel resources existed; the vendor host tiling library had not been staged. The studied template used `op_tiling/lib/linux/aarch64/libcust_opmaster_rt2.0.so`. That exact path is a case-specific clue, not a default for every SDK.
+
+Another normal CANN9 template built `cust_optiling` as an OBJECT target and linked its host object directly into the API library. Its separate host `.so` paths did not exist by design. Inspect actual CMake targets, link commands, host-object registration and `DT_NEEDED` before declaring a runtime package incomplete. Static linkage evidence closes that packaging question; the actual workspace query still needs validation.
 
 ## Optional embedded-payload audit
 
@@ -46,6 +48,8 @@ python3 scripts/verify_embedded_kernel.py /path/to/build --require-kernel-routes
 It compares fresh `.o`/`.json` files with staged files and `_binary_*` symbols embedded in the API library. Configuration resources use the registry route in this template. Required missing routes fail. Change route expectations only after inspecting the project's actual packaging mechanism.
 
 An unsupported ELF/layout is a limitation or failure, never a passed check. This helper does not inspect the host tiling library, source provenance, dynamic runtime dispatch or memory correctness; perform those separate checks. A stripped library or another backend may need its own native audit.
+
+Bind the actual normal API file used by the runner to this audit. For generated wrappers, check their included source, compiler argv and output against the actual successful build report/source snapshot; a proof JSON relabeled with a new source/API hash cannot establish provenance. A carried API may be byte-identical to an independent build without making both build reports or whole packages identical.
 
 ## Resolved runtime binding
 
