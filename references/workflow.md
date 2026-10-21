@@ -14,7 +14,7 @@ Create a concise contract containing:
 
 Enforce that contract at the public entry: support or reject actual strides, offsets, aliasing and broadcasts. A contiguous AoS kernel cannot accept arbitrary ND strides merely because shapes match. Test the specified rejection paths before device launch, including invalid dimensions/attributes and resource/tiling overflow.
 
-For the geometry case, storage coordinates may be FP16, but arithmetic is four separate FP32 operations followed by strict comparison. A tiny change at the decision boundary flips a full output bit. For a reduction/GEMM/decomposition, derive its own accuracy contract; do not impose this case's bit-exact rule on every operator.
+The [worked geometry predicate](ascendc-invariants.md#exact-semantics-are-an-implementation-constraint) illustrates FP16 storage with four separate FP32 operations followed by strict comparison. A tiny boundary change flips a full output bit. Derive a reduction/GEMM/decomposition's own accuracy contract rather than imposing that example's bit-exact rule on every operator.
 
 ## 2. Inventory the target without assuming compatibility
 
@@ -22,7 +22,7 @@ Record device model, architecture identifier, physical/logical device mapping, d
 
 ### Hardware discovery before resource allocation
 
-Before assigning build workers, CPU threads, device jobs or kernel launch geometry, the agent must discover the **current execution machine and its effective allocation**. Run read-only queries in the actual server/container and task environment, not on the local client. Do not inherit a CPU count, device model, memory capacity or worker split from the case study or a previous server. Record a timestamp, query source and units; distinguish advertised capacity, currently accessible capacity and observed performance.
+Before assigning build workers, CPU threads, device jobs or kernel launch geometry, the agent must discover the **current execution machine and its effective allocation**. Run read-only queries in the actual server/container and task environment, not on the local client. Do not inherit a CPU count, device model, memory capacity or worker split from a previous server or another allocation. Record a timestamp, query source and units; distinguish advertised capacity, currently accessible capacity and observed performance.
 
 | Inventory | Required facts and suitable query sources |
 | --- | --- |
@@ -56,7 +56,7 @@ For a missing or incompatible TileLang installation, use the [server setup guide
 3. Verify import, compiler discovery and a minimal official device example separately.
 4. Then compile and run the actual operator.
 
-Import success does not prove a required CLI is on PATH. In the case study, Cython was already installed but its launcher was missing from the task PATH; reinstalling did not address that fact. Avoid global changes or repeated installation without a diagnosed need.
+Import success does not prove a required CLI is on PATH. Check the module location, launcher location and task PATH separately. If Cython imports but its launcher cannot be found, reinstalling it is not a diagnosed fix. Avoid global changes or repeated installation without a demonstrated need.
 
 ### Resource utilization by phase
 
@@ -232,15 +232,15 @@ Stages can be investigated in parallel when they do not contaminate evidence; an
 
 Do not infer a stage from an author statement or a helper's variable name. Creation-time notes such as “not yet compiled” remain historical notes; later results must be bound to the exact source they tested.
 
-The same applies to historical `qualification_complete=false` or a capture's `pending_original_assessment`: preserve the original field and link the later source-bound terminal/array assessment. Neither changing the old boolean nor requiring every historical creation flag to become true establishes the final result.
+A creation-time note or incomplete capture flag does not become a final assessment merely because its field is edited. Preserve its original scope and attach the later source-bound, completed output assessment. Likewise, an old pending note does not invalidate a later verified terminal result.
 
 ## 7. Make failures informative
 
 Classify the failure layer: import/parse, C++ generation, compilation, linkage, API registration, tiling, load, allocation/metadata, launch, sync, output comparison or instrumentation. Preserve the first substantive error and exact input/configuration.
 
-Change one explanatory factor when diagnosing causality. Identical failure counts can have different causes: this case had both a ratio literal error and an AIC/AIV scalar-ownership error producing 44 incorrect rows. Rerun the smallest affected case, then the affected matrix and full eligible path. Never weaken strict output assertions to hide a compiler error.
+Change one explanatory factor when diagnosing causality. Identical mismatch counts can arise from distinct mechanisms, such as scalar literal rounding and AIC/AIV ownership. Compare actual values and first divergent operations. Rerun the smallest affected case, then the affected matrix and full eligible path. Never weaken strict output assertions to hide a compiler error.
 
-For a numerical failure, first preserve one actual synchronized input/output that reproduces the difference. Then compare the relevant stages before editing layout or arithmetic: the eigh case's large component error already existed in H×Z before the final Cube product. A workspace-stage capture needs offsets derived from the real host/SDK wrapper and an output-bit anchor before reading additional planes; do not guess offsets by scanning unrelated workspace or encode a selector into selected input data to manufacture the same-case evidence.
+For a numerical failure, first preserve one actual synchronized input/output that reproduces the difference. Compare relevant stages before editing layout or arithmetic: for example, an error already present in an eigensolver's `H*Z` intermediate cannot be assigned solely to its later matrix product. Derive workspace capture offsets from the real host/SDK wrapper and require an output-bit anchor before reading additional planes. Do not guess offsets by scanning unrelated workspace or encode a selector into input values to manufacture same-case evidence.
 
 After a failed execute or timed synchronization, preserve the original error, input identity and available process maps, but do not read uncompleted outputs, drain again, reset the device or automatically run a successor/health call. In a worker whose driver teardown can hang, use its audited non-unwinding fatal exit after best-effort evidence persistence; a Python `raise` or C++ exception can still release driver objects. This fault path is distinct from ordinary CPU parsing/validation errors.
 

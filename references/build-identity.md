@@ -14,7 +14,7 @@ source + configuration + compiler/SDK/target
   → actual input metadata and target profiler tasks
 ```
 
-A same-named folder, successful exit or modified `libcust_opapi.so` is not enough. An early incremental build in the case study contained new fresh resources and stale registry payloads simultaneously; its results could not be assigned to the claimed source.
+A same-named folder, successful exit or modified `libcust_opapi.so` is not enough. An incremental build can contain new fresh resources and stale registry payloads simultaneously. Compare every required route before assigning results to the claimed source.
 
 ## Fresh build procedure
 
@@ -25,9 +25,9 @@ A same-named folder, successful exit or modified `libcust_opapi.so` is not enoug
 5. Verify the template's actual host-tiling registration route. For a separately deployed library, compare fresh and staged copies as well. A kernel OPP tree without its required tiling function can fail before device execution.
 6. Bind the runner/helper identities and intended runtime environment. Then validate actual calls.
 
-In one AOT integration failure, `GetWorkspaceSize` returned561002 and the runtime said `Do not find tiling func`. Fresh kernel resources existed; the vendor host tiling library had not been staged. The studied template used `op_tiling/lib/linux/aarch64/libcust_opmaster_rt2.0.so`. That exact path is a case-specific clue, not a default for every SDK.
+If the workspace query reports a missing tiling function while kernel resources exist, trace host-tiling registration and staging separately. Inspect the generated vendor package and loader paths. A typical template may deploy a host library under `op_tiling/lib/<platform>/`; derive its actual name and location from the build instead of copying another SDK's path or treating an error code as a complete diagnosis.
 
-Another normal CANN9 template built `cust_optiling` as an OBJECT target and linked its host object directly into the API library. Its separate host `.so` paths did not exist by design. Inspect actual CMake targets, link commands, host-object registration and `DT_NEEDED` before declaring a runtime package incomplete. Static linkage evidence closes that packaging question; the actual workspace query still needs validation.
+A template may instead build `cust_optiling` as an OBJECT target and link its host object directly into the API library, with no separate host `.so` by design. Inspect actual CMake targets, link commands, host-object registration and `DT_NEEDED` before declaring a runtime package incomplete. Static linkage answers that packaging question; the actual workspace query still needs validation.
 
 ## Optional embedded-payload audit
 
@@ -66,7 +66,7 @@ Report the evidence level precisely:
 - Runtime diagnostic/mapping: stronger observation of the loaded path when available.
 - Device/task or bounded dispatch tracing: observation of executed target where supported.
 
-The case's final reports contain loader preflight and bound-library SHA, not process mapping sampling. Do not relabel that evidence as an observed runtime map. Avoid executing loader diagnostics on arbitrary untrusted binaries; inspect provenance and use static project-native alternatives where appropriate.
+Loader preflight and a bound-library SHA do not establish an observed process mapping. Report that distinction. Avoid executing loader diagnostics on arbitrary untrusted binaries; inspect provenance and use static project-native alternatives where appropriate.
 
 ## Device code comparisons
 
@@ -78,13 +78,13 @@ Smaller text is a useful observation, not proof of instruction-cache causality. 
 
 ## Framework and runner integration
 
-Verify generated API parameter order, optional pointers, workspace/executor ownership and return status before launch. Framework registration and inference metadata form a separate caller contract: prove the prototype/input/attribute mappings before changing getters, and do not apply runtime positive-dimension rules to a framework's unknown or shape-range lower-bound descriptors. Keep actual launch validation strict; the [eigh GE example](eigh-numerics-and-memory.md#6-ge-shape-inference-is-a-distinct-caller-contract) records both layers. A C++ syntax-only check does not prove final linkage: the HALF-aware runner needed the SDK's `libnnopbase` dependency before it could execute.
+Verify generated API parameter order, optional pointers, workspace/executor ownership and return status before launch. Framework registration and inference metadata form a separate caller contract: prove the prototype/input/attribute mappings before changing getters, and do not apply runtime positive-dimension rules to a framework's unknown or shape-range lower-bound descriptors. Keep actual launch validation strict; the [GE guidance](eigh-numerics-and-memory.md#6-ge-shape-inference-is-a-distinct-caller-contract) separates both layers. A C++ syntax-only check does not prove final linkage: resolve the actual SDK dependencies required by the generated API and selected dtype paths before claiming the runner can execute.
 
 Separate actual input storage bytes from coordinate type assumptions. For a real HALF threshold check, verify2-byte allocation/H2D, `ACL_FLOAT16` metadata, quantized independent reference and a runner completion marker. Keep default FLOAT checks separately identified.
 
-Record the exact allocation/handle/executor reuse policy. Reusing workspace capacity does not imply reusing an executor. In the studied native runner, each launch prepared a new executor; its same-address tests did not prove a reusable-executor optimization.
+Record the exact allocation/handle/executor reuse policy. Reusing workspace capacity does not imply reusing an executor. A runner that prepares a new executor per call can validate input freshness at the same addresses, but does not validate one-executor reuse.
 
-Changing a test adapter can introduce host errors before the device is called. An imported profiler helper relied on a `torch` global initialized only under `__main__`; all 130 tests first failed in the host adapter. Classify that layer correctly, repair the adapter, and then perform real device validation. Do not “fix” output expectations to compensate.
+Changing a test adapter can introduce host errors before the device is called. For example, an imported helper may rely on a `torch` global initialized only under `__main__`; its CLI works but its imported callable fails. Classify that layer correctly, repair the adapter, and then perform real device validation. Do not change output expectations to compensate.
 
 ## Normal and instrumented builds
 

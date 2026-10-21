@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "ascend-operator-engineering",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "created_utc": "2026-10-19T09:45:11.917119+00:00",
   "scope": "All distributed files except this manifest; offline checks and independent review do not prove native support in every harness",
@@ -15,104 +15,92 @@
       "sha256": "6ce30e67cba725942a5c2b34e0e3bfa7deb592af3599db568982a9543b862cc3"
     },
     "INSTALL.md": {
-      "bytes": 3710,
-      "sha256": "d10bb4fb3c76cf25ac57802aea6f47c68c2433544fd7d20790cc40e672662aa9"
+      "bytes": 3819,
+      "sha256": "99448b3b36bca7cbd131aea2470fab4ca7b70f4cb60f6a78635f91451ba92f4d"
     },
     "LICENSE": {
       "bytes": 1097,
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 7078,
-      "sha256": "500512585ec603c222f58e02ffca29b22db8afcbd7b3405cdc3fa8df6bb21971"
+      "bytes": 7272,
+      "sha256": "f26b3388cf2f4506f45e1f642441a15792e1c8276296700d7d1c635bc99009ca"
     },
     "SKILL.md": {
-      "bytes": 17936,
-      "sha256": "745b08c0a6c3480e5cdc9870278c52189848ee4600893f1e83c1cb92b6d9c584"
+      "bytes": 18175,
+      "sha256": "0f397ab169fb6f4ebdb8388abce333bf5e1b0ead12c37f9eeab927676a6a9cb5"
     },
     "VALIDATION.md": {
-      "bytes": 7468,
-      "sha256": "a55e37fc5004b1c520f27ff78d0bc2ac9442fa1bffd932212e579dbb9d4c2a73"
+      "bytes": 3125,
+      "sha256": "ef462e7e90cfabdfa16dd3ac2175ea69a28c1d2525b9929d0b7f8eb5f4bd570c"
     },
     "references/910b-porting.md": {
-      "bytes": 16674,
-      "sha256": "d8b64166aa96cbe115bc7b70243798ba42000cdb8aaadd1b6182747fe5461fb0"
+      "bytes": 16520,
+      "sha256": "e4697909eccc23e5d5bfb76764c9bab6966c7a8eb2d73d8fd0b62c5375755924"
     },
     "references/ascendc-invariants.md": {
-      "bytes": 11610,
-      "sha256": "40fa808388a96bd8b07a9cae7f64e755cad697806fb7548b0e9e6cf9e0788288"
+      "bytes": 16416,
+      "sha256": "52dd3c156a259db2bbd3ad663af3972bdc44db1a40cab694406186865f722c36"
     },
     "references/build-identity.md": {
-      "bytes": 8908,
-      "sha256": "404624ff44d736d7b8254b5e7d8372b8947eb76aca368b0a169349e2ed1d1640"
+      "bytes": 8936,
+      "sha256": "956b51ed00956e6207055ba358787f1fbe0c7ffabde9da5a30aeeedc934097f0"
     },
     "references/cannbot-knowledge.md": {
       "bytes": 11007,
       "sha256": "6569d487eafe1046dd8dd1da2f860b1a6d0996e872318651e27c946a760a67c5"
     },
     "references/casebook.md": {
-      "bytes": 14488,
-      "sha256": "3988e0c0c15e3a112279b7c3b44f78abe0656a5f185a866f3924cfcc529ffe46"
+      "bytes": 17692,
+      "sha256": "a3ebaad16d6ccf222779ce7cb985262b2753e1f7e8744f6aa1a0e62e21e2d290"
     },
     "references/correctness-sanitizers.md": {
-      "bytes": 10398,
-      "sha256": "3e8a53af7481c7c9a729ac287d419c1cf0267529f4f489dd2c1b21abf2622da3"
+      "bytes": 10648,
+      "sha256": "ca514aebb4bf67b2329b8d97d62ec8738e5146d6de8896f48f7ca157efa92505"
     },
     "references/deepgemm-tilekernels.md": {
-      "bytes": 9476,
-      "sha256": "737bcd8b0233a50e373483d502a6174895f4ccebc4ebbdf3a309aa66c5e5e650"
+      "bytes": 9741,
+      "sha256": "8459923410242948e3a3044083d37d23bd760cd6735cedddecc8d6244f499635"
     },
     "references/eigh-correctness.md": {
-      "bytes": 18781,
-      "sha256": "b6a41b835d7c799002960340b15e308ecd544e59afb3f70c1dcc3c366c2b7729"
+      "bytes": 13261,
+      "sha256": "eaba7d94232ff839d9168a2625adf653b658f3e3436c94008c3e341f5739355b"
     },
     "references/eigh-numerics-and-memory.md": {
-      "bytes": 15743,
-      "sha256": "d25557d5b6473b339fe337e5940dc32411b41f7d519fd8d1338cdfcae7ed2a07"
-    },
-    "references/eigh-provenance.json": {
-      "bytes": 14125,
-      "sha256": "e955587d673276a603072a71892de5c393325319c60bbcf5e9fd59338c6e1d62"
-    },
-    "references/eigh-refinement-provenance.json": {
-      "bytes": 5548,
-      "sha256": "a825bb3fdb6b115057c3dd7e9aaf4900e7e828d849bae18b4007056491a152f7"
+      "bytes": 10598,
+      "sha256": "d6f52d2f036c8b2051e6f3fe6711f3466cb65380d3432ab20063ebe09e6b7d28"
     },
     "references/eigh-residual-refinement.md": {
-      "bytes": 15540,
-      "sha256": "709343d34e7dc798101d536c02d5cac7e65cb62544117edf7b40cbc228601c5e"
+      "bytes": 9560,
+      "sha256": "294c614a48a9d7bd77f5fa040896ac2582b0bb79100901ed0fd25a6cb34dab53"
     },
     "references/evidence-templates.md": {
       "bytes": 5731,
       "sha256": "1bdac766486ad7b153937ed5e517074b301e8f5f8711d0673e3954149e1c6f5d"
     },
     "references/mindstudio-tools.md": {
-      "bytes": 20576,
-      "sha256": "e3350652b7921d90c1c887761162e535979b2c139760ec8f90a209b935cb6a18"
+      "bytes": 20488,
+      "sha256": "bdd5b359c628d7ec0a87577970a6b9c9fe75903ff742c4547dc4578161dc6add"
     },
     "references/performance.md": {
-      "bytes": 14071,
-      "sha256": "9e8400aebffc49575d56b3c2084967c61d48e80cf26458dff039831f06e79b63"
-    },
-    "references/provenance.json": {
-      "bytes": 6533,
-      "sha256": "af6e182d34fcb8a0a77cbf49559c71fdcd01974be503f28a8e3a9eab76b2e4d0"
+      "bytes": 9609,
+      "sha256": "c0b2882bbc397a84e33fa136a6529d0416b08e1dd8b0d14e33bb6aeb5d57c36a"
     },
     "references/sources.md": {
-      "bytes": 22854,
-      "sha256": "09e870db1786afaeb4faaff874ff66da915078ecdded10ac3ea039d2f5c39be6"
+      "bytes": 17763,
+      "sha256": "4e094da8c674dfd22b1c330540e68ecb956815d98b77a574eeb996f75f848a18"
     },
     "references/tilelang-installation.md": {
       "bytes": 15531,
       "sha256": "99ceba3d9f217bbf7c20e8b2c3eeb3bdfd6419c3f4f3040ffa822214f131efc1"
     },
     "references/tilelang.md": {
-      "bytes": 13996,
-      "sha256": "47127dabddae5e47c7d725b4de369273f4fbe37f036d78f3674c9e530b68268b"
+      "bytes": 14283,
+      "sha256": "88150e59a1df9fd1f5bcce73bec7f2a7aaa613ac60d62ac6cb7a8d000fee8b89"
     },
     "references/workflow.md": {
-      "bytes": 38077,
-      "sha256": "7008098ff0e60fffb42607d1599ae8abbf057b688fc0ff5ff2eecbea75fbc76e"
+      "bytes": 38156,
+      "sha256": "04732a53c91bb62460bbb88d602565f4b8619110013a321ffbe4b3b60b709496"
     },
     "scripts/source_manifest.py": {
       "bytes": 3937,
@@ -131,5 +119,5 @@
       "sha256": "df876ae25a105bc1ad38d6d8feddfee7f4664403df95171dcb91d1dedf7119f6"
     }
   },
-  "updated_utc": "2026-10-20T15:52:43.137224+00:00"
+  "updated_utc": "2026-10-21T15:17:45.705972+00:00"
 }

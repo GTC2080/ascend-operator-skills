@@ -1,108 +1,125 @@
-# Five-round casebook: tested observations and open questions
+# Troubleshooting patterns for Ascend C and TileLang
 
-All device observations below belong to the910B2/CANN9.0.0 development case unless another version is identified. R5's TileLang observations concern its historical0.1.1.10 wheel. Counts, sizes, addresses, tiling constants and profiler IDs are illustrative evidence, not defaults for a new operator. Cases are condensed here; detailed mechanisms are in the topic references.
+Use this catalogue to choose a falsifiable next check from an observed symptom. Each row describes a possible mechanism and a repair/validation method, not a diagnosis established by the symptom alone. Examples are portable engineering patterns; no private project files, run identifiers or unpublished benchmark results are required.
 
-## R1–R2: contract, identity and complete physical state
+## Contract, build identity and validation
 
-| Case | Trigger and observation | Action or remaining boundary |
+| Symptom or trap | Mechanism to test | Repair and required check |
 | --- | --- | --- |
-| C01 stale packaging | Incremental build had new fresh kernel resources and old embedded registry payload | Fresh independent builds; enumerate/check every expected route, including missing ones |
-| C02 metadata mismatch | FP16 coordinates did not identify actual threshold/output dtype | Separate documented FLOAT contract from additional HALF compatibility; inspect real allocation/metadata |
-| C03 exit0 diagnostics | B4095 each dtype had306 memcheck entries and an initcheck entry despite exit0 | Read raw logs and each tool completion; precision/exit status cannot clear memory failures |
-| C04 misleading measurement path | Initial performance used a standard FLOAT-output path, while another compatibility path existed | Measure the actual claimed entry/output metadata |
-| C05 wrapper-only change | FP32 mask-source simplification produced three byte-identical device objects | Do not assign about1% timing variation to unchanged device instructions |
-| C06 count still Counter | Replacing source syntax with ordinary count API did not remove diagnostic behavior | Read installed overload; explicit Normal repeat/tail isolated this version's behavior |
-| C07 incomplete predicate state | Defining valid logical bits did not define the entire Select-readable mask storage | Initialize the physical read range and check mixed0/1/tails |
-| C08 efficient test runner | One process reused the independent cases through actual ACLNN calls | Calibrate on known baseline and inject wrong-output negative controls; report initialization separately |
-| C09 final combination not automatically fastest | Late safety/layout fixes were combined with only one final independent timing | Reserve confirmation for final source; record local best and selected source separately |
+| New source but apparently old behavior | Fresh device resources and embedded registry payload differ | Verify every required fresh/staged/embedded route; rebuild in an independent directory |
+| A dtype flag seems sufficient | Storage metadata, scalar attributes and output dtype follow different branches | Inspect actual allocation bytes and API descriptors; test each supported combination |
+| Diagnostic process exits successfully | Tools emitted errors or did not execute their target | Read target start/completion and raw diagnostics separately from exit status |
+| An optimization is measured through the wrong entry | Default output or compatibility branch differs from the claim | Bind the actual caller and metadata to the measured path |
+| Wrapper changes appear slightly faster | Device instructions may be unchanged | Compare device text, constants, relocations and host geometry; run same-code controls |
+| Renaming an overload does not change a warning | The selected implementation still uses the same mode | Inspect installed overload/lowering and isolate actual count/repeat/tail behavior |
+| Logical predicates look initialized | A consumer reads a wider physical predicate region | Define the full physical read range and test mixed values and tails |
+| A faster test harness is treated as a faster kernel | Process initialization or repeated setup was removed | Calibrate the harness on a known baseline with corrupt-output controls; separate setup time |
+| Individually promising changes regress when combined | Safety/layout fixes alter the final data path | Validate and measure the final combination, not the sum of isolated pilot gains |
 
-## R3–R4: narrowing hypotheses and measuring the right mechanism
+See [build identity](build-identity.md) and [independent correctness](correctness-sanitizers.md).
 
-| Case | Trigger and observation | Action or remaining boundary |
+## Memory, tiling and numerical boundaries
+
+| Symptom or trap | Mechanism to test | Repair and required check |
 | --- | --- | --- |
-| C10 tiling macro bypass | Direct dynamic8B tiling reads reduced text and two paired runs improved | Applies to that dynamic template only; static tiling semantics not proved equivalent |
-| C11 aligned zero-skip | First tiny local improvement disappeared in confirmation | Do not promote an inconclusive change; CPU valid-lane model cannot clear padded initcheck needs |
-| C12 HALF dummy broadcast | Changed scalar/vector counters but total gain did not persist | Counters overlap; lower Scalar is not automatically lower Duration |
-| C13 true HALF runner | Syntax-only succeeded but linking required SDK libnnopbase | Check final link;2B H2D+ACL_FLOAT16+quantized oracle establishes the actual path |
-| C14 hidden UB gap | New region crossed an old reserved-output gap not in the host guard | Compute highest live byte end including gaps/scratch, not sum of logical sizes |
-| C15 HALF scalar Select | Count and Normal forms both reported initcheck size2 at SDK scratch UB0x2e000 | Unresolved; location is not proof of SDK bug/false positive; no eligible speed claim |
-| C16 packed Compare tiny length | B1 zero-reference smoke passed; B31/32/33/63 incorrectly became0 | Inspected count implementation yielded zero full repeats below64FP32; add tiny1/mixed cases |
-| C17 mask high half | SPR/small path precision passed but memcheck found inconsistent high mask state | New source restored state and needed fresh validation; cannot inherit parent safety |
-| C18 “full valid mask” | Skipping complete64B initialization still produced size56 initcheck | Valid predicate bits and physical Select-readable bytes are separate |
-| C19 Half strided expansion |32B Half row became64B Float row; copied stride/capacity was wrong | Derive address formulas and units anew after Cast |
-| C20 redundant wait | Strided Half B33 reported redundant wait flags | Rework initialization to remove overlap first; remove only graph-proven unnecessary waits |
-| C21 aggregate GM copy | Device compiler rejected copying a GM struct to local aggregate | Host C++ validity does not establish device address-space support |
-| C22 fixture overwrite | Same case name/different threshold collided in serialized keys | Use unique keys and round-trip bytes/metadata checks |
-| C23 timing protocol drift | Same G changed about+45.84% with process boundaries; PMU also affected it | Same-code controls before changing runner/profiler; no universal noise constant |
-| C24 compression overlap | Could not establish isolation from archive compression | Invalidate affected gain claims; one exclusion through the capture job and its capture-specific child lifetimes |
-| C25 misleading code/counters | Smaller text or lower Scalar did not establish total speed/causality | Keep machine-code evidence, counters and measured duration as distinct facts |
+| Direct tiling reads seem simpler | SDK macros may encode static as well as dynamic semantics | Prove host/device layout and each required template route before bypassing macros |
+| Skipping aligned zeros gives an unstable win | Padding may still be physically consumed | Prove defined read ranges and confirm the gain independently |
+| Scalar/vector counter changes look favorable | Pipelines overlap and counters do not equal total duration | Use field definitions and independent total timing |
+| A HALF-aware runner compiles but does not link | Required SDK host dependency is absent | Inspect final linkage, then test true two-byte storage and metadata |
+| UB guard passes while regions overlap | Alignment gaps, reserved output or scratch were omitted | Derive the maximum live byte end and update all offsets/guards together |
+| Scalar Select scratch warning persists | Changing count to normal mode did not establish valid scratch state | Inspect actual scratch lifetime/width and dtype-specific tool coverage; retain unresolved diagnostics |
+| A tiny comparison test passes only when expected output is zero | A short-length path may process no full repeats | Include tiny inputs requiring ones and mixed results; inspect repeat/tail lowering |
+| Small-path output is correct but mask diagnostics fail | Upper mask state may remain stale | Restore complete mask state and rerun precision plus instrumentation |
+| Only valid predicate bits are cleared | Physical Select-readable bytes remain undefined | Initialize the complete consumer read width |
+| HALF-to-FLOAT expansion corrupts rows | Element size changed but stride/capacity did not | Recompute source/destination units and physical extents after conversion |
+| A wait is reported redundant | Initialization paths overlap or dependency ownership is wrong | Repair the dependency graph before removing events, then revalidate |
+| GM aggregate copy is rejected | Host C++ syntax does not prove device address-space support | Use a supported qualified load route; do not erase qualifiers to silence the error |
+| A serialized test silently disappears | Nonunique names overwrite cases with different attributes | Use complete metadata/digest keys and round-trip stored bytes |
+| Same code changes speed when process structure changes | Initialization, cache or collector protocol changed | Calibrate A/A before interpreting A/B |
+| Compression/export runs during a microbenchmark | Shared CPU, I/O or device resources contaminate capture | Hold one capture exclusion through finalization and owned-child completion |
+| Smaller code is reported as an instruction-cache fix | Text size and counters alone do not identify causality | Compare actual artifacts and controlled timing; label the mechanism unconfirmed until tested |
 
-## R5: TileLang frontend, compiler, cache and AOT
+See [Ascend C invariants](ascendc-invariants.md), [performance](performance.md) and [MindStudio](mindstudio-tools.md).
 
-| Case | Trigger and observation | Action or remaining boundary |
+## TileLang frontend, code generation, caches and AOT
+
+| Symptom or trap | Mechanism to test | Repair and required check |
 | --- | --- | --- |
-| T01 installed module/CLI mismatch | Cython import succeeded but launcher missing from task PATH | Inspect real package/launcher; avoid reinstalling without diagnosed absence |
-| T02 string annotations | Old parser rejected postponed tensor annotations | Version-specific syntactic repair, then actual compilation; not universal Python advice |
-| T03 tail overlap | Backward full-width tail windows gave multiple writers | Unique tile bases and legal tail transfer lengths; CPU coverage plus device diagnostics |
-| T04 2D singleton output | Helper read every eighth Float beyond intended buffer; B33 had29 mismatches | Inspect generated copy/helper units; use verified continuous representation |
-| T05 copy extent syntax | Conditional extent emitted a declaration inside C++ arguments | Explicit full/tail branches; compile multi-tile boundary shapes |
-| T06 ratio literal loss |0x3f7fffff→decimal literal→0x3f7ffffe;44/65 errors | Verify scalar bits through ABI/literal; true runtime FP32 fixed that path |
-| T07 cache reload | First JIT/same-process reuse worked; new-process symbolic-shape reload failed | Private fresh cache isolated the fault, did not repair reload |
-| T08 alloc_var parser | Buffer name was already a BufferLoad; indexing assignment failed | Inspect parser/IR; internal Var escape not a portable API recommendation |
-| T09 AIC/AIV ownership | GM threshold read on AIC, AIV consumed its own initialized0;44/65 errors | Explicit expert vector scope/route, then revalidate; waits do not share scalar registers |
-| T10 worker cache singleton | Per-job env changes did not change imported module/singleton cache | Fix cache before first worker import, read back actual state, bind manifests by key |
-| T11 AOT key/ABI | Sorted records could pair wrong dtype/presence export; absent pointer differs | Explicit full combination keys and exact function ABI |
-| T12 helper extraction | Source order, overloads, licenses and inline/device attributes mattered | Minimal transitive closure preserving declarations; corrected inline produced identical device sections |
-| T13 static UB rewrite | Narrow known patterns could be transformed, arbitrary code could not | Reject dynamic/unknown/overlap cases; CPU pass is not SDK lifetime/device safety proof |
-| T14 missing host tiling | Actual workspace query failed with missing tiling function | Stage and hash host library as well as kernel resources |
-| T15 adapter host errors | Imported module lacked globals initialized under main;130 host errors before launch | Correct adapter layer; validate baseline and real device entry with no fallback |
-| T16 precision flag coverage | Smoke CLI accepted compatibility flag but did not execute HALF cases | Inspect actual case list/counts; a flag is not coverage |
-| T17 code-size optimism | AOT text shrank greatly and precision passed without a final baseline speed win | Inspect fixed path/geometry; DSL and code size do not establish saturation |
+| Module imports but command is missing | Python package and launcher PATH differ | Resolve the installed launcher before reinstalling |
+| A parser rejects postponed annotations | The installed frontend expects evaluated objects | Check version-specific parsing, use supported syntax and actually compile |
+| Backward-aligned tail windows overlap | Multiple ordinary stores own the same output | Use unique tile bases and supported tail transfers, or prove owned/masked stores |
+| A two-dimensional singleton output copies incorrectly | Generated copy/helper units differ from assumed shape semantics | Inspect emitted indexing and test a supported continuous representation |
+| Conditional copy extent produces invalid C++ | Lowering places a declaration in an argument list | Try explicit full/tail branches and compile multi-tile boundaries |
+| A near-one scalar changes decisions | Literal formatting or ABI conversion changed FP32 bits | Check bit patterns through host, generated source and device input |
+| JIT works but a fresh-process cache reload fails | Cached symbolic bindings are incomplete or stale | Test a private cache and cold reload; bypassing a cache is not repairing serialization |
+| Scalar allocation/indexing fails in the parser | A returned object is a BufferLoad rather than an expected buffer | Inspect parser/IR and use supported public forms; avoid making an internal escape a portable API |
+| A consumer sees the scalar initializer instead of the GM value | AIC and AIV hold distinct scalar state | Put producer and consumer in the supported execution scope; waits do not share registers |
+| Per-job environment variables do not switch cache | Import-time constants/singletons already fixed the real cache | Set configuration before first import or isolate processes; read effective state back |
+| AOT exports pair with the wrong wrapper | Incomplete keys or differing optional-pointer ABI | Key by complete dtype/presence/target/shape metadata and verify the actual function signature |
+| Extracting a helper breaks compilation or changes code | Transitive declarations, overloads or device attributes were lost | Preserve the minimal dependency closure, ordering, attributes and upstream license |
+| Static UB rewrite passes a CPU model | Pattern matching did not establish device lifetimes | Restrict/reject unsupported forms, inspect generated code and run device safety checks |
+| Workspace query cannot find tiling | The template's host registration route is incomplete | Verify its actual separately deployed or OBJECT-linked host tiling route |
+| Every case fails before launch after adapting a script | Import-time globals or host preparation are missing | Validate the adapter on the known baseline; do not alter numerical expectations |
+| A CLI accepts a compatibility flag | The case list may never execute that branch | Inspect actual dispatched cases, dtype metadata and outputs |
+| AOT reduces text substantially without a speedup | Launch, transfer or fixed geometry dominates | Measure the complete intended path; syntax and code size do not imply saturation |
 
-## R5: raw primitives and structural optimization
+See [TileLang](tilelang.md) and [backend installation](tilelang-installation.md). Symptoms must be reproduced on the installed version before calling them compiler defects.
 
-| Case | Trigger and observation | Action or remaining boundary |
+## Low-level primitives, porting and structural optimization
+
+| Symptom or trap | Mechanism to test | Repair and required check |
 | --- | --- | --- |
-| L01 full950 header probe | First compiler error was unknown float4_e2m1x2_t on910B/CANN9 | Full wrapper incompatible as-is; does not prove ordinary MAD unsupported |
-| L02 minimal MAD probe | BF16 asc_mmad compile/link/payload passed, operands uninitialized, never launched | Compile compatibility only; no numeric or timing claim |
-| L03 raw C math entrance RAW |92/130 precision;38 failures allFP16 | Add caller Cast/Gather→rawV dependency, then130/130 and freshness passed |
-| L04 raw C local gain | Large pilot about−2.15%, full workload about−0.38% with regressions | Preserve scoped signal; test a regime-specific combination instead of denying it |
-| L05 scalar GM store |34/130 failures persisted after extra completion barrier | Root cause open; do not label cache/hardware cause or benchmark as eligible |
-| L06 scalar UB staging | Correct scalar experiment needed complete32B UB even with4logical floats | Separate logical grain and physical defined/read width; Half fallback separate |
-| L07 nonmonotonic core grain | Vector4 small cases about−38% to−42%; Vector8 about+20% to+52% | Sweep actual geometry empirically; no linear interpolation |
-| L08 medium grain portability | Two local full runs improved about6.75%/6.13%, target-environment gain did not transfer | Preserve both observations, leave unknown cause open |
-| L09 I/O specialization | FP32 gains with Half regressions made combined aggregate about+0.50% | Specialize the understood dtype path, restore unaffected behavior and retest combination |
-| L10 final combination | Local all 12 about−7.69%; two smallFP32 about−40.47%/−42.53% | Other cases/order effects remained; do not claim all-case stable improvement |
-| L11 inactive sanitizer | Exit0/correct output despite No active sanitizer tool or ignored flag | Count as not checked; rebuild via actual supported instrumentation route |
-| L12 lower-level flag linkage | Instrumentation calls existed but sanitizer runtime unresolved | Use build system's full diagnostic pipeline, inspect commands/artifacts/tool start+finish |
-| L13 directory permission advisory | Final requested tools ran, only0755 result-directory advisory | Preserve/classify advisory; not “no warnings” and not illegal-access proof |
-| L14 offline export speed | Six isolated CPU processes sped export after NPU capture | Tool throughput only; avoid thread-shared auditor globals |
+| A newer-architecture header fails at a low-bit type | An unrelated newer feature entered the include closure | Isolate the needed supported mechanism; one header error does not rule out ordinary MAD |
+| A matrix primitive compiles and packages | Operands/layout/accumulator were never initialized and executed | Build one complete initialized tile and compare outputs before a compatibility claim |
+| Raw vector math fails after a high-level Cast/Gather | Caller-to-first-raw-operation dependency is missing | Prove and insert the supported boundary event; test the full caller |
+| A large-input pilot improves but aggregate is flat | Fixed overhead or other regimes regress | Retain the scoped signal, test relevant regimes and confirm a legal specialization |
+| Scalar GM output stays wrong after an extra wait | Ownership, address or unsupported store path is unresolved | Isolate the actual store and bounds; do not label a cache cause or promote timing |
+| Ratio-one algebra changes a strict decision | Separate rounding loses a small endpoint before cancellation | Use the explicit FP32 counterexample and preserve the declared operation sequence |
+| A replacement passes binary outputs but its rounding is unknown | Typical comparisons hide differing intermediate values | Capture FP32 intermediates and use fused/separate negative controls before the complete path |
+| Ordinary DMA is selected from n alone | Base/core/tile addresses violate an independent alignment condition | Prove address and byte-granularity conditions separately; retain a legal tail fallback |
+| A transfer-to-vector wait is used before a scalar read | The actual consumer belongs to a different pipeline | Prove MTE-to-S or V-to-S availability for GetValue as required by the target |
+| Manual synchronization works only for busy cores | Helper IDs or empty-loop set/wait counts were omitted | Audit all reserved IDs and zero/one/multi-iteration event paths |
+| A dtype-specific I/O path is combined with a small-shape grain change | Their dispatch and fixed costs interact | Preserve untouched branches and validate/measure the final metadata-driven combination |
+| Few logical scalars use a wider transfer | UB staging must define the physical transaction width | Initialize that width and write only permitted GM bytes |
+| More rows/core or more cores become slower | Grain, occupancy and fixed costs interact nonlinearly | Sweep bounded legal configurations on the real workload |
+| A local gain does not transfer to another environment | Chip, caller, clock, compiler or process state differs | Preserve both results and establish comparable bindings before assigning a cause |
+| One dtype wins while another regresses | Their I/O and conversion paths differ | Specialize only understood metadata regimes and retest the combination |
+| An aggregate win hides opposing order effects | Drift or unstable regimes cancel in the mean | Preserve per-case/per-direction samples and independently confirm |
+| Sanitizer invocation reports no active tool | Instrumentation was absent or filtered out | Rebuild using the actual supported route and require target start/finish |
+| A lower-level sanitizer flag generates unresolved calls | Runtime/link/package integration is incomplete | Use the build system's full diagnostic pipeline |
+| Result-directory permission advisory is mixed with access errors | Operational and kernel diagnostics have different meanings | Preserve both categories; do not call substantive memory errors harmless |
+| Parallel offline export gets faster | CPU tool throughput improved after capture | Keep that result separate from kernel latency; isolate mutable auditor state |
 
-## Eigensolver case: valid mathematics and reference phase are separate
+See [library mechanisms](deepgemm-tilekernels.md) and [910B adaptation](910b-porting.md).
 
-The [eigh correctness case](eigh-correctness.md) adds a separate, mechanism-based study: a 150-record mathematical/direct-comparison discrepancy; an n2-only sign rule; leaf, deflation and root-pole differences; a device-stage success followed by a complete-call runtime failure; a cancellation-damaged host oracle; and a narrowly tested NPU phase guide. At the 2026-10-20 snapshot, 136 complete candidate NPU calls / 984 matrix records passed, with two independent builds and a third carried runtime. External acceptance, a locally untested target chip and full sanitizer clearance remained open. These observations do not establish the external reference's identity or a universal sign convention.
+## Eigensolvers and difficult numerical operators
 
-### Later Round12 observations: preserve the layer of evidence
+| Symptom or trap | Mechanism to test | Repair and required check |
+| --- | --- | --- |
+| Mathematical checks pass but direct Q comparison fails | Sign, phase, ordering or invariant-basis ambiguity | Compare the appropriate representation/subspace without changing submitted output |
+| Sign alignment still leaves component error | Earlier reduction/solve/backtransform stage differs | Compare captured H/T/Z and the same actual T before changing final layout |
+| Relative reconstruction passes but a small root is wrong | Large spectrum hides absolute W error | Preserve an independent small-root oracle and absolute tolerance |
+| More secular iterations cannot find a bracket | Origin and endpoint expressions refer to different rounded points | Freeze coordinate/endpoint bits and propagate the first child failure |
+| Column normalization passes but full Q is nonorthogonal | Cross-column errors survive unit norms | Check the full Gram matrix; evaluate a justified skew/polar correction |
+| Refinement target is unchanged | Eligibility silently skipped because of a numerical-domain condition | Record actual apply/skip per matrix/wave and test the intended target |
+| A wider reference changes the verdict on identical NPU output | The new oracle is not accurate for the sensitive family | Restore analytic/high-precision/interval routing and negative controls |
+| A final status is clean despite NaNs | Earlier child failure or undefined workspace propagated | Record the first producing node and physical buffer lifetime |
+| GE fails before a native kernel that works | Registration or inference metadata has a separate contract | Fix that caller layer and keep runtime shape validation strict |
+| A later healthy process is used to erase a timeout | Different runs establish different facts | Preserve the original failure and validate any candidate repair separately |
+| A small-matrix sign fix does not help general sizes | Specialized and recursive paths have different conventions | Audit each branch and compare same-T and original-A results separately |
+| Ordinary columns match but inherited columns do not | Boundary-vector normalization or source mapping differs | Trace active/deflated classes and recursive phase propagation |
+| A more accurate leaf regresses the full result | Intermediate ordering/rounding changes downstream representation | Validate complete eigenpairs and first-divergence stages, not only leaf arithmetic |
+| A normal call faults before phase writeback | Eligibility construction may execute an unnecessary failing path | Isolate it, prove an equivalent predicate and rerun the original normal NPU call |
+| A direction guide is mistaken for a wider solver | Only narrow ordering metadata was repaired | Keep value/magnitude/unaffected-branch invariants and qualify actual device arithmetic |
+| Scaled Rayleigh evaluation changes units across lanes | Common scale was not published before a collective sum | Publish one scale and validate compensated accumulation plus overflow-safe product order |
+| A helper named FMA fails a cancellation control | Actual overload separately rounds multiply and add | Probe exact operand bits and inspect the real implementation; do not infer semantics from a name |
+| A residual certificate accepts the wrong result | Estimator bias, rounding or output-slot association was omitted | Bound the computed quantity and reject wrong-root/slot controls |
+| A large-value argmin returns its initial index | A finite magic sentinel is smaller than every candidate | Initialize from a validated datum and test index as well as value |
+| Ordinary residual K damages full orthogonality | K is not pairwise skew after finite rounding | Derive paired K, preserve its rounding order and validate full Gram/reconstruction |
+| Refinement leaves the target unchanged at subnormal Q | Blanket domain rejection skipped the update | Preserve Qorig, test a justified Qwork domain and observe actual apply/skip |
+| Only some columns survive a rejected refinement | The candidate publishes before its collective decision | Reduce reason flags and restore the entire original matrix on a numerical skip |
+| Exterior guards pass but an internal region is corrupted | Live scratch intervals overlap within the allocation | Prove all live byte ranges and publication; test finite and NaN poison |
+| A strict rescore fails only at large scales | Validator products/norms overflowed before promotion | Promote stored operands before arithmetic and keep display floors out of predicates |
+| No representable W meets a tiny-scale criterion | Storage spacing dominates the requested error budget | Construct a format-bound example and separate contract feasibility from ordinary algorithm failures |
 
-| Observation | Reusable decision |
-| --- | --- |
-| A legal n512/U example passed mathematical checks but had a sign-aligned component error about 1.514e-4; actual H×Z already contained it, while the final Cube product added only about 2.992e-7 | Localize the concrete difference before changing layout; a later normal-NPU residual correction fixed this local example, not a confirmed external input/checker |
-| A normal template's host tiling was an OBJECT linked into its API, with no separate host `.so` | Derive package completeness from actual targets/linkage; do not copy another template's library requirement |
-| The 910B3 all-distinct batch5 deadline probe returned 507046 after execute; separately authorized fresh health later passed | Preserve both results. This did not establish the 910B4 official failure cause or cancel the deadline failure |
-| Default collection had checked application calls plus internal replay; complete `0`…`4` CSV exports were audited separately | Count real application receipts and collected tasks separately; missing reports do not identify a numerical or timeout cause |
-| Retiring historical hardlinks changed retained aliases' ctime; frozen-content rehashing resolved the guard, and old sample sets were intentionally removed | Keep the repair process and retention ledger, but stop claiming old runners can replay absent data |
-
-The later local candidate completed full (420 calls), all-size (1024 calls), targeted (34 cases), native (8 calls) and Default (15 application calls) suites across 910B2/910B3. These overlapping suites are not a unique-matrix count. At the last saved 2026-10-20 15:00 UTC official observation, the new submission was still Running; local qualification was not external PASS, and NumPy/backend identity remained unconfirmed.
-
-## Open questions deliberately not converted to rules
-
-- Exact root cause of the old scalar GM corruption.
-- Whether the historical HALF scalar Select scratch diagnostic is a kernel/SDK/tool-model defect.
-- A general repair for the old symbolic-shape disk-cache reload.
-- Why some diagnostic device bytes changed with build directories.
-- Why measured local improvements did not all transfer to a different target environment.
-- Runtime numerical/performance behavior of the unexecuted MAD probe.
-- Full safety of arbitrary generated-code/TPipe transformations.
-- Performance impact of the early bank-group/field-stride hypothesis and intermediate capacity stairs on a new target.
-
-Revisit an old route only when a new implementation, version, hypothesis or coverage difference gives a concrete reason. A new author or experiment name does not make an old failure disappear.
+The detailed [correctness](eigh-correctness.md), [numerics/memory](eigh-numerics-and-memory.md) and [refinement](eigh-residual-refinement.md) guides explain the reasoning and complete-validation boundaries.
