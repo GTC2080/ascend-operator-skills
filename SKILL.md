@@ -3,7 +3,7 @@ name: ascend-operator-engineering
 description: "Design, implement, review, debug, and tune Huawei Ascend operators with Ascend C or TileLang Ascend. Use for TileLang environment setup, kernel semantics, tiling, UB/DMA/mask/synchronization, ACLNN or AOT integration, precision, MindStudio diagnostics, and trustworthy performance experiments; includes version-scoped lessons from DeepGEMM-Ascend and TileKernels."
 license: MIT
 metadata:
-  version: "1.0.3"
+  version: "1.0.4"
   language: "en"
 ---
 
@@ -15,7 +15,7 @@ This skill is harness-neutral. Resolve bundled paths relative to this file. Use 
 
 Optional offline scripts require Python 3.9+ standard library. Device validation additionally requires the target SDK/compiler/runtime and Ascend hardware. Keep these runtime requirements separate from the ability to load and use the Markdown instructions.
 
-The geometry case observations concern Ascend 910B2, CANN 9.0.0, and an older TileLang Ascend wheel; the separate eigh case includes recorded 910B2/B3 checks. They are counterexamples and debugging clues, not universal API contracts or performance promises. Recheck installed headers and pinned upstream sources on a new stack.
+The references provide self-contained debugging recipes and worked counterexamples. API details and lowering behavior depend on the installed chip/compiler/backend; check version-matched headers and the pinned public sources before applying a recipe. Examples establish a mechanism, not universal compatibility or performance.
 
 ## Choose the relevant references
 
@@ -30,7 +30,7 @@ The geometry case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | UB layout, ownership, tiling, packed metadata, masks, DMA and events | [Ascend C invariants](references/ascendc-invariants.md) |
 | Fresh builds, framework integration, runtime and embedded payload identity | [build and runtime identity](references/build-identity.md) |
 | Independent reference, adversarial cases, same-address updates, mssanitizer | [correctness and sanitizers](references/correctness-sanitizers.md) |
-| Eigh sign/basis differences, local-reference disagreement and cancellation-sensitive oracles | [eigensolver correctness case](references/eigh-correctness.md) |
+| Eigh sign/basis differences, local-reference disagreement and cancellation-sensitive oracles | [eigensolver correctness guide](references/eigh-correctness.md) |
 | Eigh high-scale roots, secular brackets, workspace/codegen and GE-only failures | [eigensolver numerics and memory](references/eigh-numerics-and-memory.md) |
 | Residual component errors after sign alignment, orthogonality-preserving corrections and failed-call evidence | [eigh residual refinement](references/eigh-residual-refinement.md) |
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
@@ -39,9 +39,9 @@ The geometry case observations concern Ascend 910B2, CANN 9.0.0, and an older Ti
 | Find CANN knowledge cards, API contracts, operator evidence and diagnostic sources | [optional CANNBot knowledge integration](references/cannbot-knowledge.md) |
 | DeepGEMM MAD, lightweight abstractions, TileKernels and cross-chip reuse | [library ideas and portability](references/deepgemm-tilekernels.md) |
 | Adapt DeepGEMM or TileKernels mechanisms from a newer stack to 910B | [910B adaptation procedure](references/910b-porting.md) |
-| Previously failed or promising experiments and their exact scope | [casebook](references/casebook.md) |
+| Failure symptoms, isolation experiments and repair checks | [casebook](references/casebook.md) |
 | Contract, layout, experiment and result record formats | [evidence templates](references/evidence-templates.md) |
-| Version-pinned upstream references and local evidence provenance | [sources](references/sources.md) |
+| Version-pinned public references and their scope | [sources](references/sources.md) |
 
 Read the applicable reference before changing fragile code. Do not load every file for a small task. For a new operator, start with workflow and the contract; add backend-specific material when choosing that backend.
 
@@ -95,7 +95,7 @@ Compare device artifacts when changing wrappers. A changed source or API-library
 
 Run the same independent oracle against real framework/API calls. Include each dtype/presence branch, tiny inputs, alignment/tile/core boundaries, tails, mixed output values and floating-point decision boundaries. Check output dtype/shape, value range, exact bytes or the contract's justified tolerance, and input immutability.
 
-For eigensolvers with nonunique vector signs or basis choices, separate mathematical validity, reference-representation agreement and required external acceptance. When these disagree, read the [eigh case](references/eigh-correctness.md) before changing layout, phase rules or a cancellation-sensitive oracle. Models and stage journals must be followed by normal complete NPU calls.
+For eigensolvers with nonunique vector signs or basis choices, separate mathematical validity, reference-representation agreement and required external acceptance. When these disagree, read the [eigh guide](references/eigh-correctness.md) before changing layout, phase rules or a cancellation-sensitive oracle. Models and stage journals must be followed by normal complete NPU calls.
 
 Reuse tensor addresses and metadata while changing values so expected outputs change. Exercise coordinates, thresholds and runtime attributes separately. Test both one-executor and recreated-executor paths if supported; document which actually ran. Validate a new test adapter on a known baseline and with a negative control.
 
@@ -113,7 +113,7 @@ For detailed bottleneck investigation, use [focused operator profiling](referenc
 
 Separate compilation, initialization, host elapsed time, kernel duration, graph execution and application latency. Keep the same runner, cases, output metadata, warmup/active protocol and profiler filters on both arms. Check outputs before and after measurement. Preserve every raw active sample, case identity and failure.
 
-Use ordered paired runs such as A-forward/B-forward/B-reverse/A-reverse, with independent confirmation for promising effects. Audit target row count, operation/core identity, task selection, block count, valid positive durations and CSV hashes. Fixed sample counts and TaskIDs in the casebook belong to that runner, not every profiler.
+Use ordered paired runs such as A-forward/B-forward/B-reverse/A-reverse, with independent confirmation for promising effects. Audit target row count, operation/core identity, task selection, block count, valid positive durations and CSV hashes. Derive expected sample counts and TaskID mappings from the actual runner and collector; do not copy another protocol's constants.
 
 Exclude build, diagnostic and compression work from performance sampling; hold exclusion through the capture job's finalization, required checks and capture-specific child completion. Pause/drain ordinary work and acknowledge idle resident workers; retire them when the frozen protocol requires it. CPU-only export may run in isolated workers after this capture job completes. Record ambiguous isolation as a limitation instead of silently accepting its timing.
 
@@ -133,4 +133,4 @@ Retain necessary generated source, fixtures, manifests, failure logs and target 
 
 Use precise states: **designed**, **generated**, **compiled**, **linked**, **loaded**, **device-precision passed**, **instrumented checks passed for specified cases**, **local performance observed**, **independently confirmed**, or **unresolved**. Passing one stage does not imply the next. Say what was actually checked, not what the author or helper intended.
 
-This package deliberately contains no account, remote submission, cloud rental, billing, power-control or harness UI workflow.
+Keep project run ledgers, private artifact paths and machine-specific digests in the consuming project. Contributions to this public skill must explain the mechanism and a self-contained reproduction, with public sources where needed. This package contains no account, remote submission, cloud rental, billing, power-control or harness UI workflow.

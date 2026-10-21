@@ -4,11 +4,11 @@
 
 Use a simple CPU/reference implementation that explicitly follows the contract. Avoid sharing the kernel's indexing, tiling or transformed numerical expression with the oracle. For exact binary outputs, validate shape, dtype, byte count, value domain and elementwise equality; `allclose` alone can accept the wrong interface.
 
-The geometry example used separate NumPy FP32 ufuncs for Sub/Mul/Add/Add after storage quantization. HALF thresholds were first rounded to HALF and then converted to FP32 for the oracle. The original unquantized random value is not the actual device input.
+For a contract that requires separate FP32 Sub/Mul/Add/Add, implement those operations separately in the oracle after input storage quantization; see the [worked predicate](ascendc-invariants.md#exact-semantics-are-an-implementation-constraint). For a HALF threshold, round to HALF before converting to the oracle's compute dtype. The original unquantized random value is not the actual device input.
 
 For approximate operators, define justified absolute/relative/residual/orthogonality criteria from their mathematical contract. Do not silently tighten or loosen them to fit a backend. Special values, empty dimensions, unsupported layouts and invalid input behavior follow the operator's own contract.
 
-Nonunique outputs need separate checks for mathematical equivalence and any required reference representation. A valid eigenvector can disagree in sign with an elementwise reference; neither a sign-aligned diagnostic nor a generic comparator establishes an unavailable checker. For reproducible eigensolver examples and first-divergence isolation, read the [eigh case](eigh-correctness.md).
+Nonunique outputs need separate checks for mathematical equivalence and any required reference representation. A valid eigenvector can disagree in sign with an elementwise reference; neither a sign-aligned diagnostic nor a generic comparator establishes an unavailable checker. For reproducible examples and first-divergence isolation, read the [eigh guide](eigh-correctness.md).
 
 ## A test matrix derived from failure mechanisms
 
@@ -27,7 +27,7 @@ Cover the cross-product that can change the execution path, using representative
 
 Invalid API cases must follow the contract's error behavior before unsafe launch; do not use a device fault as input validation. For shared-update/reduction operators, add atomic/partial-output initialization, ordering and collision cases instead of imposing pointwise unique-store rules.
 
-The studied small Compare bug passed B1 because the reference happened to be0, while larger small cases incorrectly became all 0. Include tiny cases requiring1 and mixed outputs; a successful first smoke can be accidental.
+An all-zero implementation can accidentally pass a tiny smoke input whose expected output is zero. Include tiny cases requiring one and mixed outputs, then test full-repeat and tail boundaries; a successful first smoke is not enough.
 
 FP32 near-one constants and separate-multiply-add counterexamples are particularly valuable for a strict comparator. Do not replace a contractually exact comparison with epsilon or FMA to make tests pass.
 
@@ -61,11 +61,11 @@ Use input digests before and after a batch to detect accidental mutation. Hash f
 
 ## Build real instrumentation
 
-For current tool selection and build-route examples, use the [version-scoped MindStudio guide](mindstudio-tools.md#run-diagnostics-with-explicit-coverage). Its reviewed 26.0.0 manual distinguishes limited GM-access checks without instrumentation from instrumented checking, with further target, instruction and caller restrictions. Record the effective coverage; the terms full detection and memcheck do not establish that masked vector instructions, local memory or every requested check were covered. These documentation observations do not resolve the historical warnings below or establish support on another installed release.
+For current tool selection and build-route examples, use the [version-scoped MindStudio guide](mindstudio-tools.md#run-diagnostics-with-explicit-coverage). Its reviewed 26.0.0 manual distinguishes limited GM-access checks without instrumentation from instrumented checking, with further target, instruction and caller restrictions. Record the effective coverage: the terms full detection and memcheck do not establish that masked vector instructions, local memory or every requested check were covered. A documented limitation is not evidence that a particular warning is harmless.
 
 Use the installed build route's supported sanitizer mechanism. Capture real compiler/link commands and inspect actual device artifacts. A flag accepted by the shell may be ignored by target filtering, applied after package creation, or fail to link its runtime.
 
-Version-scoped case: the CANN9 ASC/asc_opc project needed kernel options `-sanitizer;-g` before package generation. Late/nonmatching SoC filters produced no active device instrumentation. Injecting only lower-level `--cce-enable-sanitizer` generated calls but failed linkage on missing `__sanitizer_report_*` runtime. The working route had nonempty `.init_array_sanitizer_file_mapping`, `.debug_info` and `.debug_line` sections in its device ELFs. Use this as a diagnostic recipe for that route, not mandatory section names for every backend.
+For an ASC/asc_opc route that supports sanitizer kernel options, apply them before package generation and verify that the actual SoC filter selects the target. A late or nonmatching filter can produce no device instrumentation. Injecting only a lower-level compiler switch can emit `__sanitizer_report_*` calls without the required runtime linkage. Follow the installed route's supported configuration; inspect instrumentation symbols and debug/mapping sections, such as `.init_array_sanitizer_file_mapping`, `.debug_info` and `.debug_line` where that route emits them. These names are diagnostic clues, not universal requirements for every backend.
 
 Keep instrumented artifacts out of normal performance measurement. Instrumentation can change code generation and timing. A normal build's precision pass does not validate an instrumented library's output, or vice versa.
 
@@ -80,7 +80,7 @@ For memcheck, initcheck, racecheck and synccheck as supported by the current tar
 5. Runner completion and valid exact/tolerated output after the real call.
 6. Full raw stdout/log/output and an honest pass/fail/not-run count.
 
-`exit=0` is insufficient. The first case study had hundreds of memcheck entries and an initcheck error despite successful process exit. `No active sanitizer tool` or ignored instrumentation is **not checked**, even when outputs are correct. Memcheck may work without the instrumentation required by other tools; its clean result is not proof they ran.
+`exit=0` is insufficient: substantive memcheck/initcheck diagnostics can coexist with successful process exit. `No active sanitizer tool` or ignored instrumentation means **not checked**, even when outputs are correct. Memcheck may work without the instrumentation required by other tools; its clean result is not proof they ran.
 
 A permissions advisory about a result directory is a different category from illegal access or synchronization errors. Preserve and classify it; do not claim “no warnings” or automatically label the kernel faulty. Conversely, do not exempt substantive warnings by grouping them with harmless operational advisories.
 
@@ -96,7 +96,7 @@ Use minimal isolation experiments while retaining semantics:
 - One stage/core versus many when isolating ownership or dependency issues.
 - Actual HALF threshold/output versus a default FLOAT runner.
 
-Observed limitations matter: count→Normal did not resolve the later HALF scalar Select size2 scratch read at the studied UB location. That failure remained unresolved. Do not inherit safety from a FLOAT path or claim an SDK defect without closure.
+Changing count syntax or selecting Normal mode alone cannot establish scratch safety. If a HALF scalar Select still reports a scratch read, isolate the actual overload, access width, allocation, initialization and lifetime. Do not inherit safety from a FLOAT path or claim an SDK defect without a reproducer and closure.
 
 For sync warnings, prove whether writes overlap and whether each wait has a corresponding producer. A redundant-wait fix should follow a revised dependency graph and fresh validation, not blind event deletion.
 

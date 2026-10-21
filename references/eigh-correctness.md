@@ -1,126 +1,106 @@
-# Eigh: mathematical correctness, reference phase and real NPU execution
+# Eigh: caller contracts, reference conventions and staged diagnosis
 
-Read this when an eigensolver passes local mathematics but fails a reference comparison, when eigenvector signs change across sizes/backends, or when a numerical helper passes in isolation but fails in the complete Ascend operator. It also covers cancellation-sensitive test oracles and multi-device evidence. For component errors that remain after sign alignment, read [residual refinement](eigh-residual-refinement.md). For earlier small-root, secular-bracket, scratch-layout, generated-code and GE failures, read the [numerics and memory companion](eigh-numerics-and-memory.md). Apply the relevant mechanisms, not every experiment below.
+Use this guide when a symmetric eigensolver passes one checker but fails another, when eigenvector directions differ, or when a numerical component passes in isolation but the complete NPU operator fails. For small-root accuracy, root bracketing, scratch memory and framework failures, read [numerics and memory](eigh-numerics-and-memory.md). For component errors remaining after direction alignment, read [residual refinement](eigh-residual-refinement.md).
 
-This is an evidence-scoped case, not a generally approved eigensolver. The phase-guide snapshot discussed below passed 136 complete NPU calls / 984 matrix records; its external evaluation was pending. Later residual-refinement evidence has a separate scope in the companion. An earlier candidate passed 11 of 12 external points. The external reference/checker identity was unknown. No performance improvement or complete sanitizer clearance is claimed. Selected local evidence hashes are in [eigh-provenance.json](eigh-provenance.json); raw code, device binaries and account history are not bundled.
+The notation below uses a real symmetric matrix, eigenvalues W and eigenvectors in the columns of Q. For a complex Hermitian contract, use conjugate transposes and unit-complex phase alignment. Supported dtypes, shapes, tolerances and permitted implementation routes must come from the actual operator specification and target SDK.
 
 ## 1. Freeze the contract and inspect the real caller
 
-Record the generated API signature, output order, dtype, shape, strides, storage offset, allocation size, workspace query, executor policy, synchronization and readback. Compare an actual native/framework invocation with the test adapter before changing kernel layout.
+Record the generated API's parameter/output order, tensor shapes, strides, storage offsets, allocation sizes, optional attributes, workspace query, executor ownership, synchronization and readback. Compare the native/framework caller with the test adapter before changing the kernel.
 
-In this case, the generated order was `A, UPLO, eigenvaluesOut, eigenvectorsOut`; W had shape `[..., n]`, Q `[..., n, n]`, with eigenvectors in columns. Construct the effective symmetric matrix from the selected triangle of the **stored FP32 input**. Averaging both triangles is different behavior. Poisoning the ignored triangle with NaNs is a useful legal-input check where the contract allows it.
+Construct A_eff from the selected triangle of the **stored input**. Averaging both triangles, or evaluating the unquantized generator input, checks a different problem. Where allowed, poison the ignored triangle to reveal accidental reads. Validate every batch matrix separately:
 
-Case-specific criteria, evaluated separately for every batch matrix:
-
-| Quantity | Required check in this case |
+| Quantity | What to establish |
 | --- | --- |
-| W | FP32, finite, nondecreasing; `abs(W-W_ref) <= 1e-4 + 1e-4*abs(W_ref)` |
-| Orthogonality | Absolute `||Q.T Q-I||_F <= 1e-4`; no division by n or batch size |
-| Reconstruction | `||A_eff-Q diag(W) Q.T||_F <= 1e-4*||A_eff||_F` |
-| Input family | n=1…512; every leading batch dimension 1…64; required spectral gap rechecked after FP32 storage and UPLO completion |
+| W | Required storage dtype, finite values, specified ordering, and `abs(W-W_ref) <= atol + rtol*abs(W_ref)` with declared tolerances |
+| Orthogonality | The contract's full-matrix norm of `Q.T Q-I`; do not divide an absolute Frobenius bound by n or batch size |
+| Reconstruction | The contract's inequality for `A_eff-Q diag(W) Q.T`, with explicit zero-norm behavior |
+| Residual | `A_eff Q-Q diag(W)` as an additional diagnostic; it does not replace the other gates |
+| Legal inputs | Each supported dimension, the product of batch dimensions, dtype, layout, scale and any required spectral-gap condition **after storage conversion** |
 
-These bounds belong to this problem, not all eigensolvers. A per-column residual alone does not replace complete orthogonality and reconstruction. A limit on each batch dimension does not limit their product to the same number.
+A row-major byte store into a strided output view can transpose the logical Q. Orthogonality may survive while reconstruction fails. Inspect actual descriptors and writes; if the route lacks stride support, use a supported adaptation or reject unsupported metadata according to the contract. Do not transpose every output to fit unexplained external feedback.
 
-A real output-view counterexample wrote C-contiguous bytes into a Fortran-strided Q view, transposing its logical interpretation and failing reconstruction. The host tiling interface did not expose usable output strides in that route. Inspect descriptor and actual write behavior; an API declaration is not proof an adaptation ran. This finding did not establish the external runner's layout. Do not transpose outputs based on an unexplained score.
+Distinguish reused addresses, reused workspace capacity and executor reuse. Test only reuse modes supported by the API, and record which mode actually executed. Read outputs after successful device completion; preserve inputs and physical guard checks.
 
-Distinguish reused addresses, reused workspace capacity and a repeatable executor. The ordinary helper recreated the executor; a separate supported repeatable-executor experiment was required to test one-executor reuse. Correctness checks must read after real device synchronization and retain input bits and canaries.
+## 2. Separate mathematics, representation and acceptance
 
-## 2. Keep three independent conclusions
+These are different conclusions:
 
-1. **Mathematical validity:** W, orthogonality and reconstruction satisfy the contract.
-2. **Reference representation:** column signs, ordering and, where relevant, basis choices agree with a specified reference implementation.
-3. **External acceptance:** the actual evaluation has completed and met its acceptance condition.
+1. W, orthogonality and reconstruction satisfy the mathematical contract.
+2. The returned representation agrees with a specified reference's ordering, direction or basis convention.
+3. The complete implementation meets the project's external acceptance gate.
 
-Changing a whole real eigenvector column from q to -q preserves the decomposition. In the saved case, all 150 device matrix records passed the mathematical checks; direct Q comparison against a local NumPy reference passed only 73. Diagnostic column-sign alignment made all 150 pass that comparison. This reproduced a comparison-policy difference, not the identity or sole failure cause of an unavailable checker. Alignment was an offline diagnostic, never a repair performed by the test adapter on submitted outputs.
+For a self-contained sign example, let `A=[[2,1],[1,2]]`, `W=[1,3]` and `Q=1/sqrt(2)*[[1,1],[-1,1]]`. Replacing either column by its negative preserves `Q diag(W) Q.T`. An elementwise Q comparison can reject that equally valid decomposition.
 
-Do not infer a reference backend, hidden matrix size or number of wrong columns from a rounded error fraction. External sign-sensitive feedback is evidence about that observation, not permission to change the specified mathematics. When the checker is unavailable, continue with frozen, reproducible differences and clearly label backend hypotheses.
+For diagnostic comparison of real, normalized columns, align a candidate column by the sign of its dot product with the corresponding reference column. Keep direct signed, absolute and aligned differences separately. Near a zero dot, report direction ambiguity. For repeated or clustered eigenvalues, compare the relevant invariant subspaces/projectors rather than forcing one column assignment. Alignment belongs in diagnostic analysis unless the public interface itself defines a canonicalization; never alter device outputs in an adapter to manufacture acceptance.
 
-FP32 reference input/output does not establish FP32 internal computation. Inspect the pinned implementation and actual numerical library before attributing differences to a chip or storage dtype. Public solutions can have different tolerances, return conventions or permitted full-library calls; compare those constraints before adopting their method. Link and attribute external material rather than copying an unreviewed implementation or its success claim.
+A largest-component-positive convention in a specialized small-matrix branch need not occur in the general path. Audit each branch before generalizing a fix. An unknown checker's error fraction does not reveal its backend, hidden shape or wrong columns. A local NumPy/LAPACK comparison is a named reference, not proof that an external system uses it.
+
+FP32 inputs and outputs do not identify a reference's internal precision. Pin the reference implementation and numerical backend. Check public examples against the actual input, comparison and permitted-library constraints before adopting their method.
 
 ## 3. Locate the first divergent stage, not just the final sign
 
-The n=2 branch forced each column's largest component positive. For `[[2,1],[1,2]]`, this reversed a column relative to the investigated public 2×2 rotation convention. The general n path did **not** contain the same writeback rule. Fixing this branch left the external feedback unchanged; neither its cause nor its repair generalized to larger n.
+For a Householder/divide-and-conquer solver, save one reproducible input and inspect:
 
-For a Householder / divide-and-conquer solver, freeze the raw input and inspect:
-
-| Stage | Difference to isolate |
+| Stage | Questions that distinguish causes |
 | --- | --- |
-| Input and scaling | Actual stored bits, UPLO, normalization and special-value handling |
-| Householder reduction | H, the actual tridiagonal D/E and arithmetic/rounding model |
-| Leaves | Rotation/eigenpair conventions on the real device, not only a CPU arithmetic model |
-| Deflation | Active versus inherited columns, normalized coupling vectors, thresholds and source-column mapping |
-| Merge | Left/right pole order, root bracketing, permutations and phase metadata |
-| Final basis | Whether Z solves the captured T, and whether HZ reproduces the complete normal output |
+| Input/scaling | Which stored bits and selected triangle were read? Is the scale shared by all participants? |
+| Householder | What H and actual tridiagonal T were produced, under which arithmetic order? |
+| Leaves | What rotation, W/Q ordering and direction convention ran on the device? |
+| Deflation | Which columns are active or inherited? Are coupling vectors normalized and source columns mapped correctly? |
+| Merge | How are poles, permutations, root brackets and phase metadata associated? |
+| Backtransform | Does captured Z solve the captured T, and does HZ reproduce the complete normal Q? |
 
-Useful failed approaches from this case:
+Compare Z with a reference for the **same captured T**, then compare HZ with the result for original A. This separates tridiagonal solving from reduction/backtransform differences. Close child poles can exchange order after rounding even when each intermediate remains mathematically plausible. Recomputing only the final dot product more accurately cannot undo an earlier ordering decision.
 
-- Materializing two multiplications made 42 real NPU leaf W/Q outputs bit-identical to an arithmetic model, but the complete candidate's reference-phase behavior regressed. Leaf agreement was not complete-solver agreement. Without instruction evidence, do not call this a proven fused-instruction or compiler defect.
-- A local phase formula matched 173 tiny-coupling examples; recursive propagation still both improved and regressed columns. Another mathematically valid Loewner candidate changed many bits without reducing the observed phase differences.
-- Ordinary-column reasoning predicted all 6,412 sampled ordinary columns, but applying it to 56 deflated columns gave 28 wrong predictions. A missing `1/sqrt(2)` boundary-vector normalization moved a threshold ratio from about 1.024 to 0.724, changing merge versus inheritance. Preserve these distinct classes.
-- Increasing only the final dot-product precision did not remove a frozen negative reference dot, including under exact rational recomputation. Repair the stage where the representation first diverges.
+Treat ordinary active columns and inherited/deflated columns separately. Missing a coupling-vector normalization can cross a deflation threshold; for a merge whose boundary vector requires a `1/sqrt(2)` factor, omitting it changes the branch as well as the magnitude. A direction rule inferred from ordinary columns can therefore fail for inherited ones. Trace source-column mappings and normalization at every recursive level.
 
-Five frozen complete-call counterexamples were n246-L, n305-U, n434-L, n484-L and n499-U. Their exact input/output hashes, not these size labels alone, identify reproductions. The latter two also had internal-node differences; a root-stage explanation must not erase that evidence.
-
-For the first two, captured NPU Z agreed in phase with the reference for the actual FP32 tridiagonal T, and HZ reproduced the normal NPU Q. The reference for original A differed because adjacent left/right child poles changed order during FP32 reduction. The root phase application was correctly consuming its actual T metadata. Blindly flipping its writeback would repair the symptom at the wrong layer.
+Materializing leaf multiplications can improve agreement with one arithmetic model while changing complete-solver phases elsewhere. Likewise, an alternative mathematically valid Loewner/secular-vector formula or a tiny-coupling phase rule can fail under recursive propagation. Test complete eigenpairs across active/inherited classes, not only leaves. Increasing only final-dot precision cannot undo an earlier pole order or branch decision. Use the first differing stage to choose the next controlled experiment.
 
 ## 4. Use real NPU isolation, then return to a normal complete operator
 
-CPU models and public LAPACK calls can analyze saved device data; they do not execute or validate the NPU candidate. Keep separate evidence for model agreement, device-stage journals and complete native/API calls. Do not implement a CPU fallback to satisfy device testing.
+CPU models can analyze captured inputs, operands and device stages; they do not execute or qualify the NPU candidate. Hold source, launch geometry, batch structure and input bytes fixed while changing the diagnostic control. Selecting a journal stage by changing batch size confounds the experiment.
 
-A stage experiment should hold binary, batch geometry, selected-triangle bytes and launch conditions fixed while changing only the intended diagnostic control. An earlier experiment used batch size to select stages, confounding the diagnosis. The controlled reproduction narrowed a `507015 / 0x40` failure to the root-entry eligibility computation, before flags or XOR writeback. Replacing unused Soft64 array construction there with an equivalent bit-based qualification removed that reproduction; volatile loop-counter variants did not. The failing instruction's compiler-internal cause remained unproved.
+For a runtime fault, isolate the first executed region with bounded stage controls. In a root-eligibility calculation, constructing unused emulated-wide-float arrays can introduce a failing path even though only a boolean classification is required. Derive an equivalent integer/bit predicate, check its domain and boundary truth table, then test it on the original normal NPU call. A volatile loop counter is not a substitute for this isolation. An equivalent rewrite removing a fault is useful evidence, but does not by itself identify a compiler-internal defect; bind generated code and actual device artifacts before assigning that cause.
 
-Hundreds of successful stage calls had preceded that complete-call failure. Therefore run the normal entry with the original failing input after any isolated fix, including batches with inactive groups and batches without them. A stage's Q used as a journal is not an eigensolver output. Prefix kernels, encoded input selectors and journal-output projects must remain diagnostic-only and outside release source and submission archives.
+After a stage fix, run the original failing input through the normal complete entry, including inactive groups, nonmultiple batches and subsequent waves. A Q buffer reused as a journal is not a valid eigensolver output. Keep prefix kernels, encoded diagnostic selectors and journal-output builds out of a release.
 
 ## 5. Make a narrowly supported numerical repair
 
-This section describes a phase-only repair. The later [residual update](eigh-residual-refinement.md) intentionally changes Q magnitudes; its comparator preserves original mathematics, W, small-path/skip bits and parent directions rather than requiring unchanged absolute Q everywhere.
+Choose the comparator invariants from what the repair intentionally changes:
 
-The investigated normal candidate computed a binary64 Householder/Sturm **phase guide on the NPU**, using existing integer Soft64 arithmetic, and replaced only the root left-count ordering. It retained the FP32 value solver, deflation, non-root phase, small n<=25 path, W and Q magnitudes. This was not a complete FP64 eigensolver or a generic remedy for every sign mismatch. A native-double compile probe on the studied stack had failed; general dtype documentation did not establish that this target supported the desired arithmetic.
+- A direction-only repair should preserve W and Q magnitudes, plus signed Q on unaffected branches.
+- A [residual correction](eigh-residual-refinement.md) intentionally changes Q components. Preserve required mathematical gates, W if unchanged by design, unaffected-path bits, and intended column directions; do not require unchanged absolute Q everywhere.
+- A repair of a root estimate must additionally preserve sorted eigenvalue/column association and resolve its targeted eigenvalue error.
 
-The repair required both positive controls and invariants: remove the frozen reference-phase differences, preserve W and absolute Q bits against the validated parent, preserve small-path signed Q, and introduce no new phase regressions on the chosen reference corpus. All mathematics, input and memory checks still apply. Matching a hypothesized reference does not replace external acceptance.
+When phase metadata depends on a rounding-sensitive pole order, a higher-precision Householder/Sturm guide can test that explanation. One narrow design computes only the required pole-order/left-count metadata and preserves the FP32 value solver, deflation policy and unrelated direction rules. A root-only guide cannot repair an already divergent internal node. Prove its scope before changing writeback.
 
-Workspace reuse needs an explicit ownership/lifetime proof. In this implementation, temporary HH matrices used two existing slots before the native solver. Six-n uint32 guide words occupied QNode1 rows 256…261 outside its at-most-256 logical rows; phase flags used row511. Those coordinates were proved only for that allocation and n<=512, not recommended offsets for another solver. One lane owned HH updates; distributed pole records had unique writers; two unconditional mixed barriers published D/E and poles. Inactive groups still joined barriers without reading input. Later native stages could reuse storage only after its guide lifetime ended. Recompute guide data for every wave and changed input.
+If the target lacks the required native wide arithmetic, an integer-emulated guide is a separate implementation option, not evidence that a native double dtype works. Qualify actual NPU arithmetic, cost, capacity and lifetime, and validate W/magnitude/unaffected-branch invariants. A CPU guide or dtype documentation does not establish native support. Do not substitute an entire reference solver or host fallback for the required operator.
 
-One actual compile failure came from pointer-like macro declarators: `GM_ADDR input_, scratch_, storage_;` did not give all members the intended type/address-space form. Separate the declarations and inspect the first real compiler diagnostic before chasing derived-class errors. The corrected declarations preserved the numerical mechanism; they were not a performance change.
+For scratch reuse, derive byte intervals and live ranges for H, T, guide records, flags and normal-solver buffers. Assign one writer per ordinary record and publish data before readers proceed. Inactive participants must still obey collective-barrier semantics. Recompute temporary metadata for changed input and every wave. Offsets and barrier counts come from this implementation, not another project's layout.
+
+Pointer-like macro declarations need ordinary C/C++ declarator scrutiny: a macro expanding to `T*` does not make every name in `MACRO a,b;` a pointer. Use separate declarations where appropriate and inspect the first compiler error, including address-space qualifiers.
 
 ## 6. Freeze and test the oracle as carefully as the kernel
 
-Preserve each adversarial family's oracle, thresholds, source hash and serialized input. Before replacing a checker, run it on the validated baseline and negative controls. A general double eigensolver is not automatically a sufficiently accurate oracle for a cancellation-sensitive small eigenvalue of a huge matrix.
+Keep each adversarial family's reference method and tolerances when changing runners. A general float64 eigensolver can lose the absolute accuracy of a tiny root beside a large spectrum. Use analytic values, independently derived high precision, or outward interval bounds where justified. A higher nominal dtype alone is not an accuracy certificate.
 
-The new runner accidentally replaced 20 frozen Decimal150 interval-oracle cases with ordinary float64 `eigvalsh`. A stored n4 input scaled by 2^80 had a small root near -0.007142857; the ordinary library reference returned about 3.29e9. Old and new NPU raw/W/Q were bit-identical. Restoring the original strict interval scorer resolved the harness failure without loosening any threshold or modifying the kernel. Corrupting the small eigenvalue, orthogonality and reconstruction independently still failed. Preserve the first runner's 15 device calls and failed report rather than rewriting them as passes.
+Run the validated baseline through a new adapter before adopting it. If old/new device input, W and Q are byte-identical while the verdict changes, examine oracle routing, storage conversion, norms and indexing first. Inject wrong eigenvalues, nonorthogonal Q and incorrect W/Q pairing separately and require rejection. Restore a damaged checker without weakening its thresholds.
 
-Validate fixture feasibility after storage conversion. In a separate subnormal case, even the reference Q/W rounded to FP32 failed the same reconstruction criterion. Preserve that finding and its unresolved contract implications; do not silently drop a legal input class or claim it passed.
+Investigate numerical-library warnings with a bounded control: use simple known-answer operations and an independent accumulation route, retain finite/nonfinite checks, and compare the actual saved data. A finite result in one warning-producing call does not justify suppressing warnings globally or upgrading unrelated software.
 
-Treat local numerical-library warnings as data to investigate. On the case's Apple/Accelerate host, even an exact unit-matrix multiplication emitted floating-point warnings while returning the exact identity. The relevant 16 saved outputs were independently checked with `einsum(optimize=False)` under strict floating-point exceptions; finite Gram/reconstruction results matched the BLAS products exactly and met the unchanged criteria. This bounded control did not prove all NumPy warnings harmless, justify suppressing arbitrary warnings or require an SDK/dependency upgrade.
+Check whether requested output storage can satisfy extreme-scale/subnormal criteria independently of the solver. Document a representability limitation with a concrete construction or bound; do not silently remove an input class or change tolerance.
 
 ## 7. Bind every conclusion to source, payload, caller and input
 
-Use the [build identity chain](build-identity.md): all source/config files, fresh/staged/direct/registry resources expected by this template, host tiling, actual API library, runner, environment and stored input/output hashes. A changed host API hash does not by itself imply changed device arithmetic; a matching source filename does not identify the loaded library.
+Use the [build identity chain](build-identity.md). Separate independent builds from devices running a carried binary. For cross-device comparison, use identical stored inputs and the normal API, and report every differing compiler, framework and numerical mode. Matching CANN versions do not establish chip-only equivalence.
 
-Use separate processes when same-named registration/OPP state can mix candidates. Record carried-runtime provenance separately from an independently compiled build. In this case, two servers independently built the candidate; a third ran a verified carried package. Three-way bit-identical outputs for their six shared groups / eight matrices established agreement only on those inputs, not three independent builds or all legal inputs. Different framework versions also prevent calling that experiment a chip-only comparison. A common CANN version did not establish correctness on an externally reported but locally untested 910B4.
+Derive regression points from actual specialized sizes, guide boundaries, tree/tile boundaries, L/U, active/inherited columns, large and tiny scales, and spectral-gap boundaries. Exercise changing data at the same addresses and batches spanning multiple active groups/waves. Check input preservation and guard regions. Preserve the strict oracle for each family.
 
-Choose regression cases from actual branches: n=1/2, n25/26 guide boundary, tree/tile boundaries, largest n, L/U, inherited/active columns, extreme scales and spectrum-gap boundaries. Include nonmultiple batches, more matrices than active groups, maximum per-dimension batch and multi-axis batch. At the same allocations and metadata, update input contents and check every wave, input bits and guard regions. Never relax assertions or repair outputs in the adapter to obtain agreement.
-
-Report full device calls, matrix instances and column/check counts separately. The snapshot had 128 qualified complete calls / 472 matrices in five main suites plus 8 candidate calls / 512 matrices in supplemental batch checks. Eight old-baseline calls and 15 calls from the preserved faulty host-reference runner were separate categories. One sample for every n is not exhaustive coverage of spectra or state.
+Report full calls, matrix instances, columns and checks separately; these counts can overlap. One input at every size is not exhaustive spectrum or state coverage.
 
 ## 8. Keep sanitizer and release boundaries visible
 
-Apply [real instrumentation and coverage checks](correctness-sanitizers.md#each-requested-tool-must-really-execute). The case's instrumented memcheck reported 795 GM-ownership warnings and zero ERROR entries; a race-tool run timed out. Valid mathematics, intact canaries and an address inside a known allocation did not settle ownership or races. Retain target start/finish, instrumented device ELF identity and actual output; normal packaging objects alone do not prove device instrumentation. Do not relabel a timed-out tool as passed or an unresolved warning as a false positive.
+Apply [instrumentation and coverage checks](correctness-sanitizers.md#each-requested-tool-must-really-execute). Valid mathematics, exterior canaries and an address within an allocation do not settle internal ownership or races. A timeout, missing completion or unresolved diagnostic is not a passed tool run.
 
-Freeze the normal, complete candidate and its evidence before a required external acceptance stage. Preserve both failure records and the parent rollback. Advance a delivery only when the project's actual acceptance gate is met; recheck the accepted source and concurrent delivery changes first. Keep numerical, diagnostic, external-evaluation and performance states separate. This engineering package does not provide account, submission, monitoring or server-power workflows.
-
-## Evidence map
-
-Paths below are relative to the original eigh case project; they are optional provenance, not dependencies of this skill. They contain historical states, so use their dated scope rather than treating an old “unqualified” plan or running JSON as a current verdict. Selected hashes identify the inspected snapshot only.
-
-| Topic | Evidence |
-| --- | --- |
-| Contract, per-matrix norms, multi-axis batch and legal failing input | `docs/problem-contract-review.md` |
-| Actual caller, 150-record comparator experiment and repeatable executor | `results/round12/experiments/caller-checker089-001/README.md` |
-| n2 convention, unchanged larger paths and subnormal fixture limitation | `results/round12/experiments/two-phase091-001/README.md` |
-| Leaf rounding, recursive phase and deflation/normalization | `results/round12/phase-progress091-099.md`, `phase-progress100-110.md`, `phase-progress111-115.md`, `phase-progress116-123.md` in the same directory |
-| Controlled complete-call runtime failure and equivalent eligibility fix | `results/round12/phase-progress126-133.md` |
-| Actual FP32 T versus original A, cross-device reproductions | `results/round12/phase-progress146-152.md`, `phase-progress153-159.md` in the same directory |
-| Guide mechanism, workspace proof and macro declaration correction | `results/round12/experiments/phase-guide153-001/PLAN.md`, `phase-guide155-001/PLAN.md` under the same experiments directory |
-| Frozen exact oracle, negative controls, supplemental batch checks and host-library control | `results/round12/phase-progress173-179.md`; `experiments/phase-guide155-001/failure-scale170-001/` and `experiments/full-batch178-001/local-math179-001.json` beneath round12 |
-| Actual complete-output qualification, provenance and pending acceptance | `results/round12/experiments/phase-guide155-001/qualification-audit168-001.json`; `results/round12/phase-progress181-182.md` |
+Freeze the normal complete candidate and the evidence required by the project. Recheck accepted source and concurrent delivery changes before promotion. Keep numerical accuracy, diagnostic coverage, external acceptance and performance as separate states. This skill provides operator-engineering methods; account, submission, monitoring and server-power procedures belong to the relevant environment.

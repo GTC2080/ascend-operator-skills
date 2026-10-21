@@ -5,7 +5,7 @@
 
 A portable [Agent Skills](https://agentskills.io/specification) package for designing, implementing, reviewing and tuning Huawei Ascend operators with **Ascend C and TileLang Ascend**.
 
-It distills real operator development into a concise skill entry, focused reference manuals, version-scoped case studies, and two dependency-free Python audit tools. It includes practical lessons from **DeepGEMM-Ascend** and **TileKernels**, with explicit boundaries between inspected source, compiled probes, device validation and measured performance.
+It distills real operator development into a concise skill entry, focused reference manuals, self-contained debugging recipes, and two dependency-free Python audit tools. It includes practical lessons from **DeepGEMM-Ascend** and **TileKernels**, with explicit boundaries between inspected source, compiled probes, device validation and measured performance.
 
 **中文：** 面向全球开发者的昇腾算子开发技能，整理真实开发中关于数值语义、UB/DMA、mask、同步、TileLang生成代码、JIT/AOT、内存检测与性能实验的经验。只有算子开发内容，附[中文导入说明](INSTALL.md#中文使用说明)。
 
@@ -13,9 +13,9 @@ It distills real operator development into a concise skill entry, focused refere
 
 - [SKILL.md](SKILL.md) — the agent entrypoint and reference routing.
 - [INSTALL.md](INSTALL.md) — native skill import and Markdown fallback.
-- [Casebook](references/casebook.md) — successes, failures and unresolved questions with their evidence limits.
-- [Validation](VALIDATION.md) — executed offline checks and their limits.
-- [Sources](references/sources.md) — version-pinned upstream references and evidence provenance.
+- [Casebook](references/casebook.md) — symptoms, root causes, isolation experiments and repair checks.
+- [Validation](VALIDATION.md) — reproducible package checks and their limits.
+- [Sources](references/sources.md) — version-pinned public references and their scope.
 - [Releases](https://github.com/GTC2080/ascend-operator-skills/releases) — importable ZIP and SHA-256 checksum.
 
 ## Import
@@ -51,7 +51,7 @@ Example request:
 | Official knowledge | Optional [CANNBot knowledge consumer](references/cannbot-knowledge.md), target-aware API/operator lookup, full-card/source verification and explicit coverage/license boundaries |
 | MindStudio tools | [Version-scoped selection and evidence workflow](references/mindstudio-tools.md) for modeling, project generation, debugging, sanitizer coverage, board/simulator profiling and CATLASS tiling search |
 
-Historical geometry observations concern **910B2 / CANN 9.0.0** and an older TileLang Ascend wheel; the separate eigh study records its own 910B2/B3 coverage. They are debugging evidence, not permanent API contracts, current-version bug claims or performance guarantees. Recheck the target SDK and pinned sources before applying them.
+The examples explain failure mechanisms without requiring any original project files. API signatures, compiler lowering and hardware limits remain version-specific; verify the installed target and the pinned public sources. Package validation does not establish device correctness or performance on a new stack.
 
 ## Offline tools and tests
 
@@ -66,13 +66,13 @@ python3 scripts/verify_embedded_kernel.py /path/to/build --require-kernel-routes
 
 The embedded-resource checker supports one documented ELF64 little-endian Ascend C layout. Passing it proves packaging consistency only; it does not establish runtime selection, precision, memory safety or speed. See [the identity guide](references/build-identity.md).
 
-CI runs the offline unit tests and checks the distributed manifest and Markdown links. It does not run historical NPU experiments or install/test every harness.
+CI runs the offline unit tests and checks the distributed manifest and Markdown links. It does not run NPU tests or install/test every harness.
 
 ## Contributing
 
-Provide a minimal reproduction, exact chip/toolchain/backend versions and clearly separated observations versus hypotheses. Add a meaningful regression check for tool changes. Keep case-specific constants version-scoped and unresolved failures visible. Update `MANIFEST.json` to match changed distributed files; do not rewrite historical validation records as if a new experiment had occurred.
+Provide a minimal reproduction, exact chip/toolchain/backend versions and clearly separated observations versus hypotheses. Add a meaningful regression check for tool changes. Make examples self-contained and explain the symptom, falsifiable diagnosis, fix, validation and applicability limits. Update `MANIFEST.json` to match changed distributed files; distinguish offline package checks from compiler, device and performance evidence.
 
-Never include credentials, private machine logs, personal paths or unrelated operational workflows. Preserve upstream licenses when actually reusing code; this repository links to external implementations rather than bundling them.
+Never include credentials, private machine logs, personal paths, internal experiment identifiers, project evidence maps or digests of unshipped private artifacts. Project run records stay with their project; public upstream commit pins and this package's integrity manifest are appropriate to retain. Preserve upstream licenses when actually reusing code; this repository links to external implementations rather than bundling them.
 
 ## License
 

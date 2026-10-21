@@ -1,6 +1,6 @@
 # DeepGEMM, TileKernels and reusable kernel ideas
 
-For an operational sequence from dependency checks to initialized device validation, use the [910B adaptation procedure](910b-porting.md). This reference records the inspected mechanisms and historical evidence boundaries.
+For an operational sequence from dependency checks to initialized device validation, use the [910B adaptation procedure](910b-porting.md). This reference extracts reusable mechanisms from pinned public implementations; it does not certify target compatibility.
 
 ## Separate architecture, API and algorithm compatibility
 
@@ -8,10 +8,9 @@ Before reusing a kernel library, check its pinned source, supported device, comp
 
 | Studied component | Evidence boundary |
 | --- | --- |
-| Q1 development target |910B2, CANN9.0.0, old TileLang Ascend0.1.1.10 wheel |
 | DeepGEMM-Ascend `3a35326271b069b8b5bf1a754435acd6cc91575b` | README targets950/CANN9.20, Python3.10+, C++20-capable environment |
 | TileKernels `c1cf914a82e6901c679445f872051ce44ac2cc63` | README lists950/CANN9.2+, TileLang0.1.15+, Python3.12+ and PyTorch2.13+; separate NVIDIA backend |
-| TileLang Ascend upstream reviewed snapshot |A separate source snapshot from the installed historical wheel; consult its actual backend and requirements |
+| TileLang Ascend reviewed public source | Consult the selected commit's backend and requirements, then verify the installed wheel independently |
 
 These rows document inspected versions; they are not a permanent support matrix. Do not assume a newer README describes an old installed wheel. Do not call TileKernels CUDA-only: the inspected source includes real Ascend implementations. Sources and exact URLs are in `sources.md`.
 
@@ -46,7 +45,7 @@ Inspect generated code to confirm folding/inlining. An API library or source-siz
 
 The [copy/MAD wrappers](https://github.com/deepseek-ai/DeepGEMM-Ascend/blob/3a35326271b069b8b5bf1a754435acd6cc91575b/deep_gemm/include/deep_gemm/ascend/copy.hpp) remain close to hardware operations. The [synchronization layer](https://github.com/deepseek-ai/DeepGEMM-Ascend/blob/3a35326271b069b8b5bf1a754435acd6cc91575b/deep_gemm/include/deep_gemm/ascend/sync.hpp) makes pipeline direction and stage explicit.
 
-Transfer a clear dataflow vocabulary, event ownership and final-store completion. Do not infer that raw C intrinsics inherit an Ascend C wrapper's implicit dependencies. The geometry case's raw math failed until the caller-to-first-operation RAW boundary was protected.
+Transfer a clear dataflow vocabulary, event ownership and final-store completion. Do not infer that raw C intrinsics inherit an Ascend C wrapper's implicit dependencies: protect the Cast/Gather-to-first-raw-operation boundary as well as dependencies inside the replacement.
 
 ### Model fixed issue cost as well as bandwidth
 
@@ -60,22 +59,19 @@ Study multi-stage/coroutine organization when there is real work to overlap, eno
 
 Fuse a vector epilogue only when its semantics and data lifetime match the operation. Count its dtype conversion, mask/padding, memory and synchronization requirements. An upstream high-throughput GEMM does not prove a strict-comparison epilogue is cheap or numerically equivalent.
 
-## What the910B MAD probes actually proved
+## Validate MAD compatibility in stages
 
-Two probes were built against the real CANN9.0 compiler:
+Separate ordinary MAD, MX/low-bit instructions, register-vector APIs and layout wrappers. A full newer-chip include tree can fail on a type such as `float4_e2m1x2_t` even when a required ordinary MAD primitive has a supported target equivalent. Conversely, removing that type does not establish compatibility for all remaining dependencies.
 
-1. The full950 header combination failed first on `float4_e2m1x2_t`. Other unsupported dependencies were not exhaustively resolved.
-2. A minimal shape-carrying descriptor calling ordinary BF16 `asc_mmad` compiled, linked and passed payload identity checks.
+First compile and link a native target-supported control, then add a minimal descriptor/wrapper. Include actual target flags and memory qualifiers. That proves compatibility only for the compiled invocation. Before execution, initialize correctly laid-out operands and padding, define accumulation mode, complete transfers/events, and check independent numeric outputs. Never launch an uninitialized compile probe.
 
-Neither probe initialized its L0 operands, launched on the NPU, produced numeric output or was timed. The result is **compile/link compatibility for that invocation**, not a working GEMM port or performance claim. Do not run an uninitialized compile probe.
+Pointer-based vector APIs and register-vector APIs can belong to different target routes behind similar umbrella headers. Resolve the installed target's implementation instead of importing another architecture's names or feature assumptions.
 
-Ordinary MAD, MX/low-bit instructions, register-vector APIs and layout wrappers are separate compatibility questions. The inspected SDK had a2201 pointer-based vector route and a3510 register-vector route. A common umbrella header name does not establish the same ISA/API on both.
+A newer-header failure does not prove that 910B lacks ordinary FP32 matrix multiplication. [CANN's HF32 documentation](https://www.hiascend.com/doc_center/source/en/CANNCommunityEdition/900/API/ascendcopapi/atlasascendc_api_07_0258.html) distinguishes rounded HF32 input mode from regular FP32 matrix multiplication. Inspect the installed signature and explicitly validate the selected numerical mode.
 
-Likewise, failing the full950 headers does not prove910B lacks ordinary FP32 Cube/Mmad. [CANN's HF32 documentation](https://www.hiascend.com/doc_center/source/en/CANNCommunityEdition/900/API/ascendcopapi/atlasascendc_api_07_0258.html) distinguishes rounded HF32 input mode from regular FP32 matrix multiplication. Its signature varies by SDK release; inspect the installed version.
+## Preserve rounding when considering a matrix reformulation
 
-## Why MAD was not a direct Q1 replacement
-
-The case requires Sub→Mul→Add→Add with an FP32 rounding after each step, then strict comparison. Expanding it into a matrix expression can change rounding, accumulation and input modes. Splitting work over multiple MADs would also need matrix layout, L1/L0 movement and comparison; it was not executed or benchmarked here.
+A scalar contract can require Sub/Mul/Add/Add with FP32 rounding after each step, followed by strict comparison; see the [worked example](ascendc-invariants.md#exact-semantics-are-an-implementation-constraint). Expanding it into a matrix expression can change rounding, accumulation and input modes. Multiple MADs also introduce layout, L1/L0 transfers and comparison costs. Prove the arithmetic and complete dataflow before benchmarking such a reformulation.
 
 For a genuine matrix-heavy operator, use a separate acceptance plan: initialize correctly laid-out operands, verify all precision modes and tails, validate accumulation/layout and then measure. Do not force matrix machinery into a latency-bound vector problem because it has impressive throughput elsewhere.
 
