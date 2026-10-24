@@ -44,7 +44,7 @@ Example request:
 | Ascend C | UB capacity and scratch, DMA units, masks, producer/consumer dependencies and final writeback |
 | Build and integration | Fresh/staged/embedded identities, host tiling, loaded libraries, ACLNN and executor policy |
 | Correctness and diagnostics | Independent oracle, boundary/negative cases, same-address updates, actual mssanitizer activation |
-| Eigensolver debugging | [Mathematical validity versus reference phase](references/eigh-correctness.md), frozen cancellation-sensitive oracles, [numerical/workspace/GE pitfalls](references/eigh-numerics-and-memory.md), [residual refinement](references/eigh-residual-refinement.md), complete NPU isolation and cross-device evidence |
+| Eigensolver debugging and optimization | [Mathematical validity versus reference phase](references/eigh-correctness.md), frozen cancellation-sensitive oracles, [numerical/workspace/GE pitfalls](references/eigh-numerics-and-memory.md), [residual refinement](references/eigh-residual-refinement.md), [patterns from accepted implementations](references/eigh-accepted-optimizations.md), complete NPU isolation and cross-device evidence |
 | Performance | Same-code controls, raw-row audits, paired/reversed experiments, noise, contention and scoped gains |
 | TileLang Ascend | [Server installation and verification](references/tilelang-installation.md), frontend/codegen failures, scalar bits, AIC/AIV scope, caches, export workers and AOT adaptation |
 | Library reuse | DeepGEMM MAD/descriptors/pipelines and TileKernels specialization, with a [step-by-step 910B adaptation procedure](references/910b-porting.md), chip/version constraints and acceptance gates |

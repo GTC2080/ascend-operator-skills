@@ -27,6 +27,8 @@ Before publication, inspect both the source tree and the actual release ZIP:
 
 Keep project-specific run logs and evidence ledgers in that project's own records. Hashes of unavailable private files do not make a public example independently reproducible. The package manifest and pinned public-source commits serve a different purpose: readers can obtain the referenced content and verify those identities themselves.
 
+The [accepted eigensolver optimization patterns](references/eigh-accepted-optimizations.md) distill mechanisms from complete NPU implementations with terminal external acceptance. They include self-contained equations and applicability conditions, rather than distributing the private receipt archive. Their provenance does not qualify a reader's adaptation, establish a portable speedup or imply full-domain sanitizer coverage. Current unaccepted research must not inherit that acceptance label.
+
 ## Validation limits
 
 Offline tests establish their specific file/ELF behavior, not device execution, numerical accuracy, memory/synchronization safety, installed SDK support, backend correctness or latency. No NPU run or new performance result is implied by installing or validating this package.

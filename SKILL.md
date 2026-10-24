@@ -33,6 +33,7 @@ The references provide self-contained debugging recipes and worked counterexampl
 | Eigh sign/basis differences, local-reference disagreement and cancellation-sensitive oracles | [eigensolver correctness guide](references/eigh-correctness.md) |
 | Eigh high-scale roots, secular brackets, workspace/codegen and GE-only failures | [eigensolver numerics and memory](references/eigh-numerics-and-memory.md) |
 | Residual component errors after sign alignment, orthogonality-preserving corrections and failed-call evidence | [eigh residual refinement](references/eigh-residual-refinement.md) |
+| Optimize an accepted complete eigensolver: guide projections, exact arithmetic, small paths and parallel preparation | [accepted eigh optimization patterns](references/eigh-accepted-optimizations.md) |
 | Sampling, profiler row audits, ABBA, contention and interpreting gains | [performance experiments](references/performance.md) |
 | Choose MindStudio modeling, project generation, debugging, sanitizer or operator-profiling tools | [MindStudio tool workflow](references/mindstudio-tools.md) |
 | TileLang syntax, generated code, JIT caches, AIC/AIV scope and AOT | [TileLang Ascend](references/tilelang.md) |
