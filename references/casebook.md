@@ -123,3 +123,5 @@ See [library mechanisms](deepgemm-tilekernels.md) and [910B adaptation](910b-por
 | No representable W meets a tiny-scale criterion | Storage spacing dominates the requested error budget | Construct a format-bound example and separate contract feasibility from ordinary algorithm failures |
 
 The detailed [correctness](eigh-correctness.md), [numerics/memory](eigh-numerics-and-memory.md) and [refinement](eigh-residual-refinement.md) guides explain the reasoning and complete-validation boundaries.
+
+For a complete accepted baseline, use the [accepted optimization patterns](eigh-accepted-optimizations.md) to choose between projection-based direction calibration, exact arithmetic, small-matrix specialization and parallel deflation preparation. Match the current live bottleneck; successive guide acceleration and guide removal are alternative stages, not additive speedups.

@@ -23,16 +23,16 @@
       "sha256": "9f0141ae24108a5a2ea007bb89a304f0e6640273146a7a8a253310dd99fc3a6e"
     },
     "README.md": {
-      "bytes": 7272,
-      "sha256": "f26b3388cf2f4506f45e1f642441a15792e1c8276296700d7d1c635bc99009ca"
+      "bytes": 7374,
+      "sha256": "ec8d31818bdbed70cb5d1f126da5b4cea32b4f05162f103840be5f05413da977"
     },
     "SKILL.md": {
-      "bytes": 18175,
-      "sha256": "0f397ab169fb6f4ebdb8388abce333bf5e1b0ead12c37f9eeab927676a6a9cb5"
+      "bytes": 18379,
+      "sha256": "1e7f16773f5aa480c600afd3fa36f6ee28ca1b345ece2705061cb8c74ac701ff"
     },
     "VALIDATION.md": {
-      "bytes": 3125,
-      "sha256": "ef462e7e90cfabdfa16dd3ac2175ea69a28c1d2525b9929d0b7f8eb5f4bd570c"
+      "bytes": 3623,
+      "sha256": "24cb57125d154af8e96bb6dabc7f9c225043a37bb9a2454bcb640fb296c1dc40"
     },
     "references/910b-porting.md": {
       "bytes": 16520,
@@ -51,8 +51,8 @@
       "sha256": "6569d487eafe1046dd8dd1da2f860b1a6d0996e872318651e27c946a760a67c5"
     },
     "references/casebook.md": {
-      "bytes": 17692,
-      "sha256": "a3ebaad16d6ccf222779ce7cb985262b2753e1f7e8744f6aa1a0e62e21e2d290"
+      "bytes": 18070,
+      "sha256": "4a62a9733c809d91756bb1999f27e1975fabee1af7d7174faa622e0f038c96b6"
     },
     "references/correctness-sanitizers.md": {
       "bytes": 10648,
@@ -61,6 +61,10 @@
     "references/deepgemm-tilekernels.md": {
       "bytes": 9741,
       "sha256": "8459923410242948e3a3044083d37d23bd760cd6735cedddecc8d6244f499635"
+    },
+    "references/eigh-accepted-optimizations.md": {
+      "bytes": 16453,
+      "sha256": "2877e570bf2109e92d1aa5f8e6042742e3b9a68486dd1b1004daa885297a1776"
     },
     "references/eigh-correctness.md": {
       "bytes": 13261,
@@ -119,5 +123,5 @@
       "sha256": "df876ae25a105bc1ad38d6d8feddfee7f4664403df95171dcb91d1dedf7119f6"
     }
   },
-  "updated_utc": "2026-10-21T15:17:45.705972+00:00"
+  "updated_utc": "2026-10-24T09:53:38.398654+00:00"
 }
